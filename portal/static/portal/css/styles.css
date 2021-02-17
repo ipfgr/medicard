@@ -1,0 +1,266 @@
+@import url('https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css');
+
+* {
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', sans-serif;
+}
+
+
+/* Topbar Styles */
+.top-bar {
+    display: flex;
+    width: 100%;
+    height: 70px !important;
+    background-color: #0F1111;
+    justify-content: space-around;
+    color: #fff;
+}
+
+.top-bar a {
+    color: #fff;
+    transition: 0.4s;
+
+}
+
+.top-bar a:hover {
+    color: #fb6f0cd1;
+}
+
+.search-bar {
+    padding: 0;
+    margin: 0;
+}
+
+.s-button {
+
+}
+
+.welcome-text {
+    justify-content: center;
+    text-align: center;
+    color: #000;
+    text-decoration: none;
+    padding-top: 10px;
+}
+
+.login {
+    margin-left:10px;
+}
+
+
+
+/*Navbar*/
+
+.nav-top {
+    width: 100%;
+    height: 40px !important;
+    background-color: #fb6f0cd1;
+}
+
+.nav-top a {
+    color: #000 !important;
+    transition: 0.4s;
+}
+
+.nav-top a:hover {
+    border: 1px solid #0dcaf0;
+    border-radius: 3px;
+    padding:5px;
+}
+
+/*Body styles*/
+
+
+body {
+    background-color: gainsboro;
+}
+
+.container-ovf {
+    display: flex;
+    justify-content:center;
+    align-items:center;
+        border: 1px solid #0dcaf0;
+
+}
+
+
+
+/**/
+.container-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-areas: "left center right";
+
+}
+
+.col-l {
+    height: 50vh;
+    grid-area: left;
+    grid-column-start: 0;
+    grid-column-end: 1;
+    background-color: gainsboro;
+    overflow: hidden;
+    border: 1px solid #0dcaf0;
+}
+
+.col-c {
+    height: 50vh;
+    grid-column-start: 1;
+    grid-column-end: 2;
+    grid-area: center;
+    background-color: aliceblue;
+    overflow: hidden;
+    border: 1px solid #0dcaf0;
+
+}
+
+.col-r {
+    height: 50vh;
+    grid-column-start: 1;
+    grid-column-end: 2;
+    grid-area: right;
+    background-color: aliceblue;
+    overflow: hidden;
+    border: 1px solid #0dcaf0;
+
+}
+
+.c-custom {
+    max-width: 1520px !important;
+}
+
+/**********************
+/***** Services *******
+/*********************/
+section {
+    padding: 60px 0;
+}
+
+section .section-title {
+    text-align: center;
+    color: #0dcaf0;
+    margin-bottom: 50px;
+    text-transform: uppercase;
+}
+
+#what-we-do {
+    background: #ffffff;
+}
+
+#what-we-do .card {
+    padding: 1rem !important;
+    border: none;
+    margin-bottom: 1rem;
+    -webkit-transition: .5s all ease;
+    -moz-transition: .5s all ease;
+    transition: .5s all ease;
+}
+
+#what-we-do .card:hover {
+    -webkit-box-shadow: 5px 7px 9px -4px rgb(158, 158, 158);
+    -moz-box-shadow: 5px 7px 9px -4px rgb(158, 158, 158);
+    box-shadow: 5px 7px 9px -4px rgb(158, 158, 158);
+}
+
+#what-we-do .card .card-block {
+    padding-left: 50px;
+    position: relative;
+}
+
+#what-we-do .card .card-block a {
+    color: #0dcaf0 !important;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+#what-we-do .card .card-block a i {
+    display: none;
+
+}
+
+#what-we-do .card:hover .card-block a i {
+    display: inline-block;
+    font-weight: 700;
+
+}
+
+#what-we-do .card .card-block:before {
+    font-family: FontAwesome;
+    position: absolute;
+    font-size: 39px;
+    color: #fb6f0cd1;
+    left: 0;
+    -webkit-transition: -webkit-transform .2s ease-in-out;
+    transition: transform .2s ease-in-out;
+}
+
+#what-we-do .card .block-1:before {
+    content: "\f0e7";
+}
+
+#what-we-do .card .block-2:before {
+    content: "\f0eb";
+}
+
+#what-we-do .card .block-3:before {
+    content: "\f00c";
+}
+
+#what-we-do .card .block-4:before {
+    content: "\f209";
+}
+
+#what-we-do .card .block-5:before {
+    content: "\f0a1";
+}
+
+#what-we-do .card .block-6:before {
+    content: "\f218";
+}
+
+#what-we-do .card:hover .card-block:before {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+    -webkit-transition: .5s all ease;
+    -moz-transition: .5s all ease;
+    transition: .5s all ease;
+}
+
+/*Go top*/
+
+.go-top {
+    width: 100%;
+    height: 30px;
+    background-color: #fb6f0cd1;
+    display: flex;
+    justify-content: center;
+
+}
+
+.top {
+    padding: 5px;
+    color: #0dcaf0;
+    cursor: pointer;
+}
+
+/*Footer*/
+
+.footer-med {
+    width: 100%;
+    background-color: black;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+}
+
+.footer-text {
+    margin: 5px;
+    font-size: 12px;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+
+}
+
+

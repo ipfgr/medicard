@@ -1,0 +1,219 @@
+{% extends 'portal/index_layout.html' %}
+{% load static %}
+
+{% block lang %}
+<nav class="navbar navbar-expand-lg top-bar">
+    <div class="container-fluid">
+        <a class="navbar-brand  brand" href="#"><img alt="logo" height="70px" src="{% static 'portal/img/logo.png'%}">MediCard</a>
+        <button aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler"
+                data-bs-target="#navbarText" data-bs-toggle="collapse" type="button">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarText">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a aria-current="page" class="nav-link active" href="{% url 'index' %}">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Features</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Pricing</a>
+                </li>
+            </ul>
+            <div class="search-bar">
+                <form class="d-flex">
+                    <input aria-label="Search" class="form-control me-2" placeholder="Search" type="search">
+                    <button class="btn btn-outline-success s-button" type="submit">
+                        <svg class="bi bi-search" fill="currentColor" height="16" viewBox="0 0 16 16"
+                             width="16" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                        </svg>
+                    </button>
+                </form>
+
+            </div>
+
+            <span class="navbar-text login">
+        Not login yet
+      </span>
+            <a class="login" href="{% url 'login' %}" >Login</a>
+        </div>
+    </div>
+</nav>
+
+{% endblock %}
+
+{% block nav %}
+
+<nav class="navbar navbar-expand-lg nav-top">
+    <div class="container-fluid">
+        <button aria-controls="navbarScroll" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler"
+                data-bs-target="#navbarScroll" data-bs-toggle="collapse" type="button">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarScroll">
+            <ul class="navbar-nav me-auto my-2 my-lg-0 navbar-nav-scroll" style="--bs-scroll-height: 100px;">
+                <li class="nav-item">
+                    <a aria-current="page" class="nav-link active" href="#">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Link</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Link</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Link</a>
+                </li>
+            </ul>
+
+        </div>
+    </div>
+</nav>
+{% endblock %}
+
+{% block body %}
+<div class="container xl c-custom">
+    {% if index %}
+    <div class="carousel slide" data-bs-ride="carousel" id="carouselExampleIndicators">
+        <div class="carousel-indicators">
+            <button aria-current="true" aria-label="Slide 1" class="active" data-bs-slide-to="0"
+                    data-bs-target="#carouselExampleIndicators" type="button"></button>
+            <button aria-label="Slide 2" data-bs-slide-to="1" data-bs-target="#carouselExampleIndicators"
+                    type="button"></button>
+            <button aria-label="Slide 3" data-bs-slide-to="2" data-bs-target="#carouselExampleIndicators"
+                    type="button"></button>
+        </div>
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <img alt="Banner" class="d-block w-100" src="{% static 'portal/img/banner.jpg' %}">
+            </div>
+            <div class="carousel-item">
+                <img alt="..." class="d-block w-100" src="...">
+            </div>
+            <div class="carousel-item">
+                <img alt="..." class="d-block w-100" src="...">
+            </div>
+        </div>
+        <button class="carousel-control-prev" data-bs-slide="prev" data-bs-target="#carouselExampleIndicators"
+                type="button">
+            <span aria-hidden="true" class="carousel-control-prev-icon"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" data-bs-slide="next" data-bs-target="#carouselExampleIndicators"
+                type="button">
+            <span aria-hidden="true" class="carousel-control-next-icon"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+
+
+    <div class="container-grid">
+        <div class="col-l">
+            <img alt="doctor picture" class="background-img" src="{% static 'portal/img/doctor-animation.jpg' %}">
+        </div>
+        <div class="col-c">
+            <img alt="user picture" class="background-img" src="{% static 'portal/img/user.png' %}">
+        </div>
+        <div class="col-r">
+            <img alt="user picture" class="background-img" src="{% static 'portal/img/user.png' %}">
+        </div>
+
+    </div>
+    <div class="main-info">
+        <section id="what-we-do">
+            <div class="container-fluid">
+                <h2 class="section-title mb-2 h1">What we do</h2>
+                <p class="text-center text-muted h5">Having and managing a correct marketing strategy is crucial in a
+                    fast moving market.</p>
+                <div class="row mt-5">
+                    <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 col-xl-4">
+                        <div class="card">
+                            <div class="card-block block-1">
+                                <h3 class="card-title">Special title</h3>
+                                <p class="card-text">With supporting text below as a natural lead-in to additional
+                                    content.</p>
+                                <a class="read-more" href="https://www.fiverr.com/share/qb8D02" title="Read more">Read
+                                    more<i class="fa fa-angle-double-right ml-2"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 col-xl-4">
+                        <div class="card">
+                            <div class="card-block block-2">
+                                <h3 class="card-title">Special title</h3>
+                                <p class="card-text">With supporting text below as a natural lead-in to additional
+                                    content.</p>
+                                <a class="read-more" href="https://www.fiverr.com/share/qb8D02" title="Read more">Read
+                                    more<i class="fa fa-angle-double-right ml-2"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 col-xl-4">
+                        <div class="card">
+                            <div class="card-block block-3">
+                                <h3 class="card-title">Special title</h3>
+                                <p class="card-text">With supporting text below as a natural lead-in to additional
+                                    content.</p>
+                                <a class="read-more" href="https://www.fiverr.com/share/qb8D02" title="Read more">Read
+                                    more<i class="fa fa-angle-double-right ml-2"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 col-xl-4">
+                        <div class="card">
+                            <div class="card-block block-4">
+                                <h3 class="card-title">Special title</h3>
+                                <p class="card-text">With supporting text below as a natural lead-in to additional
+                                    content.</p>
+                                <a class="read-more" href="https://www.fiverr.com/share/qb8D02" title="Read more">Read
+                                    more<i class="fa fa-angle-double-right ml-2"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 col-xl-4">
+                        <div class="card">
+                            <div class="card-block block-5">
+                                <h3 class="card-title">Special title</h3>
+                                <p class="card-text">With supporting text below as a natural lead-in to additional
+                                    content.</p>
+                                <a class="read-more" href="https://www.fiverr.com/share/qb8D02" title="Read more">Read
+                                    more<i class="fa fa-angle-double-right ml-2"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 col-xl-4">
+                        <div class="card">
+                            <div class="card-block block-6">
+                                <h3 class="card-title">Special title</h3>
+                                <p class="card-text">With supporting text below as a natural lead-in to additional
+                                    content.</p>
+                                <a class="read-more" href="https://www.fiverr.com/share/qb8D02" title="Read more">Read
+                                    more<i class="fa fa-angle-double-right ml-2"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    {% elif login %}
+    login page
+    {% else %}
+    Register page
+    {% endif %}
+</div>
+
+
+{% endblock %}
+{% block footer %}
+<div class="go-top">
+    <a class="top">Top</a>
+</div>
+<div class="footer-med">
+    <h6 class="footer-text">© 2021, Medicard.com , Inc. or its affiliates</h6>
+</div>
+{% endblock %}
