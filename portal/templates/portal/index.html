@@ -1,48 +1,6 @@
 {% extends 'portal/index_layout.html' %}
 {% load static %}
 
-{% block lang %}
-<nav class="navbar navbar-expand-lg top-bar">
-    <div class="container-fluid">
-        <a class="navbar-brand  brand" href="#"><img alt="logo" height="70px" src="{% static 'portal/img/logo.png'%}">MediCard</a>
-        <button aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler"
-                data-bs-target="#navbarText" data-bs-toggle="collapse" type="button">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarText">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item">
-                    <a aria-current="page" class="nav-link active" href="{% url 'index' %}">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Features</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Pricing</a>
-                </li>
-            </ul>
-            <div class="search-bar">
-                <form class="d-flex">
-                    <input aria-label="Search" class="form-control me-2" placeholder="Search" type="search">
-                    <button class="btn btn-outline-success s-button" type="submit">
-                        <svg class="bi bi-search" fill="currentColor" height="16" viewBox="0 0 16 16"
-                             width="16" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
-                        </svg>
-                    </button>
-                </form>
-
-            </div>
-
-            <span class="navbar-text login">
-        Not login yet
-      </span>
-            <a class="login" href="{% url 'login' %}" >Login</a>
-        </div>
-    </div>
-</nav>
-
-{% endblock %}
 
 {% block nav %}
 
@@ -201,19 +159,61 @@
         </section>
     </div>
     {% elif login %}
+     {% if message %}
+        <div>{{ message }}</div>
+    {% endif %}
+
+    <form action="{% url 'login' %}" method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <input autofocus class="form-control" type="text" name="username" placeholder="Username">
+        </div>
+        <div class="form-group">
+            <input class="form-control" type="password" name="password" placeholder="Password">
+        </div>
+        <input class="btn btn-primary" type="submit" value="Login">
+    </form>
+
+    Don't have an account? <a href="{% url 'register' %}">Register here.</a>
+
     login page
     {% else %}
-    Register page
+ <h2>Register</h2>
+
+    {% if message %}
+        <div>{{ message }}</div>
     {% endif %}
+
+    <form action="{% url 'register' %}" method="post">
+        {% csrf_token %}
+        <div class="form-group form-mdc">
+            <input class="form-control" autofocus type="text" name="username" placeholder="Username">
+        </div>
+        <div class="form-group form-mdc">
+            <input class="form-control" type="email" name="email" placeholder="Email Address">
+        </div>
+        <div class="form-group form-mdc">
+            <label for="select_role">Select your role</label>
+            <select name="role_name" class="form-control" id="select_role">
+              <option value="user">Standart user</option>
+              <option value="doctor">Doctor</option>
+              <option value="another">Another</option>
+            </select>
+        </div>
+        <div class="form-group form-mdc">
+            <input class="form-control" type="password" name="password" placeholder="Password">
+        </div>
+        <div class="form-group form-mdc">
+            <input class="form-control " type="password" name="confirmation" placeholder="Confirm Password">
+        </div>
+        <input class="btn btn-outline-info" type="submit" value="Register">
+    </form>
+
+    Already have an account? <a href="{% url 'login' %}">Log In here.</a>    {% endif %}
+    <br/>
+    {{ messagedoc}}
 </div>
 
 
 {% endblock %}
-{% block footer %}
-<div class="go-top">
-    <a class="top">Top</a>
-</div>
-<div class="footer-med">
-    <h6 class="footer-text">© 2021, Medicard.com , Inc. or its affiliates</h6>
-</div>
-{% endblock %}
+

@@ -32,9 +32,6 @@
     margin: 0;
 }
 
-.s-button {
-
-}
 
 .welcome-text {
     justify-content: center;
@@ -45,9 +42,8 @@
 }
 
 .login {
-    margin-left:10px;
+    margin-left: 10px;
 }
-
 
 
 /*Navbar*/
@@ -66,7 +62,7 @@
 .nav-top a:hover {
     border: 1px solid #0dcaf0;
     border-radius: 3px;
-    padding:5px;
+    padding: 5px;
 }
 
 /*Body styles*/
@@ -78,12 +74,11 @@ body {
 
 .container-ovf {
     display: flex;
-    justify-content:center;
-    align-items:center;
-        border: 1px solid #0dcaf0;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #0dcaf0;
 
 }
-
 
 
 /**/
@@ -264,3 +259,8 @@ section .section-title {
 }
 
 
+/*Register Styles*/
+
+.form-mdc{
+    padding: 5px;
+}
