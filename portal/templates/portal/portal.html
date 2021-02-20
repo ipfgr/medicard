@@ -1,10 +1,265 @@
 {% extends 'portal/portal_layout.html' %}
-
-
-{% block nav %}
-{% endblock %}
+{% load static %}
 
 
 {% block body %}
+<div class="container-portal" id="app">
+
+    <div class="menu-portal">
+        <div class="title-menu"><h3 class="title-menu-text">Menu</h3></div>
+        <hr/>
+        <div class="user-info">
+            <div class="avatar">
+                <img alt="avatar" src="{% static 'portal/img/noimage.jpg' %}">
+            </div>
+            <div class="about">
+                <div class="name">Name: {{ request.user.first_name }}</div>
+                <div class="role">Role: {{ user.user_role }}</div>
+                <div class="status">
+                    <svg class="bi bi-brightness-alt-low-fill" fill="#5cb85c" height="16" viewBox="0 0 16 16"
+                         width="16" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M8.5 5.5a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0zm5 6a.5.5 0 1 1 0-1 .5.5 0 0 1 0 1zM2 11a.5.5 0 1 0 1 0 .5.5 0 0 0-1 0zm10.243-3.536a.5.5 0 1 1-.707-.707.5.5 0 0 1 .707.707zm-8.486-.707a.5.5 0 1 0 .707.707.5.5 0 0 0-.707-.707zM8 7a4 4 0 0 0-4 4 .5.5 0 0 0 .5.5h7a.5.5 0 0 0 .5-.5 4 4 0 0 0-4-4z"/>
+                    </svg>
+                    Online
+                </div>
+
+            </div>
+        </div>
+        <hr/>
+        <div class="title-general"><h3 class="title-general-text">General</h3></div>
+        <ul class="ul-menu">
+            <a href="{% url 'portal' %}">
+                <li class="menu-link">
+                    <div class="background-ico">
+                        <svg class="bi bi-clipboard-data" fill="currentColor" height="16" viewBox="0 0 16 16"
+                             width="16" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M4 11a1 1 0 1 1 2 0v1a1 1 0 1 1-2 0v-1zm6-4a1 1 0 1 1 2 0v5a1 1 0 1 1-2 0V7zM7 9a1 1 0 0 1 2 0v3a1 1 0 1 1-2 0V9z"/>
+                            <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
+                            <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/>
+                        </svg>
+                    </div>
+                    <span class="link-desc">Dashboard</span>
+                </li>
+            </a>
+
+            <a href="{% url 'portal' %}/family">
+                <li class="menu-link">
+                    <div class="background-ico">
+                        <svg class="bi bi-people" fill="currentColor" height="16" viewBox="0 0 16 16"
+                             width="16" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M15 14s1 0 1-1-1-4-5-4-5 3-5 4 1 1 1 1h8zm-7.978-1A.261.261 0 0 1 7 12.996c.001-.264.167-1.03.76-1.72C8.312 10.629 9.282 10 11 10c1.717 0 2.687.63 3.24 1.276.593.69.758 1.457.76 1.72l-.008.002a.274.274 0 0 1-.014.002H7.022zM11 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm3-2a3 3 0 1 1-6 0 3 3 0 0 1 6 0zM6.936 9.28a5.88 5.88 0 0 0-1.23-.247A7.35 7.35 0 0 0 5 9c-4 0-5 3-5 4 0 .667.333 1 1 1h4.216A2.238 2.238 0 0 1 5 13c0-1.01.377-2.042 1.09-2.904.243-.294.526-.569.846-.816zM4.92 10A5.493 5.493 0 0 0 4 13H1c0-.26.164-1.03.76-1.724.545-.636 1.492-1.256 3.16-1.275zM1.5 5.5a3 3 0 1 1 6 0 3 3 0 0 1-6 0zm3-2a2 2 0 1 0 0 4 2 2 0 0 0 0-4z"/>
+                        </svg>
+                    </div>
+                    <span class="link-desc">My Family</span>
+                </li>
+            </a>
+
+            <a href="{% url 'portal' %}">
+                <li class="menu-link">
+                    <div class="background-ico">
+                        <svg class="bi bi-menu-down" fill="currentColor" height="16" viewBox="0 0 16 16"
+                             width="16" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M7.646.146a.5.5 0 0 1 .708 0L10.207 2H14a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h3.793L7.646.146zM1 7v3h14V7H1zm14-1V4a1 1 0 0 0-1-1h-3.793a1 1 0 0 1-.707-.293L8 1.207l-1.5 1.5A1 1 0 0 1 5.793 3H2a1 1 0 0 0-1 1v2h14zm0 5H1v2a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2zM2 4.5a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 0 1h-8a.5.5 0 0 1-.5-.5zm0 4a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5zm0 4a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5z"/>
+                        </svg>
+                    </div>
+                    <span class="link-desc">My Services</span>
+                </li>
+            </a>
+
+            <a href="{% url 'portal' %}">
+                <li class="menu-link">
+                    <div class="background-ico">
+                        <svg class="bi bi-book" fill="currentColor" height="16" viewBox="0 0 16 16"
+                             width="16" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M1 2.828c.885-.37 2.154-.769 3.388-.893 1.33-.134 2.458.063 3.112.752v9.746c-.935-.53-2.12-.603-3.213-.493-1.18.12-2.37.461-3.287.811V2.828zm7.5-.141c.654-.689 1.782-.886 3.112-.752 1.234.124 2.503.523 3.388.893v9.923c-.918-.35-2.107-.692-3.287-.81-1.094-.111-2.278-.039-3.213.492V2.687zM8 1.783C7.015.936 5.587.81 4.287.94c-1.514.153-3.042.672-3.994 1.105A.5.5 0 0 0 0 2.5v11a.5.5 0 0 0 .707.455c.882-.4 2.303-.881 3.68-1.02 1.409-.142 2.59.087 3.223.877a.5.5 0 0 0 .78 0c.633-.79 1.814-1.019 3.222-.877 1.378.139 2.8.62 3.681 1.02A.5.5 0 0 0 16 13.5v-11a.5.5 0 0 0-.293-.455c-.952-.433-2.48-.952-3.994-1.105C10.413.809 8.985.936 8 1.783z"/>
+                        </svg>
+
+                    </div>
+                    <span class="link-desc">My Card</span>
+                </li>
+            </a>
+
+            <a href="{% url 'portal' %}">
+                <li class="menu-link">
+                    <div class="background-ico">
+                        <svg class="bi bi-person" fill="currentColor" height="16" viewBox="0 0 16 16"
+                             width="16" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/>
+                        </svg>
+                    </div>
+                    <span class="link-desc">My Profile</span>
+                </li>
+            </a>
+
+            <a href="{% url 'portal' %}">
+                <li class="menu-link">
+                    <div class="background-ico">
+                        <svg class="bi bi-cloud-plus" fill="currentColor" height="16" viewBox="0 0 16 16"
+                             width="16" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M8 5.5a.5.5 0 0 1 .5.5v1.5H10a.5.5 0 0 1 0 1H8.5V10a.5.5 0 0 1-1 0V8.5H6a.5.5 0 0 1 0-1h1.5V6a.5.5 0 0 1 .5-.5z"
+                                  fill-rule="evenodd"/>
+                        </svg>
+                    </div>
+                    <span class="link-desc">Records Recogniser</span>
+                </li>
+            </a>
+        </ul>
+        <div class="id-box">
+            <h6><strong>Your medical record ID</strong></h6>
+            <div class="id-number">
+                {{ user.med_id }}
+            </div>
+
+        </div>
+
+
+        <!--        <div class="sidebar-footer">-->
+        <!--            <a href="#">1</a>-->
+        <!--            <a href="#">2</a>-->
+        <!--            <a href="#">3</a>-->
+        <!--            <a href="#">4</a>-->
+        <!--        </div>-->
+    </div>
+
+
+    {% if dashboard %}
+    <div class="body-portal">
+
+        <div class="scope-info">
+            <div class="header-edit">
+                <h5>User information</h5>
+                <button class="btn btn-outline-info" type="button">
+                    <svg class="bi bi-clipboard-plus" fill="currentColor" height="16" viewBox="0 0 16 16"
+                         width="16" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M8 7a.5.5 0 0 1 .5.5V9H10a.5.5 0 0 1 0 1H8.5v1.5a.5.5 0 0 1-1 0V10H6a.5.5 0 0 1 0-1h1.5V7.5A.5.5 0 0 1 8 7z"
+                              fill-rule="evenodd"/>
+                        <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
+                        <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/>
+                    </svg>
+                </button>
+            </div>
+
+            <ul class="list-inline ratings text-center" title="Ratings">
+
+                <li>First Name:</li>
+                <hr/>
+                <li>Last Name:</li>
+                <hr/>
+                <li>Birth Date:</li>
+                <hr/>
+                <li>Gender:</li>
+                <hr/>
+                <li>Email:</li>
+                <hr/>
+                <li>Mobile phone:</li>
+                <hr/>
+                <li>Emergency Contact</li>
+                <hr/>
+                <li>Contact type:</li>
+            </ul>
+
+
+        </div>
+
+        <div class="dash-top1">
+            <canvas class="weight-chart" id="weight-chart1"></canvas>
+
+        </div>
+
+        <div class="dash-top2">
+            <canvas class="weight-chart" id="weight-chart2"></canvas>
+
+        </div>
+
+        <div class="dash-footer">
+
+        </div>
+    </div>
+
+
+    {% elif profile %}
+
+    {% elif family %}
+    <div class="family-container">
+        <div class="family-header">
+            <h3>My Family members</h3>
+        </div>
+
+        <div class="family-members">
+
+            {% for member in my_family %}
+            <div class="family-member-container">
+                <div class="main-info">
+                    <div class="family-member-avatar">
+                        <img alt="avatar" src="{% static 'portal/img/noimage.jpg' %}">
+                    </div>
+                    <div class="about">
+                        <div class="name">Name: {{ member.first_name }}</div>
+                        <div class="role">Role: {{ member.user_role }}</div>
+                        <div class="status">
+                            <svg class="bi bi-brightness-alt-low-fill" fill="#5cb85c" height="16" viewBox="0 0 16 16"
+                                 width="16" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M8.5 5.5a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0zm5 6a.5.5 0 1 1 0-1 .5.5 0 0 1 0 1zM2 11a.5.5 0 1 0 1 0 .5.5 0 0 0-1 0zm10.243-3.536a.5.5 0 1 1-.707-.707.5.5 0 0 1 .707.707zm-8.486-.707a.5.5 0 1 0 .707.707.5.5 0 0 0-.707-.707zM8 7a4 4 0 0 0-4 4 .5.5 0 0 0 .5.5h7a.5.5 0 0 0 .5-.5 4 4 0 0 0-4-4z"/>
+                            </svg>
+                            Online
+                        </div>
+                    </div>
+                </div>
+
+                <div class="family-member-info">
+                    <span>Gender: {{ member.gender }}</span>
+                </div>
+                 <div class="family-member-info">
+                    <span>Birth: {{ member.birth_date }}</span>
+                </div>
+
+
+                <div class="id-box">
+                    <h6><strong>Medical record ID</strong></h6>
+                    <div class="id-number">
+                        {{ member.med_id }}
+                    </div>
+
+                </div>
+
+
+                <div class="add-remove-btns">
+                    <button class="btn btn-outline-info remove-member">Profile</button>
+                    <button value="{{ member.id }}" class="btn btn-outline-warning remove-member">Remove</button>
+                </div>
+
+            </div>
+            {% endfor %}
+
+
+            <!--            Add new family member               -->
+            <div class="family-member-container">
+                <div class="add-member">
+                    <h6>Add your family member</h6>
+                    <div class="input-div">
+                        <input id="member-id" class="form-search-member" name="patient_id" placeholder="Enter Member ID" type="text">
+                    </div>
+                    <div id="search-result" class="search-result">
+                        <!--                            result output                      -->
+                    </div>
+                    <div class="search-btn">
+                        <button id="searach-member-btn" class="btn btn-outline-info" type="button">Search Family member</button>
+                        <button id="add-member-btn" class="btn btn-outline-primary" type="button">Add Family member</button>
+                    </div>
+                </div>
+            </div>
+            <!--            Add new family member               -->
+
+        </div>
+    </div>
+
+    {% elif recognize %}
+
+    Recognize documents
+
+    {% endif %}
+
+
+</div>
 {% endblock %}
 

@@ -9,7 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'portal/css/styles.css' %}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
-
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 
     <title>{{ title }}</title>
@@ -39,7 +39,7 @@
             <div class="search-bar">
                 <form class="d-flex">
                     <input aria-label="Search" class="form-control me-2" placeholder="Search" type="search">
-                    <button class="btn btn-outline-success s-button" type="submit">
+                    <button class="btn s-button" type="submit">
                         <svg class="bi bi-search" fill="currentColor" height="16" viewBox="0 0 16 16"
                              width="16" xmlns="http://www.w3.org/2000/svg">
                             <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
@@ -65,21 +65,29 @@
     </div>
 </nav>
 
-{% block nav %}
-{% endblock %}
+
 
 
 {% block body %}
 {% endblock %}
+<div class="footer">
+    <div class="go-top">
+        <a class="top">Top</a>
+    </div>
+    <div class="footer-med">
+        <h6 class="footer-text">© 2021, Medicard.com , Inc. or its affiliates</h6>
+    </div>
+</div>
 
-<div class="go-top">
-    <a class="top">Top</a>
-</div>
-<div class="footer-med">
-    <h6 class="footer-text">© 2021, Medicard.com , Inc. or its affiliates</h6>
-</div>
 
 <script src="https://unpkg.com/vue@next"></script>
-<script src="{% static 'portal/js/app.js' %}"></script>
+<script defer src="{% static 'portal/js/app.js' %}"></script>
+
+
+
+<script>
+
+</script>
+
 </body>
 </html>

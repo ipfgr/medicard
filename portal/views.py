@@ -1,12 +1,16 @@
+import json
 from django.shortcuts import render
 from django.urls import reverse
 from django.http import HttpResponseRedirect, JsonResponse
 from django.db import IntegrityError
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
+
 
 
 from .models import User
+from .models import FamilyMembers
 
 from django.http import HttpResponse
 
@@ -20,8 +24,62 @@ def index_view(request):
     return render(request, 'portal/index.html', context)
 
 @login_required()
-def portal_view(request):
-    return render(request, 'portal/portal.html')
+def portal_view(request, page=""):
+    current_user = request.user.username
+    info = User.objects.get(username=current_user)
+
+    family_members = []
+    members = FamilyMembers.objects.filter(user_id=request.user.id)
+    for member in members:
+        family_members.append(member.family_members_id_list)
+    query = Q()
+    for id in family_members:
+        query.add(Q(id=id), Q.OR)
+    if page == "family":
+        my_family = User.objects.filter(query)
+        print(query)
+        return render(request, 'portal/portal.html', {
+            "user": info,
+            "family": True,
+            "my_family": my_family
+        })
+    else:
+        return render(request, 'portal/portal.html', {
+            "user": info,
+            "dashboard": True
+        })
+
+@login_required()
+def search_view(request, id =""):
+    if request.method == "GET":
+        checker = User.objects.filter(med_id=id)
+        if not checker:
+            return JsonResponse({"message": "Not correct ID"}, status=404)
+        else:
+            return JsonResponse(checker[0].username, safe=False, status=200)
+
+@login_required()
+def remove_family_member_view(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        remove_id = data.get("id", "")
+        FamilyMembers.objects.filter(user_id=request.user.id, family_members_id_list=remove_id).delete()
+
+@login_required()
+def add_family_member_view(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        med_id = data.get("medid", "")
+        find_link = FamilyMembers.objects.raw("SELECT * from portal_familymembers WHERE family_members_id_list= %s",
+                                              [med_id])
+        get_append_user_id = User.objects.get(med_id=med_id)
+
+        if not find_link:
+            FamilyMembers(user_id=request.user.id, family_members_id_list=get_append_user_id.id).save()
+            return JsonResponse({"message": "Add succefuly"}, status=201)
+        else:
+            return JsonResponse({"message": "Already added"}, status=200)
+
 
 def login_view(request):
     context = {
