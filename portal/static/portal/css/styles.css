@@ -514,6 +514,7 @@ section .section-title {
 
 .family-members {
     display: flex;
+    flex-wrap: wrap;
     max-width: 100%;
 }
 
@@ -591,5 +592,115 @@ section .section-title {
 .search-btn > * {
     margin-bottom: 5px;
 
+}
+
+/*Medical cards*/
+.cards-container{
+    background-color: #3a3f48;
+        color: #fff;
+    -webkit-box-shadow: inset 0px 0px 20px 1px rgba(251,111,12,1);
+-moz-box-shadow: inset 0px 0px 20px 1px rgba(251,111,12,1);
+box-shadow: inset 0px 0px 20px 1px rgba(251,111,12,1);
+
+}
+
+.cards-container h3{
+    margin-top: 10px;
+    margin-left: 15px;
+
+}
+.documents-container {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    grid-template-areas: "recognized uploaded";
+    height: 80vh;
+}
+
+.already-recognized{
+    margin: 10px;
+    text-align: center;
+    border-right: 1px solid grey;
+    grid-area: recognized;
+
+}
+
+.uploaded{
+
+    padding: 5px;
+    grid-area:uploaded;
+}
+
+.header-upload{
+    display:flex;
+    justify-content: space-around;
+}
+
+.already-uploaded{
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.img-preview-container{
+    margin: 5px;
+    position: relative;
+    overflow: hidden;
+
+}
+
+.img-preview-container > *{
+    width: 180px;
+    height: auto;
+    margin: 5px;
+}
+
+.remove-img{
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    font-weight: bold;
+    background-color: rgba(255,255,255,0.5);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content:center;
+    opacity: 0;
+    transition: 0.3s;
+    border: 1px solid black;
+    color: black;
+}
+
+.img-info{
+    position:absolute;
+    bottom: -30px;
+    right: 0;
+    font-size: 0.6em;
+    text-align: center;
+    background: white;
+    color: black;
+    transition: bottom 0.3s
+
+}
+
+
+
+.img-preview-container:hover .remove-img{
+    opacity: 1;
+}
+
+.img-preview-container:hover .img-info{
+    bottom: 0px;
+}
+.upload{
+
+}
+.upload .btn{
+    justify-content: center;
+    align-items: center;
+}
+
+#file-input{
+    display:none;
 }
 

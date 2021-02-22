@@ -27,21 +27,30 @@ def index_view(request):
 def portal_view(request, page=""):
     current_user = request.user.username
     info = User.objects.get(username=current_user)
-
-    family_members = []
-    members = FamilyMembers.objects.filter(user_id=request.user.id)
-    for member in members:
-        family_members.append(member.family_members_id_list)
-    query = Q()
-    for id in family_members:
-        query.add(Q(id=id), Q.OR)
     if page == "family":
-        my_family = User.objects.filter(query)
-        print(query)
+        family_members = []
+        members = FamilyMembers.objects.filter(user_id=request.user.id)
+        if not members:
+            return render(request, 'portal/portal.html', {
+                "user": info,
+                "family": True,
+            })
+        else:
+            for member in members:
+                family_members.append(member.family_members_id_list)
+            query = Q()
+            for ident in family_members:
+                query.add(Q(id=ident), Q.OR)
+            my_family = User.objects.filter(query)
+            return render(request, 'portal/portal.html', {
+                "user": info,
+                "family": True,
+                "my_family": my_family
+            })
+    elif page == "cards":
         return render(request, 'portal/portal.html', {
             "user": info,
-            "family": True,
-            "my_family": my_family
+            "cards": True
         })
     else:
         return render(request, 'portal/portal.html', {
@@ -50,9 +59,9 @@ def portal_view(request, page=""):
         })
 
 @login_required()
-def search_view(request, id =""):
+def search_view(request, ident =""):
     if request.method == "GET":
-        checker = User.objects.filter(med_id=id)
+        checker = User.objects.filter(med_id=ident)
         if not checker:
             return JsonResponse({"message": "Not correct ID"}, status=404)
         else:
@@ -70,10 +79,11 @@ def add_family_member_view(request):
     if request.method == "POST":
         data = json.loads(request.body)
         med_id = data.get("medid", "")
-        find_link = FamilyMembers.objects.raw("SELECT * from portal_familymembers WHERE family_members_id_list= %s",
-                                              [med_id])
+        # find_link = FamilyMembers.objects.raw('SELECT * from portal_familymembers WHERE family_members_id_list= %s',
+        #                                       [med_id])
         get_append_user_id = User.objects.get(med_id=med_id)
-
+        # check if current user already add this member to his family
+        find_link = FamilyMembers.objects.filter(user_id=request.user.id, family_members_id_list=get_append_user_id.id)
         if not find_link:
             FamilyMembers(user_id=request.user.id, family_members_id_list=get_append_user_id.id).save()
             return JsonResponse({"message": "Add succefuly"}, status=201)

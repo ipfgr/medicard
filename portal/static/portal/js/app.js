@@ -1,5 +1,101 @@
+function formatBytes(bytes, decimals) {
+    if(bytes== 0)
+    {
+        return "0 Byte"
+    }
+    const k = 1024; //Or 1 kilo = 1000
+    const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB"]
+    const i = Math.floor(Math.log(bytes) / Math.log(k))
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(decimals)) + " " + sizes[i]
+}
+
 document.addEventListener('DOMContentLoaded', function () {
-    document.querySelector("#add-member-btn").style.visibility="hidden"
+
+
+    //Firebase Config for upload pictures
+    const firebaseConfig = {
+        apiKey: "AIzaSyCKGs3Hy8wmIT7M4OJ2SYWlwSVV2-d3TNg",
+        authDomain: "medicard-db.firebaseapp.com",
+        projectId: "medicard-db",
+        storageBucket: "medicard-db.appspot.com",
+        messagingSenderId: "872483625762",
+        appId: "1:872483625762:web:060663b337fb53641fe37b",
+        measurementId: "G-YQ7GVST827"
+    };
+
+
+    //Cards page section
+    if (window.location.href.indexOf("portal/cards") > 1) {
+        let files = []
+        const options = {
+            multiply: true,
+            accepttype: [".jpg", ".png", ".jpeg", ".gif"]
+        }
+
+        const openInput = document.querySelector("#file-input")
+        const uploadButton = document.createElement("button")
+        const preview = document.querySelector(".already-uploaded")
+        const headerUpload = document.querySelector(".header-upload")
+        if (options.multiply) {
+            openInput.setAttribute("multiple", true)
+        }
+
+        if (options.accepttype && Array.isArray(options.accepttype)) {
+            openInput.setAttribute("accept", options.accepttype.join(","))
+        }
+        uploadButton.classList.add("btn")
+        uploadButton.classList.add("btn-outline-primary")
+        uploadButton.textContent = `Upload`
+        headerUpload.insertAdjacentElement("beforeend", uploadButton)
+        uploadButton.addEventListener("click", () => openInput.click())
+
+
+        const changeHandler = (event) => {
+            preview.innerHTML = ""
+            files = Array.from(event.target.files)
+            files.forEach(file => {
+                if (!file.type.match("image")) {
+                    return
+                }
+
+                const reader = new FileReader
+                reader.onload = ev => {
+                    preview.insertAdjacentHTML("beforeend",
+                        `<div class="img-preview-container" ">
+                               <div class="remove-img" data-name="${file.name}">
+                                &times;
+                              </div>
+                              <div class="img-info">${file.name} , ${formatBytes(file.size)}</div>
+                              <img src="${ev.target.result}" alt="${file.name}">
+                              </div>
+                              `
+                    )
+                }
+                reader.readAsDataURL(file)
+            })
+        }
+
+        const removeHandler = event => {
+            if (!event.target.dataset.name){
+                return
+            }
+            const {name} = event.target.dataset
+            files.filter(file => file.name != name)
+
+            const remove = document.querySelector(`[data-name="${name}"`).closest(".img-preview-container")
+            remove.remove()
+        }
+
+
+        openInput.addEventListener("change", changeHandler)
+        preview.addEventListener("click", removeHandler)
+
+
+
+    }
+
+
+    document.querySelector("#add-member-btn").style.visibility = "hidden"
     const searchMemberButton = document.getElementById("searach-member-btn")
     let idInput = document.getElementById("member-id")
     searchMemberButton.addEventListener('click', () => searchMember(idInput.value))
@@ -9,7 +105,6 @@ document.addEventListener('DOMContentLoaded', function () {
         const memberToRemoveId = button.value
         button.addEventListener("click", () => removeMember(memberToRemoveId))
     })
-
 
 
     let dateArr = ["10:11:20", "10.12.20"]
@@ -74,36 +169,40 @@ function searchMember(id) {
     fetch(`/portal/search/${id}`)
         .then(response => response.json())
         .then(result => {
-            if (result.message == "Not correct ID"){
+            if (result.message == "Not correct ID") {
                 resultDiv.innerHTML = "Not Correct ID"
-                    addMemberButton.style.visibility="hidden";
+                addMemberButton.style.visibility = "hidden";
 
-            }
-            else{
+            } else {
 
                 resultDiv.innerHTML = `Find user: ${JSON.stringify(result)} `
-                addMemberButton.style.visibility="visible";
+                addMemberButton.style.visibility = "visible";
 
             }
 
         }).catch(error => console.log(error))
-        .finally(()=> {
+        .finally(() => {
 
-            document.querySelector("#add-member-btn").addEventListener("click", () => fetchPost(id))
-
+            document.querySelector("#add-member-btn").addEventListener("click", () => addMember(id))
         })
-    function fetchPost(id){
-        console.log("Send Post Request to Backend")
-        fetch(`/portal/family/add`, {
-                        method: "POST",
-                        headers: {
-                        "X-CSRFToken": getCookie("csrftoken")
-                        },
-                        body: JSON.stringify({
-                            medid: id
-                        })
-                    }).catch(error =>console.log(error))
-    }
+}
+
+function addMember(id) {
+    console.log("Send Post Request to Backend")
+    fetch(`/portal/family/add`, {
+        method: "POST",
+        headers: {
+            "X-CSRFToken": getCookie("csrftoken")
+        },
+        body: JSON.stringify({
+            medid: id
+        })
+    })
+        .then(response => response.json())
+        .then(result => console.log(result))
+        .finally(() => location.reload())
+        .catch(error => console.log(error))
+
 }
 
 function getCookie(name) {
