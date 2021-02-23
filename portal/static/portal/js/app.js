@@ -1,3 +1,4 @@
+//Bites to normal size converter function
 function formatBytes(bytes, decimals) {
     if(bytes== 0)
     {
@@ -9,19 +10,57 @@ function formatBytes(bytes, decimals) {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(decimals)) + " " + sizes[i]
 }
 
+
+
+
 document.addEventListener('DOMContentLoaded', function () {
 
 
-    //Firebase Config for upload pictures
-    const firebaseConfig = {
-        apiKey: "AIzaSyCKGs3Hy8wmIT7M4OJ2SYWlwSVV2-d3TNg",
-        authDomain: "medicard-db.firebaseapp.com",
-        projectId: "medicard-db",
-        storageBucket: "medicard-db.appspot.com",
-        messagingSenderId: "872483625762",
-        appId: "1:872483625762:web:060663b337fb53641fe37b",
-        measurementId: "G-YQ7GVST827"
-    };
+
+    //Profile page section
+    if (window.location.href.indexOf("portal/profile") > 1){
+        const userAllergenList = document.querySelector("#user-allergen-list")
+        getUserAllergenHandler()
+
+        const allergensArr = [
+            "Gluten",
+            "Crustaceans",
+            "Eggs",
+            "Fish",
+            "Peanuts",
+            "Soybeans",
+            "Milk",
+            "Nuts",
+            "Celery",
+            "Mustard",
+            "Sesame",
+            "Pulphites",
+            "Lupin",
+            "Molluscs",
+            "Other"
+        ]
+        const option = document.querySelector("#allergens")
+        allergensArr.forEach(el => {
+        option.insertAdjacentHTML("beforeend",
+            `<option value=${el}>${el}</option>`
+        )
+        })
+        const allergInput = document.querySelector(".custom-allergen")
+                allergInput.style.display="none"
+
+        const optionSelect = document.querySelector("#allergens")
+        const addAllergyButton = document.querySelector("#add-allergen")
+        addAllergyButton.onclick = () => setUserAllergenHandler(optionSelect.value)
+
+        if (document.querySelector("option").value == "Other"){
+                    allergInput.style.display="block"
+
+        }
+
+
+    }
+
+
 
 
     //Cards page section
@@ -148,6 +187,45 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 })
+
+function getUserAllergenHandler(){
+    console.log("Get Allergen list for user")
+    const insertList = document.querySelector("#user-allergen-list")
+    fetch (`/portal/api/allergens`)
+        .then(response => response.json())
+        .then(result => {
+            console.log(result)
+
+                insertList.insertAdjacentHTML("beforeend", `<ul>${result}</ul>`)
+
+
+        })
+}
+
+
+function setUserAllergenHandler(allergen){
+        console.log("Send Post Request to Backend")
+        const link = "allergens"
+        if (allergen == "Select"){
+            return
+        }
+        fetch(`/portal/api/${link}`, {
+            method: "POST",
+            headers: {
+                "X-CSRFTOKEN": getCookie("csrftoken")
+            },
+            body: JSON.stringify({
+                allergen: allergen
+            })
+
+        })
+            .then(response => response.json())
+            .then(result => {
+                console.log(result)
+
+            })
+            .catch(error => console.log(error))
+}
 
 function removeMember(id) {
     fetch('/portal/family/remove', {

@@ -8,6 +8,7 @@ urlpatterns = [
     path("logout", views.logout_view, name="logout"),
                     # API Links
     path('portal', views.portal_view, name="portal"),
+    path('portal/api/<str:link>', views.api_view, name="api"),
     path('portal/<str:page>', views.portal_view, name="page"),
     path('portal/search/<str:ident>', views.search_view, name="search_id"),
     path('portal/family/add', views.add_family_member_view, name="addmember"),

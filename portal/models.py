@@ -25,3 +25,19 @@ class FamilyMembers(models.Model):
 
     def __str__(self):
         return "User {} have family members {}".format(self.user_id, self.family_members_id_list)
+
+
+class AllergyList(models.Model):
+    user = models.ForeignKey(User, default=None, related_name="username_a", on_delete=models.CASCADE)
+    allergen_name = models.CharField(max_length=100, default=None, null=True)
+    custom_allergen_input = models.CharField(max_length=100, default=None, null=True)
+    
+    def __str__(self):
+        return "User {} have allergy on {} {}".format(self.user, self.allergen_name, self.custom_alergen_input)
+
+    def serialize(self):
+        return {
+            "userid": self.user,
+            "allergen": self.allergen_name
+
+        }

@@ -599,8 +599,8 @@ section .section-title {
     background-color: #3a3f48;
         color: #fff;
     -webkit-box-shadow: inset 0px 0px 20px 1px rgba(251,111,12,1);
--moz-box-shadow: inset 0px 0px 20px 1px rgba(251,111,12,1);
-box-shadow: inset 0px 0px 20px 1px rgba(251,111,12,1);
+    -moz-box-shadow: inset 0px 0px 20px 1px rgba(251,111,12,1);
+    box-shadow: inset 0px 0px 20px 1px rgba(251,111,12,1);
 
 }
 
@@ -704,3 +704,26 @@ box-shadow: inset 0px 0px 20px 1px rgba(251,111,12,1);
     display:none;
 }
 
+
+
+/*Profile page*/
+
+.profile-container{
+    -webkit-box-shadow: inset 0px 0px 20px 1px rgba(251,111,12,1);
+    -moz-box-shadow: inset 0px 0px 20px 1px rgba(251,111,12,1);
+    box-shadow: inset 0px 0px 20px 1px rgba(251,111,12,1);
+    padding: 10px;
+    background-color: #3a3f48 !important;
+}
+
+.alergens{
+    display:flex;
+    position:relative;
+    text-align:center;
+    justify-content: center;
+}
+
+select{
+    width:88px;
+
+}

@@ -79,7 +79,7 @@
                 </li>
             </a>
 
-            <a href="{% url 'portal' %}">
+            <a href="{% url 'portal' %}/profile">
                 <li class="menu-link">
                     <div class="background-ico">
                         <svg class="bi bi-person" fill="currentColor" height="16" viewBox="0 0 16 16"
@@ -169,8 +169,6 @@
     </div>
 
 
-    {% elif profile %}
-
     {% elif family %}
     <div class="family-container">
         <div class="family-header">
@@ -201,7 +199,7 @@
                 <div class="family-member-info">
                     <span>Gender: {{ member.gender }}</span>
                 </div>
-                 <div class="family-member-info">
+                <div class="family-member-info">
                     <span>Birth: {{ member.birth_date }}</span>
                 </div>
 
@@ -217,7 +215,7 @@
 
                 <div class="add-remove-btns">
                     <button class="btn btn-outline-info remove-member">Profile</button>
-                    <button value="{{ member.id }}" class="btn btn-outline-warning remove-member">Remove</button>
+                    <button class="btn btn-outline-warning remove-member" value="{{ member.id }}">Remove</button>
                 </div>
 
             </div>
@@ -229,14 +227,18 @@
                 <div class="add-member">
                     <h6>Add your family member</h6>
                     <div class="input-div">
-                        <input id="member-id" class="form-search-member" name="patient_id" placeholder="Enter Member ID" type="text">
+                        <input class="form-search-member" id="member-id" name="patient_id" placeholder="Enter Member ID"
+                               type="text">
                     </div>
-                    <div id="search-result" class="search-result">
+                    <div class="search-result" id="search-result">
                         <!--                            result output                      -->
                     </div>
                     <div class="search-btn">
-                        <button id="searach-member-btn" class="btn btn-outline-info" type="button">Search Family member</button>
-                        <button id="add-member-btn" class="btn btn-outline-primary" type="button">Add Family member</button>
+                        <button class="btn btn-outline-info" id="searach-member-btn" type="button">Search Family
+                            member
+                        </button>
+                        <button class="btn btn-outline-primary" id="add-member-btn" type="button">Add Family member
+                        </button>
                     </div>
                 </div>
             </div>
@@ -250,7 +252,7 @@
         <h3>Recognize paper medical cards and add to your medical cards</h3>
         <div class="documents-container">
             <div class="already-recognized">
-            <h4>Already recognized files</h4>
+                <h4>Already recognized files</h4>
             </div>
             <div class="uploaded">
                 <div class="header-upload">
@@ -260,16 +262,255 @@
                 <div class="already-uploaded">
 
 
-
                 </div>
                 <div class="upload">
-                    <input id="file-input" type="file" name="upload">
+                    <input id="file-input" name="upload" type="file">
                 </div>
             </div>
         </div>
 
 
     </div>
+
+    {% elif profile %}
+    <div class="profile-container">
+        <div class="container">
+            <div class="row flex-lg-nowrap">
+                <div class="col">
+                    <div class="row">
+                        <div class="col mb-3">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="e-profile">
+                                        <div class="row">
+                                            <div class="col-12 col-sm-auto mb-3">
+                                                <div class="mx-auto" style="width: 140px;">
+                                                    <div class="d-flex justify-content-center align-items-center rounded">
+                                                        <img , alt="avatar"
+                                                             height="140px" src="{% static 'portal/img/noimage.jpg' %}" width="140px">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col d-flex flex-column flex-sm-row justify-content-between mb-3">
+                                                <div class="text-center text-sm-left mb-2 mb-sm-0">
+                                                    <h4 class="pt-sm-2 pb-1 mb-0 text-nowrap">{{user.name}}</h4>
+                                                    <p class="mb-0">Gender: {{ user.gender }} </p>
+                                                    <p class="mb-0">Birth: {{user.birth_date}}</p>
+                                                    <div class="text-muted"><small>Last seen 2 hours ago</small></div>
+                                                    <div class="mt-2">
+                                                        <button class="btn btn-primary" type="button">
+                                                            <i class="fa fa-fw fa-camera"></i>
+                                                            <span>Change Photo</span>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                                <div class="text-center text-sm-right">
+                                                    <p>Role: {{user.user_role}}</p>
+                                                    <div class="text-muted"><small>Joined: {{ user.date_joined}}</small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <ul class="nav nav-tabs">
+                                            <li class="nav-item"><a class="active nav-link" href="">Settings</a></li>
+                                        </ul>
+                                        <div class="tab-content pt-3">
+                                            <div class="tab-pane active">
+                                                <form class="form" novalidate="">
+                                                    <div class="row">
+                                                        <div class="col">
+                                                            <div class="row">
+                                                                <div class="col">
+                                                                    <div class="form-group">
+                                                                        <label>Full Name</label>
+                                                                        <input class="form-control" name="name"
+                                                                               placeholder="John Smith" type="text"
+                                                                               value="{{ user.first_name }} {{ user.last_name }}">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col">
+                                                                    <div class="form-group">
+                                                                        <label>Username</label>
+                                                                        <input class="form-control" name="username"
+                                                                               placeholder="johnny.s" type="text"
+                                                                               value="johnny.s">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col">
+                                                                    <div class="form-group">
+                                                                        <label>Email</label>
+                                                                        <input class="form-control"
+                                                                               placeholder="user@example.com"
+                                                                               type="text" value="{{user.email}}">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col mb-3">
+                                                                    <div class="form-group">
+                                                                        <label>About</label>
+                                                                        <textarea class="form-control"
+                                                                                  placeholder="My Bio"
+                                                                                  rows="5"></textarea>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-12 col-sm-6 mb-3">
+                                                            <div class="row">
+                                                                <div class="col">
+                                                                    <div class="form-group">
+                                                                        <label>Contact phone</label>
+                                                                        <input class="form-control"
+                                                                               placeholder="Phone number"
+                                                                               type="text">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col">
+                                                                    <div class="form-group">
+                                                                        <label>Emergency Phone</label>
+                                                                        <input class="form-control" placeholder="••••••"
+                                                                               type="text">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col">
+                                                                    <div class="form-group">
+                                                                        <label>Current Password</label>
+                                                                        <input class="form-control" placeholder="••••••"
+                                                                               type="text">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <hr/>
+                                                            <div class="mb-2"><b>Change Password</b></div>
+                                                            <div class="row">
+                                                                <div class="col">
+                                                                    <div class="form-group">
+                                                                        <label>Current Password</label>
+                                                                        <input class="form-control" placeholder="••••••"
+                                                                               type="password">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col">
+                                                                    <div class="form-group">
+                                                                        <label>New Password</label>
+                                                                        <input class="form-control" placeholder="••••••"
+                                                                               type="password">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col">
+                                                                    <div class="form-group">
+                                                                        <label>Confirm <span class="d-none d-xl-inline">Password</span></label>
+                                                                        <input class="form-control" placeholder="••••••"
+                                                                               type="password"></div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-12 col-sm-5 offset-sm-1 mb-3">
+                                                            <div class="mb-2"><b>Emegrency contacts methods</b></div>
+                                                            <div class="row">
+                                                                <div class="col">
+                                                                    <div class="custom-controls-stacked px-2">
+                                                                        <div class="custom-control custom-checkbox">
+                                                                            <input checked=""
+                                                                                   class="custom-control-input"
+                                                                                   id="notifications-blog"
+                                                                                   type="checkbox">
+                                                                            <label class="custom-control-label"
+                                                                                   for="notifications-blog">Emergency
+                                                                                number</label>
+                                                                        </div>
+                                                                        <div class="custom-control custom-checkbox">
+                                                                            <input checked=""
+                                                                                   class="custom-control-input"
+                                                                                   id="notifications-news"
+                                                                                   type="checkbox">
+                                                                            <label class="custom-control-label"
+                                                                                   for="notifications-news">Family phone
+                                                                                numbers</label>
+                                                                        </div>
+                                                                        <div class="custom-control custom-checkbox">
+                                                                            <input checked=""
+                                                                                   class="custom-control-input"
+                                                                                   id="notifications-offers"
+                                                                                   type="checkbox">
+                                                                            <label class="custom-control-label"
+                                                                                   for="notifications-offers">Any</label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col d-flex justify-content-end">
+                                                            <button class="btn btn-primary" type="submit">Save Changes
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </form>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--                        Right sidebar                               -->
+                        <div class="col-12 col-md-3 mb-3">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h6 class="card-title font-weight-bold">Allergens list</h6>
+                                    <p class="card-text">
+                                        {% if allrergen %}
+                                    <h5>Not have allergy</h5>
+                                    {% endif %}
+
+                                    <ul id="user-allergen-list">
+
+                                    </ul>
+
+                                    <label for="allergens">Choose yor allergen</label>
+                                    <select class="allergens" id="allergens">
+                                        <optgroup label="Allrgens">
+                                            <option>Select</option>
+
+
+                                    </select>
+
+                                    </p>
+                                    <input class="custom-allergen" placeholder="input your allergen" type="text">
+                                    <button class="btn btn-primary" id="add-allergen" type="button">Add allergen</button>
+                                </div>
+                            </div>
+                            <br/>
+                            <div class="card">
+                                <div class="card-body">
+                                    <h6 class="card-title font-weight-bold">Support</h6>
+                                    <p class="card-text">Get fast, free help from our friendly assistants.</p>
+                                    <button class="btn btn-primary" type="button">Contact Us</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     {% endif %}
 

@@ -6,13 +6,14 @@ from django.db import IntegrityError
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
-
-
+from django.core import serializers
 
 from .models import User
 from .models import FamilyMembers
+from .models import AllergyList
 
 from django.http import HttpResponse
+
 
 
 def index_view(request):
@@ -52,6 +53,11 @@ def portal_view(request, page=""):
             "user": info,
             "cards": True
         })
+    elif page == "profile":
+        return render(request, 'portal/portal.html', {
+            "user": info,
+            "profile": True
+        })
     else:
         return render(request, 'portal/portal.html', {
             "user": info,
@@ -89,6 +95,27 @@ def add_family_member_view(request):
             return JsonResponse({"message": "Add succefuly"}, status=201)
         else:
             return JsonResponse({"message": "Already added"}, status=200)
+
+@login_required()
+def api_view(request, link):
+    user_id = request.user.id
+    if request.method == "POST":
+        if link == "allergens":
+            data = json.loads(request.body)
+            allergen = data.get("allergen", "")
+            print(allergen)
+            if AllergyList.objects.filter(user_id=user_id, allergen_name=allergen):
+                return JsonResponse({"Message: Already set"}, status=200)
+            else:
+                AllergyList(user_id =user_id, allergen_name=allergen).save()
+                return JsonResponse({"Message: Ok"}, status=201)
+
+    if request.method == "GET":
+        if link == "allergens":
+            answer = AllergyList.objects.filter(user_id=user_id)
+            data = serializers.serialize("json", answer)
+            return JsonResponse(data, safe=False)
+
 
 
 def login_view(request):
