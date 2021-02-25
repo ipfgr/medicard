@@ -595,84 +595,139 @@ section .section-title {
 }
 
 /*Medical cards*/
-.cards-container{
+.cards-container {
     background-color: #3a3f48;
-        color: #fff;
-    -webkit-box-shadow: inset 0px 0px 20px 1px rgba(251,111,12,1);
-    -moz-box-shadow: inset 0px 0px 20px 1px rgba(251,111,12,1);
-    box-shadow: inset 0px 0px 20px 1px rgba(251,111,12,1);
+    color: #fff;
+    -webkit-box-shadow: inset 0px 0px 20px 1px rgba(251, 111, 12, 1);
+    -moz-box-shadow: inset 0px 0px 20px 1px rgba(251, 111, 12, 1);
+    box-shadow: inset 0px 0px 20px 1px rgba(251, 111, 12, 1);
 
 }
 
-.cards-container h3{
+.cards-container h3 {
     margin-top: 10px;
     margin-left: 15px;
 
 }
+
 .documents-container {
     display: grid;
     grid-template-columns: 2fr 1fr;
     grid-template-areas: "recognized uploaded";
-    height: 80vh;
 }
 
-.already-recognized{
+.recognized {
     margin: 10px;
     text-align: center;
     border-right: 1px solid grey;
     grid-area: recognized;
+    position: relative;
+
 
 }
 
-.uploaded{
-
-    padding: 5px;
-    grid-area:uploaded;
-}
-
-.header-upload{
-    display:flex;
-    justify-content: space-around;
-}
-
-.already-uploaded{
+.recognized-images {
     display: flex;
     flex-wrap: wrap;
 }
 
-.img-preview-container{
+
+.uploaded {
+
+    padding: 5px;
+    grid-area: uploaded;
+}
+
+.header-upload {
+    display: flex;
+    justify-content: space-around;
+}
+
+.already-uploaded {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.img-preview-container {
     margin: 5px;
     position: relative;
     overflow: hidden;
 
 }
 
-.img-preview-container > *{
+
+.img-preview-container > * {
     width: 180px;
     height: auto;
     margin: 5px;
 }
 
-.remove-img{
+
+.recognized-preview-container {
+    margin: 5px;
+    display: flex;
+    flex-wrap: wrap;
+    position: relative;
+    overflow: hidden;
+    z-index: 0;
+
+}
+
+.success-recognized {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(71, 239, 50, 0.6);
+    z-index: 1;
+    cursor: pointer;
+}
+
+.rejected-recognized {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(239, 50, 50, 0.6);
+    z-index: 1;
+    cursor: pointer;
+}
+
+.recognized-preview-container h6 {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 2;
+    color: black;
+    font-weight: bold;
+
+}
+
+
+
+.remove-img {
     width: 20px;
     height: 20px;
     position: absolute;
     top: 0;
     right: 0;
     font-weight: bold;
-    background-color: rgba(255,255,255,0.5);
+    background-color: rgba(255, 255, 255, 0.5);
     cursor: pointer;
     display: flex;
     align-items: center;
-    justify-content:center;
+    justify-content: center;
     opacity: 0;
     transition: 0.3s;
     border: 1px solid black;
     color: black;
 }
 
-.img-info{
-    position:absolute;
+.img-info {
+    position: absolute;
     bottom: -30px;
     right: 0;
     font-size: 0.6em;
@@ -684,46 +739,59 @@ section .section-title {
 }
 
 
-
-.img-preview-container:hover .remove-img{
+.img-preview-container:hover .remove-img {
     opacity: 1;
 }
 
-.img-preview-container:hover .img-info{
+.img-preview-container:hover .img-info {
     bottom: 0px;
 }
-.upload{
+
+.upload {
 
 }
-.upload .btn{
+
+.upload .btn {
     justify-content: center;
     align-items: center;
 }
 
-#file-input{
-    display:none;
+#file-input {
+    display: none;
 }
-
 
 
 /*Profile page*/
 
-.profile-container{
-    -webkit-box-shadow: inset 0px 0px 20px 1px rgba(251,111,12,1);
-    -moz-box-shadow: inset 0px 0px 20px 1px rgba(251,111,12,1);
-    box-shadow: inset 0px 0px 20px 1px rgba(251,111,12,1);
+.profile-container {
+    -webkit-box-shadow: inset 0px 0px 20px 1px rgba(251, 111, 12, 1);
+    -moz-box-shadow: inset 0px 0px 20px 1px rgba(251, 111, 12, 1);
+    box-shadow: inset 0px 0px 20px 1px rgba(251, 111, 12, 1);
     padding: 10px;
     background-color: #3a3f48 !important;
 }
 
-.alergens{
-    display:flex;
-    position:relative;
-    text-align:center;
+.alergens {
+    display: flex;
+    position: relative;
+    text-align: center;
     justify-content: center;
 }
 
-select{
-    width:88px;
+.allergen-name {
+    display: flex;
+    justify-content: space-between;
+
+}
+
+.remove-allergen {
+    cursor: pointer;
+    border: 1px solid black;
+    background-color: rgba(255, 255, 255 0.5);
+    border-radius: 5px;
+}
+
+select {
+    width: 88px;
 
 }

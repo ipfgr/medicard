@@ -6,11 +6,13 @@ from django.db import IntegrityError
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
+from json import dumps
 from django.core import serializers
 
 from .models import User
 from .models import FamilyMembers
 from .models import AllergyList
+from .models import RecognizedFiles
 
 from django.http import HttpResponse
 
@@ -51,7 +53,7 @@ def portal_view(request, page=""):
     elif page == "cards":
         return render(request, 'portal/portal.html', {
             "user": info,
-            "cards": True
+            "cards": True,
         })
     elif page == "profile":
         return render(request, 'portal/portal.html', {
@@ -92,7 +94,7 @@ def add_family_member_view(request):
         find_link = FamilyMembers.objects.filter(user_id=request.user.id, family_members_id_list=get_append_user_id.id)
         if not find_link:
             FamilyMembers(user_id=request.user.id, family_members_id_list=get_append_user_id.id).save()
-            return JsonResponse({"message": "Add succefuly"}, status=201)
+            return JsonResponse({"message": "Add successfuly"}, status=201)
         else:
             return JsonResponse({"message": "Already added"}, status=200)
 
@@ -105,16 +107,40 @@ def api_view(request, link):
             allergen = data.get("allergen", "")
             print(allergen)
             if AllergyList.objects.filter(user_id=user_id, allergen_name=allergen):
-                return JsonResponse({"Message: Already set"}, status=200)
+                return JsonResponse({"Message: Already exists"}, status=200)
             else:
                 AllergyList(user_id =user_id, allergen_name=allergen).save()
-                return JsonResponse({"Message: Ok"}, status=201)
+                return JsonResponse({"Message: Saved"}, status=201)
+
+        if link == "cardfiles":
+            data = json.loads(request.body)
+            filelist = data.get("filelist", "")
+            print(filelist)
+            for file in filelist:
+                RecognizedFiles(user_id=user_id, file_name=file).save()
+                return JsonResponse({"Message: Saved"}, status=201)
 
     if request.method == "GET":
         if link == "allergens":
+            report = []
             answer = AllergyList.objects.filter(user_id=user_id)
-            data = serializers.serialize("json", answer)
-            return JsonResponse(data, safe=False)
+            for item in answer:
+                report.append(item.allergen_name)
+            return JsonResponse(report, safe=False)
+
+        if link == "cardfiles":
+            report = []
+            answer = AllergyList.objects.filter(user_id=user_id)
+            for item in answer:
+                report.append(item.allergen_name)
+            return JsonResponse(report, safe=False)
+
+    if request.method == "DELETE":
+        if link == "allergens":
+            data = json.loads(request.body)
+            allergen = data.get("delete", "")
+            AllergyList.objects.filter(user_id=user_id, allergen_name=allergen).delete()
+            return JsonResponse({"Message": "Delete Success"}, status = 204)
 
 
 

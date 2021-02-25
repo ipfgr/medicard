@@ -4,6 +4,7 @@
 
 {% block body %}
 <div class="container-portal" id="app">
+    {{ user.med_id | json_script:'user-med-id' }}
 
     <div class="menu-portal">
         <div class="title-menu"><h3 class="title-menu-text">Menu</h3></div>
@@ -248,22 +249,31 @@
     </div>
 
     {% elif cards %}
+    <!--    Get user id to app.js   -->
+
     <div class="cards-container">
         <h3>Recognize paper medical cards and add to your medical cards</h3>
         <div class="documents-container">
-            <div class="already-recognized">
-                <h4>Already recognized files</h4>
+            <div class="recognized">
+                <div class="recognized-header">
+                    <h4>Files to recognized</h4>
+                </div>
+                <div class="recognized-images">
+
+                </div>
             </div>
             <div class="uploaded">
                 <div class="header-upload">
-                    <h4>Already uploaded files</h4>
+                    <h4>Upload files</h4>
+                    <div class="progress-bar"></div>
+
 
                 </div>
                 <div class="already-uploaded">
 
-
                 </div>
                 <div class="upload">
+
                     <input id="file-input" name="upload" type="file">
                 </div>
             </div>
@@ -287,7 +297,8 @@
                                                 <div class="mx-auto" style="width: 140px;">
                                                     <div class="d-flex justify-content-center align-items-center rounded">
                                                         <img , alt="avatar"
-                                                             height="140px" src="{% static 'portal/img/noimage.jpg' %}" width="140px">
+                                                             height="140px" src="{% static 'portal/img/noimage.jpg' %}"
+                                                             width="140px">
                                                     </div>
                                                 </div>
                                             </div>
@@ -492,7 +503,8 @@
 
                                     </p>
                                     <input class="custom-allergen" placeholder="input your allergen" type="text">
-                                    <button class="btn btn-primary" id="add-allergen" type="button">Add allergen</button>
+                                    <button class="btn btn-primary" id="add-allergen" type="button">Add allergen
+                                    </button>
                                 </div>
                             </div>
                             <br/>

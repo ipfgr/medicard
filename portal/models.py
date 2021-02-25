@@ -41,3 +41,13 @@ class AllergyList(models.Model):
             "allergen": self.allergen_name
 
         }
+
+class RecognizedFiles(models.Model):
+    user = models.ForeignKey(User, default=None, related_name="username_r", on_delete=models.CASCADE)
+    file_name = models.CharField(max_length=255)
+    uploaded = models.BooleanField(default=True)
+    recognized = models.BooleanField(default=False)
+    rejected = models.BooleanField(default=False)
+
+    def __str__(self):
+        return "User {}. File Name: {}. Uploaded {}. Recognized{} Rejected{}. ".format(self.user, self.file_name, self.uploaded, self.recognized, self.rejected)

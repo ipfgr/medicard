@@ -33,6 +33,8 @@ AUTH_USER_MODEL = "portal.User"
 
 INSTALLED_APPS = [
     'portal',
+    'rest_framework',
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -52,6 +54,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'medicare.urls'
+
 
 TEMPLATES = [
     {
