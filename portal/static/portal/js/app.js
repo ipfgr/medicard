@@ -12,6 +12,17 @@ function formatBytes(bytes, decimals) {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(decimals)) + " " + sizes[i]
 }
 
+//Validate file size before upload
+function validateSize(file, size) {
+        let fileSize = file.size / 1024 / 1024; // in MiB
+        if (fileSize > size) {
+            alert(`File size exceeds ${size} MiB`);
+           // $(file).val(''); //for clearing with Jquery
+        } else {
+            return true
+        }
+    }
+
 const firebaseConfig = {
     apiKey: "AIzaSyCKGs3Hy8wmIT7M4OJ2SYWlwSVV2-d3TNg",
     authDomain: "medicard-db.firebaseapp.com",
@@ -27,15 +38,81 @@ const storageRef = firebase.storage().ref();
 
 
 document.addEventListener('DOMContentLoaded', function () {
-    let cardfilesresponse
     //Get current user ID from django template
     const currentUserMedId = JSON.parse(document.querySelector('#user-med-id').textContent)
 
+
     //Profile page section
     if (window.location.href.indexOf("portal/profile") > 1) {
-        const userAllergenList = document.querySelector("#user-allergen-list")
+        const changeAvatarInput = document.querySelector("#avatar-upload")
+        const changeAvatarButton = document.querySelector("#avatar-upload-button")
+        changeAvatarInput.style.display = "none"
+        changeAvatarButton.addEventListener("click", () => changeAvatarInput.click())
+
+
+
+        const changeAvatarHandler = (event) => {
+            const avatar = event.target.files[0]
+            const validator = validateSize(avatar, 2)
+            if (validator) {
+                let extension = ""
+            let uniqueId = Math.random().toString(36).substring(2);
+            switch (avatar.type) {
+                case "image/jpeg":
+                    extension = ".jpg"
+                    break
+                case "image/gif":
+                    extension = ".gif"
+                    break
+                case "image/png":
+                    extension = ".png"
+                    break
+            }
+            let uploadTask = storageRef.child(`portal/img/uploaded/${currentUserMedId}/avatar/${uniqueId}${extension}`).put(avatar)
+            uploadTask.on('state_changed',
+                (snapshot) => {
+                    // Observe state change events such as progress, pause, and resume
+                    // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+                    var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                    console.log('Upload is ' + progress + '% done');
+                    switch (snapshot.state) {
+                        case firebase.storage.TaskState.PAUSED: // or 'paused'
+                            console.log('Upload is paused');
+                            break;
+                        case firebase.storage.TaskState.RUNNING: // or 'running'
+                            console.log('Upload is running');
+                            break;
+                    }
+                },
+                (error) => {
+                    console.error(error)
+                },
+                () => {
+                    // Handle successful uploads on complete
+                    // For instance, get the download URL: https://firebasestorage.googleapis.com/...
+                    uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
+                        console.log(downloadURL)
+                        fetch(`/portal/api/v1/avatar_upload`, {
+                            method: "PUT",
+                            headers: {
+                                "X-CSRFToken": getCookie("csrftoken")
+                            },
+                            body: JSON.stringify({
+                                url: downloadURL
+                            })
+                        }).then(response => response.json)
+                            .then(()=> setTimeout(()=> {location.reload()}, 1000))
+                            .catch(error => console.log(error))
+                    });
+                })
+            }
+            else {return}
+
+        }
+
         getUserAllergenHandler()
 
+        //array of alergens for choose at profile page
         const allergensArr = [
             "Gluten",
             "Crustaceans",
@@ -51,7 +128,6 @@ document.addEventListener('DOMContentLoaded', function () {
             "Pulphites",
             "Lupin",
             "Molluscs",
-            "Other"
         ]
         const option = document.querySelector("#allergens")
         allergensArr.forEach(el => {
@@ -71,12 +147,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
         }
 
-
+        changeAvatarInput.addEventListener("change", changeAvatarHandler)
     }
 
 
-    //When you on cards page
-    if (window.location.href.indexOf("portal/cards") > 1) {
+    //When you on recognizer page
+    if (window.location.href.indexOf("portal/recognizer") > 1) {
 
         //Get list of all medical reports in user upload storage for output
         const getUploadedImages = () => {
@@ -93,40 +169,38 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         //Check in our database with documents  reconized / uploaded or rejected
-        let compareDatabaseRecognizeInfo = (url, name) =>  {
+        let compareDatabaseRecognizeInfo = (url, name) => {
             const recognized = document.querySelector(".recognized-images")
-            fetch(`/portal/api/v1/cardfiles`)
+            fetch(`/portal/api/v1/recognizer`)
                 .then(response => response.json())
                 .then(result => {
                     result.forEach(file => {
-                        if (file.file_name == name){
-                            if (file.rejected && !file.recognized){
-                             recognized.insertAdjacentHTML("beforeend", `
+                        if (file.file_name == name) {
+                            if (file.rejected && !file.recognized) {
+                                recognized.insertAdjacentHTML("beforeend", `
                                             <div class="recognized-preview-container"> 
                                                 <div class="rejected-recognized"></div>
                                                 <h6>Rejected</h6>
                                                 <img src="${url}" alt="document" width="auto" height="150px">
                                         </div>
                                         `)
-                            console.log("Rejected")
-                        }
-                        else if (!file.rejected && file.recognized){
-                            recognized.insertAdjacentHTML("beforeend", `
+                                console.log("Rejected")
+                            } else if (!file.rejected && file.recognized) {
+                                recognized.insertAdjacentHTML("beforeend", `
                                             <div class="recognized-preview-container"> 
                                                 <div class="success-recognized"></div>
                                                 <h6>Recognized</h6>
                                                 <img src="${url}" alt="document" width="auto" height="150px">
                                         </div>
                                         `)
-                            console.log("Recognized")
-                        }
-                        else {
-                            recognized.insertAdjacentHTML("beforeend", `
+                                console.log("Recognized")
+                            } else {
+                                recognized.insertAdjacentHTML("beforeend", `
                                             <div class="recognized-preview-container"> 
                                                 <img src="${url}" alt="document" width="auto" height="150px">
                                             </div>`)
-                            console.log("Uploaded")
-                        }
+                                console.log("Uploaded")
+                            }
                         }
                     })
                 })
@@ -168,6 +242,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         //When open pictures for upload you come her
         const changeHandler = (event) => {
+            console.log(event)
             preview.innerHTML = ""
             files = Array.from(event.target.files)
             uploadButton.addEventListener("click", () => uploadHandler(files))
@@ -270,12 +345,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 )
             })
             //save picture names array to DB
-            saveState(idArray)
+            saveNames(idArray)
         }
 
         //Fetch all picture names to save at DB
-        function saveState(arr) {
-            fetch(`/portal/api/v1/cardfiles`, {
+        function saveNames(arr) {
+            fetch(`/portal/api/v1/recognizer`, {
                 method: "POST",
                 headers: {
                     "X-CSRFToken": getCookie("csrftoken")

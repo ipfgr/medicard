@@ -9,9 +9,10 @@ from django.contrib.auth.models import AbstractUser
 
 class User(AbstractUser):
     user_role = models.CharField(max_length=30, default="user")
+    avatar_url = models.URLField(default="https://firebasestorage.googleapis.com/v0/b/medicard-db.appspot.com/o/portal%2Fimg%2Fnoimage.jpg?alt=media&token=defb69c4-2ffc-4e10-be83-75498408c2e2")
     med_id = models.CharField(max_length=255, default=uuid.uuid4().hex[:12])
     gender = models.CharField(max_length=15, default='unknow')
-    birth_date = models.DateField(default=None)
+    birth_date = models.DateField(default=None, null=True)
 
     def serialize(self):
         return {

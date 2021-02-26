@@ -4,6 +4,7 @@
 
 {% block body %}
 <div class="container-portal" id="app">
+        <!--    Get user id to app.js   -->
     {{ user.med_id | json_script:'user-med-id' }}
 
     <div class="menu-portal">
@@ -11,7 +12,7 @@
         <hr/>
         <div class="user-info">
             <div class="avatar">
-                <img alt="avatar" src="{% static 'portal/img/noimage.jpg' %}">
+                <img alt="avatar" src="{{ user.avatar_url }}">
             </div>
             <div class="about">
                 <div class="name">Name: {{ request.user.first_name }}</div>
@@ -67,7 +68,7 @@
                 </li>
             </a>
 
-            <a href="{% url 'portal' %}/cards">
+            <a href="{% url 'portal' %}/recognizer">
                 <li class="menu-link">
                     <div class="background-ico">
                         <svg class="bi bi-book" fill="currentColor" height="16" viewBox="0 0 16 16"
@@ -76,7 +77,7 @@
                         </svg>
 
                     </div>
-                    <span class="link-desc">My Card</span>
+                    <span class="link-desc">Recognizer</span>
                 </li>
             </a>
 
@@ -182,7 +183,7 @@
             <div class="family-member-container">
                 <div class="main-info">
                     <div class="family-member-avatar">
-                        <img alt="avatar" src="{% static 'portal/img/noimage.jpg' %}">
+                        <img alt="avatar" src="{{ member.avatar_url }}">
                     </div>
                     <div class="about">
                         <div class="name">Name: {{ member.first_name }}</div>
@@ -248,8 +249,7 @@
         </div>
     </div>
 
-    {% elif cards %}
-    <!--    Get user id to app.js   -->
+    {% elif recognizer %}
 
     <div class="cards-container">
         <h3>Recognize paper medical cards and add to your medical cards</h3>
@@ -296,8 +296,8 @@
                                             <div class="col-12 col-sm-auto mb-3">
                                                 <div class="mx-auto" style="width: 140px;">
                                                     <div class="d-flex justify-content-center align-items-center rounded">
-                                                        <img , alt="avatar"
-                                                             height="140px" src="{% static 'portal/img/noimage.jpg' %}"
+                                                        <img alt="avatar"
+                                                             height="140px" src="{{ user.avatar_url }}"
                                                              width="140px">
                                                     </div>
                                                 </div>
@@ -309,10 +309,11 @@
                                                     <p class="mb-0">Birth: {{user.birth_date}}</p>
                                                     <div class="text-muted"><small>Last seen 2 hours ago</small></div>
                                                     <div class="mt-2">
-                                                        <button class="btn btn-primary" type="button">
-                                                            <i class="fa fa-fw fa-camera"></i>
-                                                            <span>Change Photo</span>
-                                                        </button>
+
+                                                            <input id="avatar-upload" type="file" accept=".jpg, .png, .gif" multiple="false" id="upload-avatar">
+                                                            <button id="avatar-upload-button" class="btn btn-outline-info"><i class="fa fa-fw fa-camera"></i> Change avatar</button>
+
+
                                                     </div>
                                                 </div>
                                                 <div class="text-center text-sm-right">
@@ -467,7 +468,7 @@
                                                     </div>
                                                     <div class="row">
                                                         <div class="col d-flex justify-content-end">
-                                                            <button class="btn btn-primary" type="submit">Save Changes
+                                                            <button class="btn btn-outline-info" type="submit">Save Changes
                                                             </button>
                                                         </div>
                                                     </div>
@@ -503,7 +504,7 @@
 
                                     </p>
                                     <input class="custom-allergen" placeholder="input your allergen" type="text">
-                                    <button class="btn btn-primary" id="add-allergen" type="button">Add allergen
+                                    <button class="btn btn-outline-info" id="add-allergen" type="button">Add allergen
                                     </button>
                                 </div>
                             </div>
@@ -512,7 +513,7 @@
                                 <div class="card-body">
                                     <h6 class="card-title font-weight-bold">Support</h6>
                                     <p class="card-text">Get fast, free help from our friendly assistants.</p>
-                                    <button class="btn btn-primary" type="button">Contact Us</button>
+                                    <button class="btn btn-outline-info" type="button">Contact Us</button>
                                 </div>
                             </div>
                         </div>

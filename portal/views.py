@@ -50,10 +50,10 @@ def portal_view(request, page=""):
                 "family": True,
                 "my_family": my_family
             })
-    elif page == "cards":
+    elif page == "recognizer":
         return render(request, 'portal/portal.html', {
             "user": info,
-            "cards": True,
+            "recognizer": True,
         })
     elif page == "profile":
         return render(request, 'portal/portal.html', {
@@ -112,7 +112,7 @@ def api_view(request, link):
                 AllergyList(user_id =user_id, allergen_name=allergen).save()
                 return JsonResponse({"Message: Saved"}, status=201)
 
-        if link == "cardfiles":
+        if link == "recognizer":
             data = json.loads(request.body)
             filenames = data.get("filenames", "")
             print(filenames)
@@ -128,10 +128,16 @@ def api_view(request, link):
                 report.append(item.allergen_name)
             return JsonResponse(report, safe=False)
 
-        if link == "cardfiles":
+        if link == "recognizer":
             answers = RecognizedFiles.objects.filter(user_id=user_id)
             answers = answers.order_by("id").all()
             return JsonResponse([answer.serialize() for answer in answers], safe=False)
+
+    if request.method == "PUT":
+        data = json.loads(request.body)
+        url = data.get("url", "")
+        User.objects.filter(id=user_id).update(avatar_url=url)
+        return JsonResponse({"message": "Avatar url updated"}, status=204)
 
     if request.method == "DELETE":
         if link == "allergens":
@@ -179,14 +185,12 @@ def register_view(request):
     }
 
     if request.method == "GET":
-
         return render(request, 'portal/index.html', context)
 
     if request.method == "POST":
         user_role = request.POST["role_name"]
         username = request.POST["username"]
         email = request.POST["email"]
-        print(user_role)
         # Ensure password matches confirmation
         password = request.POST["password"]
         confirmation = request.POST["confirmation"]
@@ -204,7 +208,6 @@ def register_view(request):
                 User.objects.filter(username=username).update(user_role=user_role, is_active=False)
             else:
                 User.objects.filter(username=username).update(user_role=user_role)
-
 
 
         except IntegrityError:
