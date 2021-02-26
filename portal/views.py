@@ -114,11 +114,11 @@ def api_view(request, link):
 
         if link == "cardfiles":
             data = json.loads(request.body)
-            filelist = data.get("filelist", "")
-            print(filelist)
-            for file in filelist:
+            filenames = data.get("filenames", "")
+            print(filenames)
+            for file in filenames:
                 RecognizedFiles(user_id=user_id, file_name=file).save()
-                return JsonResponse({"Message: Saved"}, status=201)
+            return JsonResponse({"Message: Saved"}, status=201)
 
     if request.method == "GET":
         if link == "allergens":
@@ -129,11 +129,9 @@ def api_view(request, link):
             return JsonResponse(report, safe=False)
 
         if link == "cardfiles":
-            report = []
-            answer = AllergyList.objects.filter(user_id=user_id)
-            for item in answer:
-                report.append(item.allergen_name)
-            return JsonResponse(report, safe=False)
+            answers = RecognizedFiles.objects.filter(user_id=user_id)
+            answers = answers.order_by("id").all()
+            return JsonResponse([answer.serialize() for answer in answers], safe=False)
 
     if request.method == "DELETE":
         if link == "allergens":

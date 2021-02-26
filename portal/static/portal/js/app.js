@@ -1,6 +1,5 @@
-let uniqueId = Date.now() + Math.random().toString(36).substring(2);
-
-const wait = (ms) => setTimeout(() => {}, ms)
+const wait = (ms) => setTimeout(() => {
+}, ms)
 
 //Bites to normal size converter function
 function formatBytes(bytes, decimals) {
@@ -28,7 +27,7 @@ const storageRef = firebase.storage().ref();
 
 
 document.addEventListener('DOMContentLoaded', function () {
-
+    let cardfilesresponse
     //Get current user ID from django template
     const currentUserMedId = JSON.parse(document.querySelector('#user-med-id').textContent)
 
@@ -76,55 +75,68 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
 
-    //Cards page section
+    //When you on cards page
     if (window.location.href.indexOf("portal/cards") > 1) {
-        //Get list of all items in user upload storage
+
+        //Get list of all medical reports in user upload storage for output
         const getUploadedImages = () => {
             const storageList = firebase.storage().ref(`documents/uploaded/${currentUserMedId}/`)
             storageList.listAll()
                 .then(result => {
-
                     result.items.forEach(imageRef => {
                         imageRef.getDownloadURL()
                             .then(url => {
-                                const recognized = document.querySelector(".recognized-images")
+                                compareDatabaseRecognizeInfo(url, imageRef.name)
+                            })
+                    })
+                }).catch(error => console.error("Error:", error))
+        }
 
-                                    if (imageRef.name in files) {
-                                        recognized.insertAdjacentHTML("beforeend", `
-                                            <div class="recognized-preview-container"> 
-                                                <div class="success-recognized"></div>
-                                                <h6>Recognized</h6>
-                                                <img src="${url}" alt="document" width="auto" height="150px">
-                                        </div>
-                                        `)
-                                    }
-                                    else if (false) {
-                                        recognized.insertAdjacentHTML("beforeend", `
+        //Check in our database with documents  reconized / uploaded or rejected
+        let compareDatabaseRecognizeInfo = (url, name) =>  {
+            const recognized = document.querySelector(".recognized-images")
+            fetch(`/portal/api/v1/cardfiles`)
+                .then(response => response.json())
+                .then(result => {
+                    result.forEach(file => {
+                        if (file.file_name == name){
+                            if (file.rejected && !file.recognized){
+                             recognized.insertAdjacentHTML("beforeend", `
                                             <div class="recognized-preview-container"> 
                                                 <div class="rejected-recognized"></div>
                                                 <h6>Rejected</h6>
                                                 <img src="${url}" alt="document" width="auto" height="150px">
                                         </div>
                                         `)
-                                    }
-                                    else {
-                                        recognized.insertAdjacentHTML("beforeend", `
+                            console.log("Rejected")
+                        }
+                        else if (!file.rejected && file.recognized){
+                            recognized.insertAdjacentHTML("beforeend", `
+                                            <div class="recognized-preview-container"> 
+                                                <div class="success-recognized"></div>
+                                                <h6>Recognized</h6>
+                                                <img src="${url}" alt="document" width="auto" height="150px">
+                                        </div>
+                                        `)
+                            console.log("Recognized")
+                        }
+                        else {
+                            recognized.insertAdjacentHTML("beforeend", `
                                             <div class="recognized-preview-container"> 
                                                 <img src="${url}" alt="document" width="auto" height="150px">
                                             </div>`)
-                                    }
-                            })
+                            console.log("Uploaded")
+                        }
+                        }
                     })
-                }).catch(error => console.error("Error:", error))
+                })
         }
-
 
         //Get urls
         getUploadedImages()
 
         //Make all files global see
         let files = []
-
         //Upload pictures options
         const options = {
             multiply: true,
@@ -139,7 +151,6 @@ document.addEventListener('DOMContentLoaded', function () {
         if (options.multiply) {
             openInput.setAttribute("multiple", true)
         }
-
         if (options.accepttype && Array.isArray(options.accepttype)) {
             openInput.setAttribute("accept", options.accepttype.join(","))
         }
@@ -155,10 +166,11 @@ document.addEventListener('DOMContentLoaded', function () {
         headerUpload.insertAdjacentElement("beforeend", openButton)
         openButton.addEventListener("click", () => openInput.click())
 
-
+        //When open pictures for upload you come her
         const changeHandler = (event) => {
             preview.innerHTML = ""
             files = Array.from(event.target.files)
+            uploadButton.addEventListener("click", () => uploadHandler(files))
             files.forEach(file => {
                 if (!file.type.match("image")) {
                     return
@@ -167,7 +179,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 headerUpload.insertAdjacentElement("beforeend", uploadButton)
                 uploadButton.style.display = "block"
 
-                uploadButton.addEventListener("click", () => uploadHandler(files))
+
                 //Add previews of opened pictures
                 const reader = new FileReader
                 reader.onload = ev => {
@@ -201,16 +213,19 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
         }
-        //Upload pictures to firebasestorage
+        //Upload pictures to Firebase Storage
         const uploadHandler = (files) => {
             const progressBar = document.querySelector(".progress-bar")
             preview.querySelectorAll(".remove-img").forEach(e => e.remove())
-
+            let idArray = []
             files.forEach(file => {
+                //make unique id for each new picture
+                let uniqueId = Date.now() + Math.random().toString(36).substring(2);
+
                 let extension = ""
                 switch (file.type) {
                     case "image/jpeg":
-                        extension = ".jpeg"
+                        extension = ".jpg"
                         break
                     case "image/gif":
                         extension = ".gif"
@@ -219,6 +234,8 @@ document.addEventListener('DOMContentLoaded', function () {
                         extension = ".png"
                         break
                 }
+                //Add all uploaded picture names to array
+                idArray.push(uniqueId + extension)
                 let uploadTask = storageRef.child(`documents/uploaded/${currentUserMedId}/${uniqueId}${extension}`).put(file)
                 uploadTask.on('state_changed',
                     (snapshot) => {
@@ -226,11 +243,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
                         let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
 
-
                         console.log('Upload is ' + progress.toFixed(0) + '% done');
-                        if (progress.toFixed(0) == 100){
-                            progressBar.insertAdjacentHTML("beforeend", `<span>Upload Done</span>`)
-                        }
 
                         switch (snapshot.state) {
                             case firebase.storage.TaskState.PAUSED: // or 'paused'
@@ -248,28 +261,37 @@ document.addEventListener('DOMContentLoaded', function () {
                         // Handle successful uploads on complete
                         // For instance, get the download URL: https://firebasestorage.googleapis.com/...
                         preview.innerHTML = ""
-
                         uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
                             console.log('File available at', downloadURL)
-                            progressBar.innerHTML=""
+                            progressBar.innerHTML = ""
                             uploadButton.style.display = "none"
-
-
                         })
                     }
                 )
-
             })
-
+            //save picture names array to DB
+            saveState(idArray)
         }
 
+        //Fetch all picture names to save at DB
+        function saveState(arr) {
+            fetch(`/portal/api/v1/cardfiles`, {
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": getCookie("csrftoken")
+                },
+                body: JSON.stringify({
+                    filenames: arr
+                })
+            })
+        }
 
         openInput.addEventListener("change", changeHandler)
         preview.addEventListener("click", removeHandler)
 
 
     }
-
+    // When you on family page
     if (window.location.href.indexOf("portal/family") > 1) {
         document.querySelector("#add-member-btn").style.visibility = "hidden"
         const searchMemberButton = document.getElementById("searach-member-btn")
@@ -282,6 +304,8 @@ document.addEventListener('DOMContentLoaded', function () {
             button.addEventListener("click", () => removeMember(memberToRemoveId))
         })
     }
+
+    //when you on index portal page
     if (window.location.href.indexOf("portal") > 1) {
         let dateArr = ["10:11:20", "10.12.20"]
         let dataArr = [88, 90]
@@ -325,6 +349,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 })
 
+//get lis of user allergens and insert it to profile page
 function getUserAllergenHandler() {
     console.log("Get Allergen list for user")
     const insertList = document.querySelector("#user-allergen-list")
@@ -362,7 +387,7 @@ function getUserAllergenHandler() {
     })
 }
 
-
+//Set (add) new alergens for user at profile page
 function setUserAllergenHandler(allergen) {
     console.log("Send Post Request to Backend")
     const link = "allergens"
@@ -390,6 +415,7 @@ function setUserAllergenHandler(allergen) {
         })
 }
 
+//remove family member at family page
 function removeMember(id) {
     fetch('/portal/family/remove', {
         method: "POST",
@@ -403,6 +429,7 @@ function removeMember(id) {
     location.reload()
 }
 
+//Search family member at family page
 function searchMember(id) {
     const addMemberButton = document.querySelector("#add-member-btn")
 
@@ -428,6 +455,7 @@ function searchMember(id) {
         })
 }
 
+//Add family member at family page
 function addMember(id) {
     console.log("Send Post Request to Backend")
     fetch(`/portal/family/add`, {
@@ -446,6 +474,8 @@ function addMember(id) {
 
 }
 
+
+//Get CSRF token for send fetch to server securly
 function getCookie(name) {
     var cookieValue = null;
     if (document.cookie && document.cookie !== '') {

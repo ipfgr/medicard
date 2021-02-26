@@ -15,7 +15,7 @@ class User(AbstractUser):
 
     def serialize(self):
         return {
-            "username": self.username
+            "user": self.username
         }
 
 
@@ -51,3 +51,12 @@ class RecognizedFiles(models.Model):
 
     def __str__(self):
         return "User {}. File Name: {}. Uploaded {}. Recognized{} Rejected{}. ".format(self.user, self.file_name, self.uploaded, self.recognized, self.rejected)
+
+    def serialize(self):
+        return {
+            "user_id": self.user.id,
+            "file_name": self.file_name,
+            "uploaded": self.uploaded,
+            "recognized": self.recognized,
+            "rejected": self.rejected
+        }
