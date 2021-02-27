@@ -1,3 +1,38 @@
+//Validator for profile edit form
+function validationForm(inputs) {
+    let result = true
+    //Regex fr check correct telephone number input
+    const regex =/^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$/
+    inputs.forEach(input => {
+        //if required fields null?
+        if (!input.value) {
+            if (   input.id == "contact-phone"
+                || input.id == "emergency-phone"
+                || input.id == "job"
+                || input.id == "home-address"
+                || input.id == "full-name") {
+                input.insertAdjacentHTML("beforebegin", `<span class="error-message">Cant be Empty</span>`)
+                result=false
+            }
+        }
+        else if (  input.id == "contact-phone"
+                || input.id == "emergency-phone"){
+            if(!regex.test(input.value)) {
+                input.insertAdjacentHTML("beforebegin", `<span class="error-message">Not correct number</span>`)
+            result=false
+            }
+        }
+    })
+    //clean error messages
+    setTimeout(() => {
+        const messages = document.querySelectorAll(".error-message")
+        messages.forEach(message => message.remove())
+    }, 3000)
+
+    return result
+}
+
+//Timeout helper
 const wait = (ms) => setTimeout(() => {
 }, ms)
 
@@ -14,14 +49,15 @@ function formatBytes(bytes, decimals) {
 
 //Validate file size before upload
 function validateSize(file, size) {
-        let fileSize = file.size / 1024 / 1024; // in MiB
-        if (fileSize > size) {
-            alert(`File size exceeds ${size} MiB`);
-           // $(file).val(''); //for clearing with Jquery
-        } else {
-            return true
-        }
+    let fileSize = file.size / 1024 / 1024; // in MiB
+    if (fileSize > size) {
+        alert(`File size exceeds ${size} MiB`);
+        // $(file).val(''); //for clearing with Jquery
+    } else {
+        return true
     }
+}
+
 
 const firebaseConfig = {
     apiKey: "AIzaSyCKGs3Hy8wmIT7M4OJ2SYWlwSVV2-d3TNg",
@@ -32,6 +68,7 @@ const firebaseConfig = {
     appId: "1:872483625762:web:060663b337fb53641fe37b",
     measurementId: "G-YQ7GVST827"
 }
+
 
 firebase.initializeApp(firebaseConfig);
 const storageRef = firebase.storage().ref();
@@ -46,70 +83,102 @@ document.addEventListener('DOMContentLoaded', function () {
     if (window.location.href.indexOf("portal/profile") > 1) {
         const changeAvatarInput = document.querySelector("#avatar-upload")
         const changeAvatarButton = document.querySelector("#avatar-upload-button")
+        const editProfileButton = document.createElement("button")
+        const buttonsDiv = document.querySelector("#buttons-save-edit")
+
+        editProfileButton.classList.add("btn")
+        editProfileButton.classList.add("btn-outline-info")
+        editProfileButton.textContent = "Edit Profile"
+
+        const saveProfileButton = document.createElement("button")
+        saveProfileButton.classList.add("btn")
+        saveProfileButton.classList.add("btn-outline-info")
+        saveProfileButton.textContent = "Save Profile"
+
+        buttonsDiv.insertAdjacentElement("beforeend", editProfileButton)
+
+        //Set to Disable all input fields
+        const inputs = document.querySelectorAll(".input-p")
+        inputs.forEach(input => {
+            input.disabled = true
+        })
+
+        //hide input for avatar upload
         changeAvatarInput.style.display = "none"
         changeAvatarButton.addEventListener("click", () => changeAvatarInput.click())
 
 
-
+        //handler for upload avatar to DB and write new link to db user profile
         const changeAvatarHandler = (event) => {
             const avatar = event.target.files[0]
             const validator = validateSize(avatar, 2)
             if (validator) {
                 let extension = ""
-            let uniqueId = Math.random().toString(36).substring(2);
-            switch (avatar.type) {
-                case "image/jpeg":
-                    extension = ".jpg"
-                    break
-                case "image/gif":
-                    extension = ".gif"
-                    break
-                case "image/png":
-                    extension = ".png"
-                    break
+                let uniqueId = Math.random().toString(36).substring(2);
+                switch (avatar.type) {
+                    case "image/jpeg":
+                        extension = ".jpg"
+                        break
+                    case "image/gif":
+                        extension = ".gif"
+                        break
+                    case "image/png":
+                        extension = ".png"
+                        break
+                }
+                let uploadTask = storageRef.child(`portal/img/uploaded/${currentUserMedId}/avatar/${uniqueId}${extension}`).put(avatar)
+                uploadTask.on('state_changed',
+                    (snapshot) => {
+                        // Observe state change events such as progress, pause, and resume
+                        // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+                        var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                        console.log('Upload is ' + progress + '% done');
+                        switch (snapshot.state) {
+                            case firebase.storage.TaskState.PAUSED: // or 'paused'
+                                console.log('Upload is paused');
+                                break;
+                            case firebase.storage.TaskState.RUNNING: // or 'running'
+                                console.log('Upload is running');
+                                break;
+                        }
+                    },
+                    (error) => {
+                        console.error(error)
+                    },
+                    () => {
+                        // Handle successful uploads on complete
+                        // For instance, get the download URL: https://firebasestorage.googleapis.com/...
+                        uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
+                            console.log(downloadURL)
+                            fetch(`/portal/api/v1/avatar_upload`, {
+                                method: "PUT",
+                                headers: {
+                                    "X-CSRFToken": getCookie("csrftoken")
+                                },
+                                body: JSON.stringify({
+                                    url: downloadURL
+                                })
+                            }).then(response => response.json)
+
+                                .catch(error => console.log(error))
+                        });
+                    })
+            } else {
+
             }
-            let uploadTask = storageRef.child(`portal/img/uploaded/${currentUserMedId}/avatar/${uniqueId}${extension}`).put(avatar)
-            uploadTask.on('state_changed',
-                (snapshot) => {
-                    // Observe state change events such as progress, pause, and resume
-                    // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
-                    var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                    console.log('Upload is ' + progress + '% done');
-                    switch (snapshot.state) {
-                        case firebase.storage.TaskState.PAUSED: // or 'paused'
-                            console.log('Upload is paused');
-                            break;
-                        case firebase.storage.TaskState.RUNNING: // or 'running'
-                            console.log('Upload is running');
-                            break;
-                    }
-                },
-                (error) => {
-                    console.error(error)
-                },
-                () => {
-                    // Handle successful uploads on complete
-                    // For instance, get the download URL: https://firebasestorage.googleapis.com/...
-                    uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
-                        console.log(downloadURL)
-                        fetch(`/portal/api/v1/avatar_upload`, {
-                            method: "PUT",
-                            headers: {
-                                "X-CSRFToken": getCookie("csrftoken")
-                            },
-                            body: JSON.stringify({
-                                url: downloadURL
-                            })
-                        }).then(response => response.json)
-                            .then(()=> setTimeout(()=> {location.reload()}, 1000))
-                            .catch(error => console.log(error))
-                    });
-                })
-            }
-            else {return}
 
         }
 
+        //Handler to update profile information at DB
+        const updateProfileHandler = (profileBody) => {
+            fetch(`/portal/api/v1/profile`, {
+                method: "POST",
+                headers:{
+                    "X-CSRFToken": getCookie("csrftoken")
+                },
+                body: JSON.stringify(profileBody)
+            })
+        }
         getUserAllergenHandler()
 
         //array of alergens for choose at profile page
@@ -142,14 +211,29 @@ document.addEventListener('DOMContentLoaded', function () {
         const addAllergyButton = document.querySelector("#add-allergen")
         addAllergyButton.onclick = () => setUserAllergenHandler(optionSelect.value)
 
-        if (document.querySelector("option").value == "Other") {
-            allergInput.style.display = "block"
-
-        }
 
         changeAvatarInput.addEventListener("change", changeAvatarHandler)
-    }
 
+        editProfileButton.addEventListener("click", () => {
+            editProfileButton.style.display = "none"
+            inputs.forEach(input => {
+                input.disabled = false
+            })
+            buttonsDiv.insertAdjacentElement("beforeend", saveProfileButton)
+
+        })
+        saveProfileButton.addEventListener("click", () => {
+            let profileBody = {}
+            const valid = validationForm(inputs)
+                if (valid){
+                    inputs.forEach(input => {
+                        profileBody[input.id] = input.value
+                    })
+                    updateProfileHandler(profileBody)
+                }
+
+        })
+    }
 
     //When you on recognizer page
     if (window.location.href.indexOf("portal/recognizer") > 1) {
@@ -380,8 +464,8 @@ document.addEventListener('DOMContentLoaded', function () {
         })
     }
 
-    //when you on index portal page
-    if (window.location.href.indexOf("portal") > 1) {
+    //When you on index portal page
+    if (window.location.href.indexOf("portal/dashboard") > 1) {
         let dateArr = ["10:11:20", "10.12.20"]
         let dataArr = [88, 90]
         const ctx = document.getElementById('weight-chart1').getContext('2d');
@@ -424,6 +508,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 })
 
+
 //get lis of user allergens and insert it to profile page
 function getUserAllergenHandler() {
     console.log("Get Allergen list for user")
@@ -437,6 +522,8 @@ function getUserAllergenHandler() {
             
             `))
         })
+
+    //if click on delete send fetch to delete allergen from DB and reload allergen list
     insertList.addEventListener("click", event => {
         if (!event.target.dataset.name) {
             return

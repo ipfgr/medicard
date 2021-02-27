@@ -794,3 +794,9 @@ select {
     width: 88px;
 
 }
+
+.error-message {
+    color: rgba(251, 111, 12, 1);
+    font-weight: bold;
+    background-color: rgba(255, 255, 255, 0.5);
+}

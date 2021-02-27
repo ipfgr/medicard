@@ -4,7 +4,7 @@
 
 {% block body %}
 <div class="container-portal" id="app">
-        <!--    Get user id to app.js   -->
+    <!--    Get user id to app.js   -->
     {{ user.med_id | json_script:'user-med-id' }}
 
     <div class="menu-portal">
@@ -15,7 +15,7 @@
                 <img alt="avatar" src="{{ user.avatar_url }}">
             </div>
             <div class="about">
-                <div class="name">Name: {{ request.user.first_name }}</div>
+                <div class="name">Username: {{ user.username}}</div>
                 <div class="role">Role: {{ user.user_role }}</div>
                 <div class="status">
                     <svg class="bi bi-brightness-alt-low-fill" fill="#5cb85c" height="16" viewBox="0 0 16 16"
@@ -283,7 +283,7 @@
     </div>
 
     {% elif profile %}
-    <div class="profile-container">
+    <div  class="profile-container">
         <div class="container">
             <div class="row flex-lg-nowrap">
                 <div class="col">
@@ -302,7 +302,9 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col d-flex flex-column flex-sm-row justify-content-between mb-3">
+
+
+                                            <div id="profile" class="col d-flex flex-column flex-sm-row justify-content-between mb-3">
                                                 <div class="text-center text-sm-left mb-2 mb-sm-0">
                                                     <h4 class="pt-sm-2 pb-1 mb-0 text-nowrap">{{user.name}}</h4>
                                                     <p class="mb-0">Gender: {{ user.gender }} </p>
@@ -310,8 +312,12 @@
                                                     <div class="text-muted"><small>Last seen 2 hours ago</small></div>
                                                     <div class="mt-2">
 
-                                                            <input id="avatar-upload" type="file" accept=".jpg, .png, .gif" multiple="false" id="upload-avatar">
-                                                            <button id="avatar-upload-button" class="btn btn-outline-info"><i class="fa fa-fw fa-camera"></i> Change avatar</button>
+                                                        <input accept=".jpg, .png, .gif" id="avatar-upload"
+                                                               id="upload-avatar"
+                                                               multiple="false" type="file">
+                                                        <button class="btn btn-outline-info" id="avatar-upload-button">
+                                                            <i class="fa fa-fw fa-camera"></i> Change avatar
+                                                        </button>
 
 
                                                     </div>
@@ -323,19 +329,18 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <ul class="nav nav-tabs">
-                                            <li class="nav-item"><a class="active nav-link" href="">Settings</a></li>
-                                        </ul>
+
                                         <div class="tab-content pt-3">
                                             <div class="tab-pane active">
-                                                <form class="form" novalidate="">
+                                                <!--                          Start form                      -->
+                                                <div class="form">
                                                     <div class="row">
                                                         <div class="col">
                                                             <div class="row">
                                                                 <div class="col">
                                                                     <div class="form-group">
                                                                         <label>Full Name</label>
-                                                                        <input class="form-control" name="name"
+                                                                        <input v-model="name" id="full-name" class="form-control input-p"
                                                                                placeholder="John Smith" type="text"
                                                                                value="{{ user.first_name }} {{ user.last_name }}">
                                                                     </div>
@@ -343,71 +348,126 @@
                                                                 <div class="col">
                                                                     <div class="form-group">
                                                                         <label>Username</label>
-                                                                        <input class="form-control" name="username"
-                                                                               placeholder="johnny.s" type="text"
-                                                                               value="johnny.s">
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="row">
-                                                                <div class="col">
-                                                                    <div class="form-group">
-                                                                        <label>Email</label>
-                                                                        <input class="form-control"
-                                                                               placeholder="user@example.com"
-                                                                               type="text" value="{{user.email}}">
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="row">
-                                                                <div class="col mb-3">
-                                                                    <div class="form-group">
-                                                                        <label>About</label>
-                                                                        <textarea class="form-control"
-                                                                                  placeholder="My Bio"
-                                                                                  rows="5"></textarea>
+                                                                        <input class="form-control" disabled
+                                                                                type="text"
+                                                                               value="{{ user.username}}">
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </div>
                                                     <div class="row">
+                                                        <div class="col mb-3">
+                                                            <div class="form-group">
+                                                                <label>Short info</label>
+                                                                <textarea id="bio" class="form-control input-p"
+                                                                          placeholder="My Bio"
+                                                                          rows="5"
+                                                                          value="{{ user.short_info}}"
+                                                                          maxlength="500"></textarea>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+
+                                                    <div class="row">
                                                         <div class="col-12 col-sm-6 mb-3">
+
+                                                            <div class="row">
+                                                                <div class="col">
+                                                                    <div class="form-group">
+                                                                        <label for="gender">Gender</label>
+                                                                        <select selected="{{ user.gender }}" class="form-control input-p" id="gender">
+
+                                                                            <option value="male">Male</option>
+                                                                            <option value="female">Female</option>
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="row">
+                                                                <div class="col">
+                                                                    <div class="form-group">
+                                                                        <label for="birthday">Birthday</label>
+                                                                        <div class="col-10">
+                                                                            <input class="form-control input-p" id="birthday"
+                                                                                   type="date"
+                                                                                   value="{{ user.birth_date}}">
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                                                                                    <hr/>
+
+                                                            <div class="row">
+                                                                <div class="col">
+                                                                    <div class="form-group">
+                                                                        <label>Home Address</label>
+                                                                        <input id="home-address" class="form-control input-p"
+                                                                               placeholder="Home Address"
+                                                                               type="text">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="row">
+                                                                <div class="col">
+                                                                    <div class="form-group">
+                                                                        <label>Job place</label>
+                                                                        <input id="job" class="form-control input-p"
+                                                                               placeholder="Job place"
+                                                                               type="text">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <hr/>
+
+                                                            <div class="row">
+                                                                <div class="col">
+                                                                    <div class="form-group">
+                                                                        <label>Email</label>
+                                                                        <input id="email" class="form-control input-p"
+                                                                               placeholder="user@example.com"
+                                                                               type="email" value="{{user.email}}">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
                                                             <div class="row">
                                                                 <div class="col">
                                                                     <div class="form-group">
                                                                         <label>Contact phone</label>
-                                                                        <input class="form-control"
+                                                                        <input id="contact-phone" class="form-control input-p"
                                                                                placeholder="Phone number"
-                                                                               type="text">
+                                                                               type="number" min="8" max ="13">
                                                                     </div>
                                                                 </div>
                                                             </div>
+
                                                             <div class="row">
                                                                 <div class="col">
                                                                     <div class="form-group">
                                                                         <label>Emergency Phone</label>
-                                                                        <input class="form-control" placeholder="••••••"
-                                                                               type="text">
+                                                                        <input id="emergency-phone" class="form-control input-p"
+                                                                               placeholder="Emergency Phone"
+                                                                               type="number" min="8" max ="13">
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                            <div class="row">
-                                                                <div class="col">
-                                                                    <div class="form-group">
-                                                                        <label>Current Password</label>
-                                                                        <input class="form-control" placeholder="••••••"
-                                                                               type="text">
-                                                                    </div>
-                                                                </div>
-                                                            </div>
+
+
+
+
+
                                                             <hr/>
                                                             <div class="mb-2"><b>Change Password</b></div>
                                                             <div class="row">
                                                                 <div class="col">
                                                                     <div class="form-group">
                                                                         <label>Current Password</label>
-                                                                        <input class="form-control" placeholder="••••••"
+                                                                        <input class="form-control" disabled
+                                                                               placeholder="••••••"
                                                                                type="password">
                                                                     </div>
                                                                 </div>
@@ -416,7 +476,8 @@
                                                                 <div class="col">
                                                                     <div class="form-group">
                                                                         <label>New Password</label>
-                                                                        <input class="form-control" placeholder="••••••"
+                                                                        <input id="pass" class="form-control input-p"
+                                                                               placeholder="••••••"
                                                                                type="password">
                                                                     </div>
                                                                 </div>
@@ -425,41 +486,39 @@
                                                                 <div class="col">
                                                                     <div class="form-group">
                                                                         <label>Confirm <span class="d-none d-xl-inline">Password</span></label>
-                                                                        <input class="form-control" placeholder="••••••"
+                                                                        <input id="confirm-pass" class="form-control input-p"
+                                                                               placeholder="••••••"
                                                                                type="password"></div>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                         <div class="col-12 col-sm-5 offset-sm-1 mb-3">
-                                                            <div class="mb-2"><b>Emegrency contacts methods</b></div>
+
+                                                            <div class="row">
+                                                                <div class="col">
+                                                                    <div class="form-group">
+                                                                        <label for="role-select">Your Role</label>
+                                                                        <select class="form-control"  disabled id="role-select">
+                                                                            <option value="user">User</option>
+                                                                            <option value="doctor">Doctor</option>
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        <hr/>
+
+                                                            <div class="mb-2"><b>Emergency contacts methods</b></div>
                                                             <div class="row">
                                                                 <div class="col">
                                                                     <div class="custom-controls-stacked px-2">
+
                                                                         <div class="custom-control custom-checkbox">
-                                                                            <input checked=""
-                                                                                   class="custom-control-input"
-                                                                                   id="notifications-blog"
+                                                                            <input
+                                                                                   class="custom-control-input input-p"
+                                                                                   id="notifications"
                                                                                    type="checkbox">
                                                                             <label class="custom-control-label"
-                                                                                   for="notifications-blog">Emergency
-                                                                                number</label>
-                                                                        </div>
-                                                                        <div class="custom-control custom-checkbox">
-                                                                            <input checked=""
-                                                                                   class="custom-control-input"
-                                                                                   id="notifications-news"
-                                                                                   type="checkbox">
-                                                                            <label class="custom-control-label"
-                                                                                   for="notifications-news">Family phone
-                                                                                numbers</label>
-                                                                        </div>
-                                                                        <div class="custom-control custom-checkbox">
-                                                                            <input checked=""
-                                                                                   class="custom-control-input"
-                                                                                   id="notifications-offers"
-                                                                                   type="checkbox">
-                                                                            <label class="custom-control-label"
-                                                                                   for="notifications-offers">Any</label>
+                                                                                   for="notifications">Any</label>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -468,11 +527,12 @@
                                                     </div>
                                                     <div class="row">
                                                         <div class="col d-flex justify-content-end">
-                                                            <button class="btn btn-outline-info" type="submit">Save Changes
-                                                            </button>
+                                                            <div id="buttons-save-edit">
+
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </form>
+                                                </div>
 
                                             </div>
                                         </div>

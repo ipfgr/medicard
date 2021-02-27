@@ -120,6 +120,13 @@ def api_view(request, link):
                 RecognizedFiles(user_id=user_id, file_name=file).save()
             return JsonResponse({"Message: Saved"}, status=201)
 
+        if link == "profile":
+            data = json.loads(request.body)
+
+            print(data)
+
+            return JsonResponse({"Message: Saved"}, status=201)
+
     if request.method == "GET":
         if link == "allergens":
             report = []
@@ -147,6 +154,9 @@ def api_view(request, link):
             return JsonResponse({"Message": "Delete Success"}, status = 204)
 
 
+
+def family_profile_view(request, id):
+    pass
 
 def login_view(request):
     context = {
@@ -176,6 +186,9 @@ def login_view(request):
             })
     else:
         return render(request, "portal/index.html", context)
+
+
+
 
 def register_view(request):
     context = {
