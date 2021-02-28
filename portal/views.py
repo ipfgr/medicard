@@ -13,6 +13,7 @@ from .models import User
 from .models import FamilyMembers
 from .models import AllergyList
 from .models import RecognizedFiles
+from .models import AccessList
 
 from django.http import HttpResponse
 
@@ -40,7 +41,7 @@ def portal_view(request, page=""):
             })
         else:
             for member in members:
-                family_members.append(member.family_members_id_list)
+                family_members.append(member.family_members_list_id)
             query = Q()
             for ident in family_members:
                 query.add(Q(id=ident), Q.OR)
@@ -58,7 +59,8 @@ def portal_view(request, page=""):
     elif page == "profile":
         return render(request, 'portal/portal.html', {
             "user": info,
-            "profile": True
+            "profile": True,
+
         })
     else:
         return render(request, 'portal/portal.html', {
@@ -80,7 +82,7 @@ def remove_family_member_view(request):
     if request.method == "POST":
         data = json.loads(request.body)
         remove_id = data.get("id", "")
-        FamilyMembers.objects.filter(user_id=request.user.id, family_members_id_list=remove_id).delete()
+        FamilyMembers.objects.filter(user_id=request.user.id, family_members_list=remove_id).delete()
 
 @login_required()
 def add_family_member_view(request):
@@ -91,9 +93,9 @@ def add_family_member_view(request):
         #                                       [med_id])
         get_append_user_id = User.objects.get(med_id=med_id)
         # check if current user already add this member to his family
-        find_link = FamilyMembers.objects.filter(user_id=request.user.id, family_members_id_list=get_append_user_id.id)
+        find_link = FamilyMembers.objects.filter(user_id=request.user.id, family_members_list=get_append_user_id.id)
         if not find_link:
-            FamilyMembers(user_id=request.user.id, family_members_id_list=get_append_user_id.id).save()
+            FamilyMembers(user_id=request.user.id, family_members_list=get_append_user_id.id).save()
             return JsonResponse({"message": "Add successfuly"}, status=201)
         else:
             return JsonResponse({"message": "Already added"}, status=200)
@@ -102,6 +104,16 @@ def add_family_member_view(request):
 def api_view(request, link):
     user_id = request.user.id
     if request.method == "POST":
+        if link == "access":
+            data = json.loads(request.body)
+            access = data.get("access", "")
+            get_append_user_id = User.objects.get(med_id=access)
+            if AccessList.objects.filter(user_id=user_id, access_user=get_append_user_id.id):
+                return JsonResponse({"Message: Already exists"}, status=200)
+            else:
+                AccessList(user_id=user_id, access_user=get_append_user_id).save()
+                return JsonResponse({"Message: Saved"}, status=201)
+
         if link == "allergens":
             data = json.loads(request.body)
             allergen = data.get("allergen", "")
@@ -122,8 +134,30 @@ def api_view(request, link):
 
         if link == "profile":
             data = json.loads(request.body)
-
-            print(data)
+            full_name = data.get("full-name", "")
+            bio = data.get("bio", "")
+            gender = data.get("gender", "")
+            birthday = data.get("birthday", "")
+            job = data.get("job", "")
+            email = data.get("email", "")
+            home_address = data.get("home-address", "")
+            phone_number = data.get("phone_number", "")
+            emergency_number = data.get("emergency_number", "")
+            notifications = data.get("notifications", "")
+            print(bio)
+            checkbox = True
+            if notifications == "off":
+                checkbox = False
+            User.objects.filter(id=request.user.id).update(full_name=full_name,
+                                                        gender=gender,
+                                                        bio=bio,
+                                                        birth_date=birthday,
+                                                        home_address=home_address,
+                                                        job=job,
+                                                        email=email,
+                                                        phone_number=phone_number,
+                                                        emergency_number=emergency_number,
+                                                        notifications=checkbox)
 
             return JsonResponse({"Message: Saved"}, status=201)
 
@@ -138,6 +172,10 @@ def api_view(request, link):
         if link == "recognizer":
             answers = RecognizedFiles.objects.filter(user_id=user_id)
             answers = answers.order_by("id").all()
+            return JsonResponse([answer.serialize() for answer in answers], safe=False)
+
+        if link == "access":
+            answers = AccessList.objects.filter(user_id=user_id)
             return JsonResponse([answer.serialize() for answer in answers], safe=False)
 
     if request.method == "PUT":

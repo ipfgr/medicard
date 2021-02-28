@@ -1,64 +1,3 @@
-//Validator for profile edit form
-function validationForm(inputs) {
-    let result = true
-    //Regex fr check correct telephone number input
-    const regex =/^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$/
-    inputs.forEach(input => {
-        //if required fields null?
-        if (!input.value) {
-            if (   input.id == "contact-phone"
-                || input.id == "emergency-phone"
-                || input.id == "job"
-                || input.id == "home-address"
-                || input.id == "full-name") {
-                input.insertAdjacentHTML("beforebegin", `<span class="error-message">Cant be Empty</span>`)
-                result=false
-            }
-        }
-        else if (  input.id == "contact-phone"
-                || input.id == "emergency-phone"){
-            if(!regex.test(input.value)) {
-                input.insertAdjacentHTML("beforebegin", `<span class="error-message">Not correct number</span>`)
-            result=false
-            }
-        }
-    })
-    //clean error messages
-    setTimeout(() => {
-        const messages = document.querySelectorAll(".error-message")
-        messages.forEach(message => message.remove())
-    }, 3000)
-
-    return result
-}
-
-//Timeout helper
-const wait = (ms) => setTimeout(() => {
-}, ms)
-
-//Bites to normal size converter function
-function formatBytes(bytes, decimals) {
-    if (bytes == 0) {
-        return "0 Byte"
-    }
-    const k = 1024; //Or 1 kilo = 1000
-    const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB"]
-    const i = Math.floor(Math.log(bytes) / Math.log(k))
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(decimals)) + " " + sizes[i]
-}
-
-//Validate file size before upload
-function validateSize(file, size) {
-    let fileSize = file.size / 1024 / 1024; // in MiB
-    if (fileSize > size) {
-        alert(`File size exceeds ${size} MiB`);
-        // $(file).val(''); //for clearing with Jquery
-    } else {
-        return true
-    }
-}
-
-
 const firebaseConfig = {
     apiKey: "AIzaSyCKGs3Hy8wmIT7M4OJ2SYWlwSVV2-d3TNg",
     authDomain: "medicard-db.firebaseapp.com",
@@ -85,7 +24,15 @@ document.addEventListener('DOMContentLoaded', function () {
         const changeAvatarButton = document.querySelector("#avatar-upload-button")
         const editProfileButton = document.createElement("button")
         const buttonsDiv = document.querySelector("#buttons-save-edit")
+        const searchInput = document.querySelector("#access-member-search")
+        const searchMemberButton = document.querySelector(".search-member-btn")
+        const addMemberButton = document.querySelector(".add-member-btn")
 
+        getAccessList()
+
+        addMemberButton.style.visibility = "hidden"
+        searchMemberButton.addEventListener("click", () => searchMember(searchInput.value, "access"))
+        
         editProfileButton.classList.add("btn")
         editProfileButton.classList.add("btn-outline-info")
         editProfileButton.textContent = "Edit Profile"
@@ -160,7 +107,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                 })
                             }).then(response => response.json)
 
-                                .catch(error => console.log(error))
+                                .catch(error => console.error(error))
                         });
                     })
             } else {
@@ -173,15 +120,19 @@ document.addEventListener('DOMContentLoaded', function () {
         const updateProfileHandler = (profileBody) => {
             fetch(`/portal/api/v1/profile`, {
                 method: "POST",
-                headers:{
+                headers: {
                     "X-CSRFToken": getCookie("csrftoken")
                 },
                 body: JSON.stringify(profileBody)
             })
+                .then(response => response.json())
+                .then(result => console.log(result))
+                .catch(error => console.error(error))
+                .finally(()=> location.reload())
         }
         getUserAllergenHandler()
 
-        //array of alergens for choose at profile page
+        //array of allergens for choose at profile page
         const allergensArr = [
             "Gluten",
             "Crustaceans",
@@ -225,12 +176,13 @@ document.addEventListener('DOMContentLoaded', function () {
         saveProfileButton.addEventListener("click", () => {
             let profileBody = {}
             const valid = validationForm(inputs)
-                if (valid){
-                    inputs.forEach(input => {
-                        profileBody[input.id] = input.value
-                    })
-                    updateProfileHandler(profileBody)
-                }
+            if (valid) {
+                inputs.forEach(input => {
+                    profileBody[input.id] = input.value
+                })
+                console.log(profileBody)
+                updateProfileHandler(profileBody)
+            }
 
         })
     }
@@ -452,10 +404,10 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     // When you on family page
     if (window.location.href.indexOf("portal/family") > 1) {
-        document.querySelector("#add-member-btn").style.visibility = "hidden"
-        const searchMemberButton = document.getElementById("searach-member-btn")
+        document.querySelector(".add-member-btn").style.visibility = "hidden"
+        const searchMemberButton = document.querySelector(".search-member-btn")
         let idInput = document.getElementById("member-id")
-        searchMemberButton.addEventListener('click', () => searchMember(idInput.value))
+        searchMemberButton.addEventListener('click', () => searchMember(idInput.value, "member"))
 
         const removeMemberButton = document.querySelectorAll(".remove-member")
         removeMemberButton.forEach(button => {
@@ -509,6 +461,19 @@ document.addEventListener('DOMContentLoaded', function () {
 })
 
 
+
+function getAccessList(){
+    const accessList = document.querySelector(".access-list")
+    fetch(`/portal/api/v1/access`)
+        .then(response => response.json())
+        .then(result => {
+            console.log(result)
+            result.forEach(el => {
+                   accessList.insertAdjacentHTML("beforeend", `<li><div class="item-name"><span>${el.give_access}</span><div class="remove" data-name="${el.give_access}">&times;</div></div></li>`)
+            })
+        })
+}
+
 //get lis of user allergens and insert it to profile page
 function getUserAllergenHandler() {
     console.log("Get Allergen list for user")
@@ -518,7 +483,7 @@ function getUserAllergenHandler() {
         .then(result => {
             insertList.innerHTML = ""
             result.forEach(al => insertList.insertAdjacentHTML("beforeend", `
-            <li><div class="allergen-name"><span>${al}</span><div class="remove-allergen" data-name="${al}">&times;</div></div></li>
+            <li><div class="item-name"><span>${al}</span><div class="remove" data-name="${al}">&times;</div></div></li>
             
             `))
         })
@@ -549,7 +514,7 @@ function getUserAllergenHandler() {
     })
 }
 
-//Set (add) new alergens for user at profile page
+//Set (add) new allergens for user at profile page
 function setUserAllergenHandler(allergen) {
     console.log("Send Post Request to Backend")
     const link = "allergens"
@@ -592,28 +557,26 @@ function removeMember(id) {
 }
 
 //Search family member at family page
-function searchMember(id) {
-    const addMemberButton = document.querySelector("#add-member-btn")
-
-    const resultDiv = document.getElementById("search-result")
+function searchMember(id, options) {
+    const addMemberButton = document.querySelector(".add-member-btn")
+    const resultDiv = document.querySelector(".search-result")
     fetch(`/portal/search/${id}`)
         .then(response => response.json())
         .then(result => {
             if (result.message == "Not correct ID") {
                 resultDiv.innerHTML = "Not Correct ID"
                 addMemberButton.style.visibility = "hidden";
-
             } else {
-
                 resultDiv.innerHTML = `Find user: ${JSON.stringify(result)} `
                 addMemberButton.style.visibility = "visible";
-
             }
-
         }).catch(error => console.log(error))
         .finally(() => {
-
-            document.querySelector("#add-member-btn").addEventListener("click", () => addMember(id))
+            if (options == "member"){
+                addMemberButton.addEventListener("click", () => addMember(id))
+            }
+            if (options == "access")
+            addMemberButton.addEventListener("click", () => addAccess(id))
         })
 }
 
@@ -636,7 +599,24 @@ function addMember(id) {
 
 }
 
+//Add family member at family page
+function addAccess(id) {
+    console.log("Send Post Request to Backend")
+    fetch(`/portal/api/v1/access`, {
+        method: "POST",
+        headers: {
+            "X-CSRFToken": getCookie("csrftoken")
+        },
+        body: JSON.stringify({
+            access: id
+        })
+    })
+        .then(response => response.json())
+        .then(result => console.log(result))
+        .finally(() => location.reload())
+        .catch(error => console.log(error))
 
+}
 //Get CSRF token for send fetch to server securly
 function getCookie(name) {
     var cookieValue = null;
@@ -654,3 +634,57 @@ function getCookie(name) {
     return cookieValue;
 }
 
+//Validator for profile edit form
+function validationForm(inputs) {
+    let result = true
+    //Regex fr check correct telephone number input
+    const regex = /^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$/
+    inputs.forEach(input => {
+        //if required fields null?
+        if (!input.value) {
+            if (input.id == "contact-phone"
+                || input.id == "emergency-phone"
+                || input.id == "job"
+                || input.id == "home-address"
+                || input.id == "full-name") {
+                input.insertAdjacentHTML("beforebegin", `<span class="error-message">Cant be Empty</span>`)
+                result = false
+            }
+        } else if (input.id == "contact-phone"
+            || input.id == "emergency-phone") {
+            if (!regex.test(input.value)) {
+                input.insertAdjacentHTML("beforebegin", `<span class="error-message">Not correct number</span>`)
+                result = false
+            }
+        }
+    })
+    //clean error messages
+    setTimeout(() => {
+        const messages = document.querySelectorAll(".error-message")
+        messages.forEach(message => message.remove())
+    }, 3000)
+
+    return result
+}
+
+//Bites to normal size converter function
+function formatBytes(bytes, decimals) {
+    if (bytes == 0) {
+        return "0 Byte"
+    }
+    const k = 1024; //Or 1 kilo = 1000
+    const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB"]
+    const i = Math.floor(Math.log(bytes) / Math.log(k))
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(decimals)) + " " + sizes[i]
+}
+
+//Validate file size before upload
+function validateSize(file, size) {
+    let fileSize = file.size / 1024 / 1024; // in MiB
+    if (fileSize > size) {
+        alert(`File size exceeds ${size} MiB`);
+        // $(file).val(''); //for clearing with Jquery
+    } else {
+        return true
+    }
+}

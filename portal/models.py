@@ -12,13 +12,15 @@ class User(AbstractUser):
     avatar_url = models.URLField(
         default="https://firebasestorage.googleapis.com/v0/b/medicard-db.appspot.com/o/portal%2Fimg%2Fnoimage.jpg?alt=media&token=defb69c4-2ffc-4e10-be83-75498408c2e2")
     med_id = models.CharField(max_length=255, default=uuid.uuid4().hex[:12])
+    full_name = models.CharField(max_length=100, null=True)
     gender = models.CharField(max_length=15, default='unknow')
     birth_date = models.CharField(max_length=30, default="1920-01-01", null=True)
-    short_info = models.CharField(max_length=1000, default=None, null=True)
+    bio = models.CharField(max_length=1000, default=None, null=True)
     home_address = models.CharField(max_length=255, null=True)
     job = models.CharField(max_length=255, null=True)
     phone_number = models.IntegerField(null=True)
     emergency_number = models.IntegerField(null=True)
+    notifications = models.BooleanField(default=True)
 
     def serialize(self):
         return {
@@ -28,10 +30,10 @@ class User(AbstractUser):
 
 class FamilyMembers(models.Model):
     user = models.ForeignKey(User, default=None, related_name="username_f", on_delete=models.CASCADE)
-    family_members_id_list = models.CharField(max_length=500, default=None)
+    family_members_list = models.ForeignKey(User, default=None, related_name="username_fm", on_delete=models.CASCADE)
 
     def __str__(self):
-        return "User {} have family members {}".format(self.user_id, self.family_members_id_list)
+        return "User {} have family members {}".format(self.user_id, self.family_members_list)
 
 
 class AllergyList(models.Model):
@@ -69,4 +71,15 @@ class RecognizedFiles(models.Model):
             "uploaded": self.uploaded,
             "recognized": self.recognized,
             "rejected": self.rejected
+        }
+
+
+class AccessList(models.Model):
+    user = models.ForeignKey(User, default=None, related_name="username_al", on_delete=models.CASCADE)
+    access_user = models.ForeignKey(User, default=None, related_name="username_au", on_delete=models.CASCADE)
+
+    def serialize(self):
+        return {
+            "user": self.user.id,
+            "give_access": self.access_user.username,
         }

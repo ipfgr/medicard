@@ -777,13 +777,13 @@ section .section-title {
     justify-content: center;
 }
 
-.allergen-name {
+.item-name {
     display: flex;
     justify-content: space-between;
 
 }
 
-.remove-allergen {
+.remove {
     cursor: pointer;
     border: 1px solid black;
     background-color: rgba(255, 255, 255 0.5);
@@ -799,4 +799,8 @@ select {
     color: rgba(251, 111, 12, 1);
     font-weight: bold;
     background-color: rgba(255, 255, 255, 0.5);
+}
+
+.search-access-btn > button{
+    margin-top:5px;
 }
