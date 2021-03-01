@@ -28,48 +28,109 @@ def index_view(request):
     return render(request, 'portal/index.html', context)
 
 @login_required()
-def portal_view(request, page=""):
-    current_user = request.user.username
-    info = User.objects.get(username=current_user)
-    if page == "family":
-        family_members = []
-        members = FamilyMembers.objects.filter(user_id=request.user.id)
-        if not members:
+def portal_view(request, med_id="", page=""):
+    # if user link to portal index page he automaticly get to pages with his med_id
+    if med_id == "":
+        med_id = request.user.med_id
+
+    # Check if logged user looking his pages
+    if med_id == request.user.med_id:
+        current_user = User.objects.get(med_id=request.user.med_id)
+        info = User.objects.get(username=current_user.username)
+        if page == "family":
+            family_members = []
+            # Get all family members from DB
+            members = FamilyMembers.objects.filter(user_id=request.user.id)
+            if not members:
+                return render(request, 'portal/portal.html', {
+                    "user": info,
+                    "family": True,
+                    "owner": True
+                })
+            else:
+                # Prepare query for show added family members list
+                for member in members:
+                    family_members.append(member.family_members_list_id)
+                query = Q()
+                for ident in family_members:
+                    query.add(Q(id=ident), Q.OR)
+                my_family = User.objects.filter(query)
+                return render(request, 'portal/portal.html', {
+                    "user": info,
+                    "family": True,
+                    "owner": True,
+                    "my_family": my_family
+                })
+        elif page == "recognizer":
             return render(request, 'portal/portal.html', {
                 "user": info,
-                "family": True,
+                "recognizer": True,
+                "owner": True,
+
+            })
+        elif page == "profile":
+            return render(request, 'portal/portal.html', {
+                "user": info,
+                "profile": True,
+                "owner": True,
+
             })
         else:
-            for member in members:
-                family_members.append(member.family_members_list_id)
-            query = Q()
-            for ident in family_members:
-                query.add(Q(id=ident), Q.OR)
-            my_family = User.objects.filter(query)
             return render(request, 'portal/portal.html', {
                 "user": info,
-                "family": True,
-                "my_family": my_family
-            })
-    elif page == "recognizer":
-        return render(request, 'portal/portal.html', {
-            "user": info,
-            "recognizer": True,
-        })
-    elif page == "profile":
-        return render(request, 'portal/portal.html', {
-            "user": info,
-            "profile": True,
+                "dashboard": True,
+                "owner": True
 
-        })
+            })
     else:
-        return render(request, 'portal/portal.html', {
-            "user": info,
-            "dashboard": True
-        })
+        # Check if user have access to look another user page
+        access_user = User.objects.get(med_id=med_id)
+        access_check = AccessList.objects.filter(user_id=access_user.id, access_user=request.user.id)
+        print(access_check)
+        info = User.objects.get(med_id=med_id)
+        if not access_check:
+            return render(request, 'portal/portal.html', {
+                "user": info,
+                "error": True
+            })
+        else:
+            if page == "family":
+                family_members = []
+                # Get all family members from DB
+                members = FamilyMembers.objects.filter(user_id=access_user.id)
+                if not members:
+                    return render(request, 'portal/portal.html', {
+                        "user": info,
+                        "family": True,
+                    })
+                else:
+                    # Prepare query for show added family members list
+                    for member in members:
+                        family_members.append(member.family_members_list_id)
+                    query = Q()
+                    for ident in family_members:
+                        query.add(Q(id=ident), Q.OR)
+                    my_family = User.objects.filter(query)
+                    return render(request, 'portal/portal.html', {
+                        "user": info,
+                        "family": True,
+                        "my_family": my_family
+                    })
+
+            elif page == "profile":
+                return render(request, 'portal/portal.html', {
+                    "user": info,
+                    "profile": True,
+
+                })
+            else:
+                return render(request, 'portal/portal.html', {
+                    "user": info,
+                    "dashboard": True
+                })
 
 @login_required()
-def search_view(request, ident =""):
+def search_view(request, ident=""):
     if request.method == "GET":
         checker = User.objects.filter(med_id=ident)
         if not checker:
@@ -190,6 +251,13 @@ def api_view(request, link):
             allergen = data.get("delete", "")
             AllergyList.objects.filter(user_id=user_id, allergen_name=allergen).delete()
             return JsonResponse({"Message": "Delete Success"}, status = 204)
+
+        if link == "access":
+            data = json.loads(request.body)
+            delete_user = data.get("delete", "")
+            get_append_user_id = User.objects.get(username=delete_user)
+            AccessList.objects.filter(user_id=user_id, access_user_id=get_append_user_id).delete()
+            return JsonResponse({"Message": "Delete Success"}, status=204)
 
 
 

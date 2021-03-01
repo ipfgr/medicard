@@ -6,6 +6,21 @@
     font-family: 'Poppins', sans-serif;
 }
 
+/*Error page*/
+.error-template {
+    padding: 40px 15px;
+    text-align: center;
+}
+
+.error-actions {
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+.error-actions .btn {
+    margin-right: 10px;
+}
+
 
 /* Topbar Styles */
 .top-bar {
@@ -706,7 +721,6 @@ section .section-title {
 }
 
 
-
 .remove-img {
     width: 20px;
     height: 20px;
@@ -801,6 +815,8 @@ select {
     background-color: rgba(255, 255, 255, 0.5);
 }
 
-.search-access-btn > button{
-    margin-top:5px;
+.search-access-btn > button {
+    margin-top: 5px;
 }
+
+

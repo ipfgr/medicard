@@ -1,3 +1,4 @@
+//Initialization Cloud FireStore and Firebase Datastore
 const firebaseConfig = {
     apiKey: "AIzaSyCKGs3Hy8wmIT7M4OJ2SYWlwSVV2-d3TNg",
     authDomain: "medicard-db.firebaseapp.com",
@@ -7,42 +8,58 @@ const firebaseConfig = {
     appId: "1:872483625762:web:060663b337fb53641fe37b",
     measurementId: "G-YQ7GVST827"
 }
-
-
-firebase.initializeApp(firebaseConfig);
+const app = firebase.initializeApp(firebaseConfig);
 const storageRef = firebase.storage().ref();
+const db = firebase.firestore(app);
 
+
+function buttonMaker(tag, classlist, textcontent){
+        const button =  document.createElement("tag")
+        button.classList.add(...classlist)
+        button.textContent=textcontent
+        return button
+    }
 
 document.addEventListener('DOMContentLoaded', function () {
     //Get current user ID from django template
     const currentUserMedId = JSON.parse(document.querySelector('#user-med-id').textContent)
 
-
     //Profile page section
     if (window.location.href.indexOf("portal/profile") > 1) {
+        const profileUserId = document.querySelector(".med_id")
         const changeAvatarInput = document.querySelector("#avatar-upload")
         const changeAvatarButton = document.querySelector("#avatar-upload-button")
-        const editProfileButton = document.createElement("button")
         const buttonsDiv = document.querySelector("#buttons-save-edit")
         const searchInput = document.querySelector("#access-member-search")
-        const searchMemberButton = document.querySelector(".search-member-btn")
-        const addMemberButton = document.querySelector(".add-member-btn")
 
+        const selectAllergens = document.querySelector(".select-allergens")
+        const searchAddButtons = document.querySelector(".search-access-btn")
         getAccessList()
+
+
+        const editProfileButton = buttonMaker("button", ["btn", "btn-outline-info"], "Edit Profile")
+        const saveProfileButton = buttonMaker("button", ["btn", "btn-outline-info"], "Save Profile")
+        const addAllergenButton = buttonMaker("button", ["btn", "btn-outline-info"], "Add Allergen")
+        const searchMemberButton = buttonMaker("button", ["btn", "btn-outline-info"], "Search Member")
+        const addMemberButton = buttonMaker("button", ["btn", "btn-outline-info", "add-member-btn"], "Add Member")
 
         addMemberButton.style.visibility = "hidden"
         searchMemberButton.addEventListener("click", () => searchMember(searchInput.value, "access"))
-        
-        editProfileButton.classList.add("btn")
-        editProfileButton.classList.add("btn-outline-info")
-        editProfileButton.textContent = "Edit Profile"
+        changeAvatarInput.style.display = "none"
+        changeAvatarButton.style.display = "none"
+        selectAllergens.style.display = "none"
+        const addAllergenButtonDiv = document.querySelector(".add-allergen-button")
 
-        const saveProfileButton = document.createElement("button")
-        saveProfileButton.classList.add("btn")
-        saveProfileButton.classList.add("btn-outline-info")
-        saveProfileButton.textContent = "Save Profile"
+        if (currentUserMedId === profileUserId.textContent){
+            buttonsDiv.insertAdjacentElement("beforeend", editProfileButton)
+            changeAvatarButton.style.display = "block"
+            changeAvatarButton.addEventListener("click", () => changeAvatarInput.click())
+            addAllergenButtonDiv.insertAdjacentElement("beforeend", addAllergenButton)
+            searchAddButtons.insertAdjacentElement("beforeend", searchMemberButton)
+            searchAddButtons.insertAdjacentElement("beforeend", addMemberButton)
 
-        buttonsDiv.insertAdjacentElement("beforeend", editProfileButton)
+            selectAllergens.style.display = "block"
+        }
 
         //Set to Disable all input fields
         const inputs = document.querySelectorAll(".input-p")
@@ -51,8 +68,7 @@ document.addEventListener('DOMContentLoaded', function () {
         })
 
         //hide input for avatar upload
-        changeAvatarInput.style.display = "none"
-        changeAvatarButton.addEventListener("click", () => changeAvatarInput.click())
+
 
 
         //handler for upload avatar to DB and write new link to db user profile
@@ -159,8 +175,7 @@ document.addEventListener('DOMContentLoaded', function () {
         allergInput.style.display = "none"
 
         const optionSelect = document.querySelector("#allergens")
-        const addAllergyButton = document.querySelector("#add-allergen")
-        addAllergyButton.onclick = () => setUserAllergenHandler(optionSelect.value)
+        addAllergenButton.onclick = () => setUserAllergenHandler(optionSelect.value)
 
 
         changeAvatarInput.addEventListener("change", changeAvatarHandler)
@@ -464,6 +479,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 function getAccessList(){
     const accessList = document.querySelector(".access-list")
+    accessList.innerHTML = ""
     fetch(`/portal/api/v1/access`)
         .then(response => response.json())
         .then(result => {
@@ -472,6 +488,27 @@ function getAccessList(){
                    accessList.insertAdjacentHTML("beforeend", `<li><div class="item-name"><span>${el.give_access}</span><div class="remove" data-name="${el.give_access}">&times;</div></div></li>`)
             })
         })
+        accessList.addEventListener("click", event => {
+            if (!event.target.dataset.name) {
+                return
+            }
+            const name = event.target.dataset.name
+            fetch(`/portal/api/v1/access`, {
+                method: "DELETE",
+                headers: {
+                    "X-CSRFToken": getCookie("csrftoken")
+                },
+                body: JSON.stringify({
+                    delete: name
+                })
+        }) .then(response => response.json())
+            .then(result => console.log(result))
+            .catch(err => console.error(err))
+            .finally(() => {
+                getAccessList()
+            })
+
+    })
 }
 
 //get lis of user allergens and insert it to profile page
@@ -506,7 +543,7 @@ function getUserAllergenHandler() {
         })
             .then(response => response.json())
             .then(result => console.log(result))
-            .catch(err => console.log(err))
+            .catch(err => console.error(err))
             .finally(() => {
                 getUserAllergenHandler()
             })
@@ -544,7 +581,7 @@ function setUserAllergenHandler(allergen) {
 
 //remove family member at family page
 function removeMember(id) {
-    fetch('/portal/family/remove', {
+    fetch('/portal/api/v1/family/remove', {
         method: "POST",
         headers: {
             "X-CSRFToken": getCookie("csrftoken")
@@ -560,7 +597,7 @@ function removeMember(id) {
 function searchMember(id, options) {
     const addMemberButton = document.querySelector(".add-member-btn")
     const resultDiv = document.querySelector(".search-result")
-    fetch(`/portal/search/${id}`)
+    fetch(`/portal/api/v1/search/${id}`)
         .then(response => response.json())
         .then(result => {
             if (result.message == "Not correct ID") {
@@ -583,7 +620,7 @@ function searchMember(id, options) {
 //Add family member at family page
 function addMember(id) {
     console.log("Send Post Request to Backend")
-    fetch(`/portal/family/add`, {
+    fetch(`/portal/api/v1/family/add`, {
         method: "POST",
         headers: {
             "X-CSRFToken": getCookie("csrftoken")
@@ -617,7 +654,7 @@ function addAccess(id) {
         .catch(error => console.log(error))
 
 }
-//Get CSRF token for send fetch to server securly
+//Get CSRF token for send fetch to server securely
 function getCookie(name) {
     var cookieValue = null;
     if (document.cookie && document.cookie !== '') {

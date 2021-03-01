@@ -8,11 +8,13 @@ urlpatterns = [
     path("logout", views.logout_view, name="logout"),
                     # API Links
     path('portal', views.portal_view, name="portal"),
+    path('portal/<str:med_id>', views.portal_view, name="portal_access"),
     path('portal/api/v1/<str:link>', views.api_view, name="api"),
-    path('portal/<str:page>', views.portal_view, name="page"),
-    path('portal/search/<str:ident>', views.search_view, name="search_id"),
-    path('portal/family/member/<str:id>', views.family_profile_view, name="family-memper-pprofile"),
-    path('portal/family/add', views.add_family_member_view, name="addmember"),
-    path('portal/family/remove', views.remove_family_member_view, name="removemember")
+    path('portal/api/v1/search/<str:ident>', views.search_view, name="search_id"),
+
+    path('portal/<str:page>/<str:med_id>', views.portal_view, name="page"),
+    path('portal/family/member', views.family_profile_view, name="family-member-profile"),
+    path('portal/family/add', views.add_family_member_view, name="add-member"),
+    path('portal/family/remove', views.remove_family_member_view, name="remove-member")
 
 ]
