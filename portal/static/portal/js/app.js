@@ -1,4 +1,25 @@
+//init vue app
+Vue.use(DatePicker.default);
+    var vm = new Vue({
+      el: '#app',
+      components: { DatePicker },
+      data: {
+        startDate: '',
+      },
+      computed: {
+
+      },
+      mounted() {
+
+      },
+      methods: {
+
+      }
+    });
+
+
 //Initialization Cloud FireStore and Firebase Datastore
+
 const firebaseConfig = {
     apiKey: "AIzaSyCKGs3Hy8wmIT7M4OJ2SYWlwSVV2-d3TNg",
     authDomain: "medicard-db.firebaseapp.com",
@@ -13,16 +34,24 @@ const storageRef = firebase.storage().ref();
 const db = firebase.firestore(app);
 
 
-function buttonMaker(tag, classlist, textcontent){
-        const button =  document.createElement("tag")
-        button.classList.add(...classlist)
-        button.textContent=textcontent
-        return button
-    }
+function buttonMaker(tag, classlist, textcontent) {
+    const button = document.createElement("tag")
+    button.classList.add(...classlist)
+    button.textContent = textcontent
+    return button
+}
 
 document.addEventListener('DOMContentLoaded', function () {
     //Get current user ID from django template
     const currentUserMedId = JSON.parse(document.querySelector('#user-med-id').textContent)
+
+
+    //Card section
+
+    if (window.location.href.indexOf("portal/card") > 1){
+
+
+    }
 
     //Profile page section
     if (window.location.href.indexOf("portal/profile") > 1) {
@@ -31,44 +60,69 @@ document.addEventListener('DOMContentLoaded', function () {
         const changeAvatarButton = document.querySelector("#avatar-upload-button")
         const buttonsDiv = document.querySelector("#buttons-save-edit")
         const searchInput = document.querySelector("#access-member-search")
-
         const selectAllergens = document.querySelector(".select-allergens")
         const searchAddButtons = document.querySelector(".search-access-btn")
-        getAccessList()
-
-
+        const accessBlock = document.querySelector(".access-list-div")
         const editProfileButton = buttonMaker("button", ["btn", "btn-outline-info"], "Edit Profile")
         const saveProfileButton = buttonMaker("button", ["btn", "btn-outline-info"], "Save Profile")
         const addAllergenButton = buttonMaker("button", ["btn", "btn-outline-info"], "Add Allergen")
         const searchMemberButton = buttonMaker("button", ["btn", "btn-outline-info"], "Search Member")
         const addMemberButton = buttonMaker("button", ["btn", "btn-outline-info", "add-member-btn"], "Add Member")
+        const addAllergenButtonDiv = document.querySelector(".add-allergen-button")
+        const inputs = document.querySelectorAll(".input-p")
+        const optionSelected = document.querySelector("#allergens")
+        const allergensArr = [
+            "Gluten",
+            "Crustaceans",
+            "Eggs",
+            "Fish",
+            "Peanuts",
+            "Soybeans",
+            "Milk",
+            "Nuts",
+            "Celery",
+            "Mustard",
+            "Sesame",
+            "Pulphites",
+            "Lupin",
+            "Molluscs",
+        ]
+        const medId = profileUserId.textContent
 
+        accessBlock.style.display = "none"
         addMemberButton.style.visibility = "hidden"
-        searchMemberButton.addEventListener("click", () => searchMember(searchInput.value, "access"))
         changeAvatarInput.style.display = "none"
         changeAvatarButton.style.display = "none"
         selectAllergens.style.display = "none"
-        const addAllergenButtonDiv = document.querySelector(".add-allergen-button")
 
-        if (currentUserMedId === profileUserId.textContent){
+        //If looking profile id and logged user id same
+        if (currentUserMedId === medId) {
             buttonsDiv.insertAdjacentElement("beforeend", editProfileButton)
-            changeAvatarButton.style.display = "block"
-            changeAvatarButton.addEventListener("click", () => changeAvatarInput.click())
             addAllergenButtonDiv.insertAdjacentElement("beforeend", addAllergenButton)
             searchAddButtons.insertAdjacentElement("beforeend", searchMemberButton)
             searchAddButtons.insertAdjacentElement("beforeend", addMemberButton)
 
+            changeAvatarButton.style.display = "block"
+            accessBlock.style.display = "block"
             selectAllergens.style.display = "block"
-        }
+            searchInput.style.display = "block"
 
+            allergensArr.forEach(el => {
+                optionSelected.insertAdjacentHTML("beforeend",
+                    `<option value=${el}>${el}</option>`
+                )
+            })
+
+            addAllergenButton.addEventListener("click", () => setUserAllergenHandler(optionSelected.value, medId))
+            searchMemberButton.addEventListener("click", () => searchMember(searchInput.value, "access"))
+            changeAvatarButton.addEventListener("click", () => changeAvatarInput.click())
+
+            getAccessList()
+        }
         //Set to Disable all input fields
-        const inputs = document.querySelectorAll(".input-p")
         inputs.forEach(input => {
             input.disabled = true
         })
-
-        //hide input for avatar upload
-
 
 
         //handler for upload avatar to DB and write new link to db user profile
@@ -144,38 +198,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 .then(response => response.json())
                 .then(result => console.log(result))
                 .catch(error => console.error(error))
-                .finally(()=> location.reload())
+                .finally(() => location.reload())
         }
-        getUserAllergenHandler()
+        getUserAllergenHandler(currentUserMedId, medId)
 
         //array of allergens for choose at profile page
-        const allergensArr = [
-            "Gluten",
-            "Crustaceans",
-            "Eggs",
-            "Fish",
-            "Peanuts",
-            "Soybeans",
-            "Milk",
-            "Nuts",
-            "Celery",
-            "Mustard",
-            "Sesame",
-            "Pulphites",
-            "Lupin",
-            "Molluscs",
-        ]
-        const option = document.querySelector("#allergens")
-        allergensArr.forEach(el => {
-            option.insertAdjacentHTML("beforeend",
-                `<option value=${el}>${el}</option>`
-            )
-        })
+
         const allergInput = document.querySelector(".custom-allergen")
         allergInput.style.display = "none"
-
-        const optionSelect = document.querySelector("#allergens")
-        addAllergenButton.onclick = () => setUserAllergenHandler(optionSelect.value)
 
 
         changeAvatarInput.addEventListener("change", changeAvatarHandler)
@@ -269,24 +299,17 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         const openInput = document.querySelector("#file-input")
-        const openButton = document.createElement("button")
-        const uploadButton = document.createElement("button")
         const preview = document.querySelector(".already-uploaded")
         const headerUpload = document.querySelector(".header-upload")
+        const openButton = buttonMaker("button", ["btn", "btn-outline-primary"], "Open")
+        const uploadButton = buttonMaker("button", ["btn", "btn-outline-info"], "Upload")
+
         if (options.multiply) {
             openInput.setAttribute("multiple", true)
         }
         if (options.accepttype && Array.isArray(options.accepttype)) {
             openInput.setAttribute("accept", options.accepttype.join(","))
         }
-        //Create upload button
-        uploadButton.classList.add("btn")
-        uploadButton.classList.add("btn-outline-info")
-        uploadButton.textContent = `Upload`
-        //Create open files button
-        openButton.classList.add("btn")
-        openButton.classList.add("btn-outline-primary")
-        openButton.textContent = `Open`
 
         headerUpload.insertAdjacentElement("beforeend", openButton)
         openButton.addEventListener("click", () => openInput.click())
@@ -417,6 +440,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     }
+
     // When you on family page
     if (window.location.href.indexOf("portal/family") > 1) {
         document.querySelector(".add-member-btn").style.visibility = "hidden"
@@ -476,8 +500,7 @@ document.addEventListener('DOMContentLoaded', function () {
 })
 
 
-
-function getAccessList(){
+function getAccessList() {
     const accessList = document.querySelector(".access-list")
     accessList.innerHTML = ""
     fetch(`/portal/api/v1/access`)
@@ -485,23 +508,23 @@ function getAccessList(){
         .then(result => {
             console.log(result)
             result.forEach(el => {
-                   accessList.insertAdjacentHTML("beforeend", `<li><div class="item-name"><span>${el.give_access}</span><div class="remove" data-name="${el.give_access}">&times;</div></div></li>`)
+                accessList.insertAdjacentHTML("beforeend", `<li><div class="item-name"><span>${el.give_access}</span><div class="remove" data-name="${el.give_access}">&times;</div></div></li>`)
             })
         })
-        accessList.addEventListener("click", event => {
-            if (!event.target.dataset.name) {
-                return
-            }
-            const name = event.target.dataset.name
-            fetch(`/portal/api/v1/access`, {
-                method: "DELETE",
-                headers: {
-                    "X-CSRFToken": getCookie("csrftoken")
-                },
-                body: JSON.stringify({
-                    delete: name
-                })
-        }) .then(response => response.json())
+    accessList.addEventListener("click", event => {
+        if (!event.target.dataset.name) {
+            return
+        }
+        const name = event.target.dataset.name
+        fetch(`/portal/api/v1/access`, {
+            method: "DELETE",
+            headers: {
+                "X-CSRFToken": getCookie("csrftoken")
+            },
+            body: JSON.stringify({
+                delete: name
+            })
+        }).then(response => response.json())
             .then(result => console.log(result))
             .catch(err => console.error(err))
             .finally(() => {
@@ -511,18 +534,25 @@ function getAccessList(){
     })
 }
 
-//get lis of user allergens and insert it to profile page
-function getUserAllergenHandler() {
+//Get lis of user allergens and insert it to profile page
+function getUserAllergenHandler(user, med_id) {
     console.log("Get Allergen list for user")
     const insertList = document.querySelector("#user-allergen-list")
-    fetch(`/portal/api/v1/allergens`)
+    fetch(`/portal/api/v1/allergens/${med_id}`)
         .then(response => response.json())
         .then(result => {
             insertList.innerHTML = ""
-            result.forEach(al => insertList.insertAdjacentHTML("beforeend", `
+            result.forEach(al => {
+                if (user === med_id) {
+                    insertList.insertAdjacentHTML("beforeend", `
             <li><div class="item-name"><span>${al}</span><div class="remove" data-name="${al}">&times;</div></div></li>
-            
-            `))
+            `)
+                } else {
+                    insertList.insertAdjacentHTML("beforeend", `
+            <li><div class="item-name"><span>${al}</span></div></li>
+            `)
+                }
+            })
         })
 
     //if click on delete send fetch to delete allergen from DB and reload allergen list
@@ -545,14 +575,14 @@ function getUserAllergenHandler() {
             .then(result => console.log(result))
             .catch(err => console.error(err))
             .finally(() => {
-                getUserAllergenHandler()
+                getUserAllergenHandler(med_id)
             })
 
     })
 }
 
 //Set (add) new allergens for user at profile page
-function setUserAllergenHandler(allergen) {
+function setUserAllergenHandler(allergen, med_id) {
     console.log("Send Post Request to Backend")
     const link = "allergens"
     if (allergen == "Select") {
@@ -561,7 +591,7 @@ function setUserAllergenHandler(allergen) {
     fetch(`/portal/api/v1/${link}`, {
         method: "POST",
         headers: {
-            "X-CSRFTOKEN": getCookie("csrftoken")
+            "X-CSRFToken": getCookie("csrftoken")
         },
         body: JSON.stringify({
             allergen: allergen
@@ -571,25 +601,24 @@ function setUserAllergenHandler(allergen) {
         .then(response => response.json())
         .then(result => {
             console.log(result)
-
         })
-        .catch(error => console.log(error))
+        .catch(error => console.error(error))
         .finally(() => {
-            getUserAllergenHandler()
+            getUserAllergenHandler(med_id)
         })
 }
 
 //remove family member at family page
 function removeMember(id) {
     fetch('/portal/api/v1/family/remove', {
-        method: "POST",
+        method: "DELETE",
         headers: {
             "X-CSRFToken": getCookie("csrftoken")
         },
         body: JSON.stringify({
             id: id
         })
-    }).catch(error => console.log(error))
+    }).catch(error => console.error(error))
     location.reload()
 }
 
@@ -607,20 +636,20 @@ function searchMember(id, options) {
                 resultDiv.innerHTML = `Find user: ${JSON.stringify(result)} `
                 addMemberButton.style.visibility = "visible";
             }
-        }).catch(error => console.log(error))
+        }).catch(error => console.error(error))
         .finally(() => {
-            if (options == "member"){
+            if (options == "member") {
                 addMemberButton.addEventListener("click", () => addMember(id))
             }
             if (options == "access")
-            addMemberButton.addEventListener("click", () => addAccess(id))
+                addMemberButton.addEventListener("click", () => addAccess(id))
         })
 }
 
 //Add family member at family page
 function addMember(id) {
     console.log("Send Post Request to Backend")
-    fetch(`/portal/api/v1/family/add`, {
+    fetch(`/portal/api/v1/family`, {
         method: "POST",
         headers: {
             "X-CSRFToken": getCookie("csrftoken")
@@ -632,7 +661,7 @@ function addMember(id) {
         .then(response => response.json())
         .then(result => console.log(result))
         .finally(() => location.reload())
-        .catch(error => console.log(error))
+        .catch(error => console.error(error))
 
 }
 
@@ -651,9 +680,10 @@ function addAccess(id) {
         .then(response => response.json())
         .then(result => console.log(result))
         .finally(() => location.reload())
-        .catch(error => console.log(error))
+        .catch(error => console.error(error))
 
 }
+
 //Get CSRF token for send fetch to server securely
 function getCookie(name) {
     var cookieValue = null;
@@ -671,39 +701,6 @@ function getCookie(name) {
     return cookieValue;
 }
 
-//Validator for profile edit form
-function validationForm(inputs) {
-    let result = true
-    //Regex fr check correct telephone number input
-    const regex = /^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$/
-    inputs.forEach(input => {
-        //if required fields null?
-        if (!input.value) {
-            if (input.id == "contact-phone"
-                || input.id == "emergency-phone"
-                || input.id == "job"
-                || input.id == "home-address"
-                || input.id == "full-name") {
-                input.insertAdjacentHTML("beforebegin", `<span class="error-message">Cant be Empty</span>`)
-                result = false
-            }
-        } else if (input.id == "contact-phone"
-            || input.id == "emergency-phone") {
-            if (!regex.test(input.value)) {
-                input.insertAdjacentHTML("beforebegin", `<span class="error-message">Not correct number</span>`)
-                result = false
-            }
-        }
-    })
-    //clean error messages
-    setTimeout(() => {
-        const messages = document.querySelectorAll(".error-message")
-        messages.forEach(message => message.remove())
-    }, 3000)
-
-    return result
-}
-
 //Bites to normal size converter function
 function formatBytes(bytes, decimals) {
     if (bytes == 0) {
@@ -715,13 +712,4 @@ function formatBytes(bytes, decimals) {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(decimals)) + " " + sizes[i]
 }
 
-//Validate file size before upload
-function validateSize(file, size) {
-    let fileSize = file.size / 1024 / 1024; // in MiB
-    if (fileSize > size) {
-        alert(`File size exceeds ${size} MiB`);
-        // $(file).val(''); //for clearing with Jquery
-    } else {
-        return true
-    }
-}
+

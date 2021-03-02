@@ -491,7 +491,46 @@
     </div>
 </div>
 
+{% elif card %}
+<div class="cards-container" id="app">
+    <div class="documents-container">
+        <div class="modal-add">
+            <div class="modal-add-header"><h1>Add new information</h1></div>
+            <div class="modal-add-head">
+                <input type="text" class="custom-input" placeholder="Hospital Name">
+                <input type="date" class="custom-input" placeholder="Date">
+                <input type="text" class="custom-input" placeholder="Address">
+                <input type="text" class="custom-input" placeholder="Doctor Name">
+            </div>
 
+
+            <input type="text" class="link" placeholder="Ссылка на профиль *"> <input type="text" class="amount" placeholder="Кол-во">
+                        <input type="text" class="link" placeholder="Ссылка на профиль *"> <input type="text" class="amount" placeholder="Кол-во">
+
+                        <input type="text" class="link" placeholder="Ссылка на профиль *"> <input type="text" class="amount" placeholder="Кол-во">
+
+                        <input type="text" class="link" placeholder="Ссылка на профиль *"> <input type="text" class="amount" placeholder="Кол-во">
+            <input type="text" class="link" placeholder="Ссылка на профиль *"> <input type="text" class="amount" placeholder="Кол-во">
+
+
+            <div id="input0"></div>
+
+        </div>
+
+        <div class="uploaded">
+            <div class="card-sidebar-header"><h5>Choose documents date range</h5></div>
+            <div class="date-picker">
+                <input type="date" class="custom-input" placeholder="Date From">
+                <input type="date" class="custom-input" placeholder="Date To">
+                <div class="form-check form-switch">
+                  <input class="form-check-input switch" type="checkbox" id="switch" checked>
+                  <label class="form-check-label" for="switch">Show All?</label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    </div>
 {% endif %}
 
 

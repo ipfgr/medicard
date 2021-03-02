@@ -820,3 +820,35 @@ select {
 }
 
 
+/*Card page Styles*/
+
+.modal-add-head{
+    display: flex;
+    justify-content: space-between;
+    margin: 5px;
+    padding: 10px;
+}
+
+.card-sidebar-header{
+    color: #b8bfce;
+    margin-top: 10px;
+    text-align: center;
+}
+
+.date-picker{
+    display: flex;
+    flex-wrap: wrap;
+
+    justify-content: space-around;
+
+}
+
+.switch{
+    margin-top: 0.5rem;
+}
+
+.custom-input{
+    border: 1px solid #fb6f0cd1;
+    padding: 0.5rem;
+    border-radius: 5px;
+}

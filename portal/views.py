@@ -75,6 +75,13 @@ def portal_view(request, med_id="", page=""):
                 "owner": True,
 
             })
+        elif page == "card":
+            return render(request, 'portal/portal.html', {
+                "card": True,
+                "user": info,
+                "owner": True,
+
+            })
         else:
             return render(request, 'portal/portal.html', {
                 "user": info,
@@ -94,7 +101,12 @@ def portal_view(request, med_id="", page=""):
                 "error": True
             })
         else:
-            if page == "family":
+            if page == "card":
+                return render(request, 'portal/portal.html', {
+                    "card": True,
+                    "user": info
+                })
+            elif page == "family":
                 family_members = []
                 # Get all family members from DB
                 members = FamilyMembers.objects.filter(user_id=access_user.id)
@@ -129,41 +141,13 @@ def portal_view(request, med_id="", page=""):
                     "dashboard": True
                 })
 
-@login_required()
-def search_view(request, ident=""):
-    if request.method == "GET":
-        checker = User.objects.filter(med_id=ident)
-        if not checker:
-            return JsonResponse({"message": "Not correct ID"}, status=404)
-        else:
-            return JsonResponse(checker[0].username, safe=False, status=200)
+
 
 @login_required()
-def remove_family_member_view(request):
-    if request.method == "POST":
-        data = json.loads(request.body)
-        remove_id = data.get("id", "")
-        FamilyMembers.objects.filter(user_id=request.user.id, family_members_list=remove_id).delete()
-
-@login_required()
-def add_family_member_view(request):
-    if request.method == "POST":
-        data = json.loads(request.body)
-        med_id = data.get("medid", "")
-        # find_link = FamilyMembers.objects.raw('SELECT * from portal_familymembers WHERE family_members_id_list= %s',
-        #                                       [med_id])
-        get_append_user_id = User.objects.get(med_id=med_id)
-        # check if current user already add this member to his family
-        find_link = FamilyMembers.objects.filter(user_id=request.user.id, family_members_list=get_append_user_id.id)
-        if not find_link:
-            FamilyMembers(user_id=request.user.id, family_members_list=get_append_user_id.id).save()
-            return JsonResponse({"message": "Add successfuly"}, status=201)
-        else:
-            return JsonResponse({"message": "Already added"}, status=200)
-
-@login_required()
-def api_view(request, link):
+def api_view(request,  link, med_id=""):
     user_id = request.user.id
+    # Get user id from med id
+    get_user = User.objects.filter(med_id=med_id)
     if request.method == "POST":
         if link == "access":
             data = json.loads(request.body)
@@ -175,10 +159,24 @@ def api_view(request, link):
                 AccessList(user_id=user_id, access_user=get_append_user_id).save()
                 return JsonResponse({"Message: Saved"}, status=201)
 
+        if link == "family":
+            data = json.loads(request.body)
+            med_id = data.get("medid", "")
+            get_append_user_id = User.objects.get(med_id=med_id)
+            # check if current user already add this member to his family
+            find_link = FamilyMembers.objects.filter(
+                user_id=request.user.id,
+                family_members_list_id=get_append_user_id.id
+            )
+            if not find_link:
+                FamilyMembers(user_id=request.user.id, family_members_list_id=get_append_user_id.id).save()
+                return JsonResponse({"message": "Add successfuly"}, status=201)
+            else:
+                return JsonResponse({"message": "Already added"}, status=200)
+
         if link == "allergens":
             data = json.loads(request.body)
             allergen = data.get("allergen", "")
-            print(allergen)
             if AllergyList.objects.filter(user_id=user_id, allergen_name=allergen):
                 return JsonResponse({"Message: Already exists"}, status=200)
             else:
@@ -188,7 +186,6 @@ def api_view(request, link):
         if link == "recognizer":
             data = json.loads(request.body)
             filenames = data.get("filenames", "")
-            print(filenames)
             for file in filenames:
                 RecognizedFiles(user_id=user_id, file_name=file).save()
             return JsonResponse({"Message: Saved"}, status=201)
@@ -205,7 +202,6 @@ def api_view(request, link):
             phone_number = data.get("phone_number", "")
             emergency_number = data.get("emergency_number", "")
             notifications = data.get("notifications", "")
-            print(bio)
             checkbox = True
             if notifications == "off":
                 checkbox = False
@@ -223,9 +219,17 @@ def api_view(request, link):
             return JsonResponse({"Message: Saved"}, status=201)
 
     if request.method == "GET":
+        # If we search for user
+        if link == "search":
+                checker = User.objects.filter(med_id=med_id)
+                if not checker:
+                    return JsonResponse({"message": "Not correct ID"}, status=404)
+                else:
+                    return JsonResponse(checker[0].username, safe=False, status=200)
+
         if link == "allergens":
             report = []
-            answer = AllergyList.objects.filter(user_id=user_id)
+            answer = AllergyList.objects.filter(user_id=get_user[0].id)
             for item in answer:
                 report.append(item.allergen_name)
             return JsonResponse(report, safe=False)
@@ -258,6 +262,11 @@ def api_view(request, link):
             get_append_user_id = User.objects.get(username=delete_user)
             AccessList.objects.filter(user_id=user_id, access_user_id=get_append_user_id).delete()
             return JsonResponse({"Message": "Delete Success"}, status=204)
+
+        if link == "family":
+            data = json.loads(request.body)
+            remove_id = data.get("id", "")
+            FamilyMembers.objects.filter(user_id=request.user.id, family_members_list=remove_id).delete()
 
 
 

@@ -1,7 +1,7 @@
 {
   "name": "medicare",
   "version": "1.0.0",
-  "description": "\"CS 50 Web final Project\"",
+  "description": "\"CS 50 Web final Project MediCard\"",
   "main": "static/portal/js/app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -9,7 +9,12 @@
   "author": "ipfgr",
   "license": "ISC",
   "dependencies": {
+    "esm": "^3.2.25",
     "firebase": "^8.2.9",
-    "uuid": "^8.3.2"
-  }
+    "parcel-bundler": "^1.12.4",
+    "uuid": "^8.3.2",
+    "vue": "^3.0.7"
+  },
+  "devDependencies": {},
+  "keywords": []
 }
