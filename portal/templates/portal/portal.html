@@ -209,7 +209,6 @@
                                                 <p class="mb-0">Gender: {{ user.gender }} </p>
                                                 <p class="mb-0">Birth: {{ user.birth_date }}</p>
                                                 <span>ID: </span><span class="mb-0 med_id">{{ user.med_id }}</span>
-                                                <div class="text-muted"><small>Last seen 2 hours ago</small></div>
                                                 <div class="mt-2">
 
                                                     <input accept=".jpg, .png, .gif" id="avatar-upload"
@@ -432,12 +431,12 @@
 
                                 <div class="select-allergens">
                                     <label for="allergens">Choose yor allergen</label>
-                                <select class="allergens" id="allergens">
-                                    <optgroup label="Allrgens">
-                                        <option>Select</option>
-                                </select>
-                                </p>
-                                <input class="custom-allergen" placeholder="input your allergen" type="text">
+                                    <select class="allergens" id="allergens">
+                                        <optgroup label="Allrgens">
+                                            <option>Select</option>
+                                    </select>
+
+                                    <input class="custom-allergen" placeholder="input your allergen" type="text">
                                 </div>
 
                                 <div class="add-allergen-button">
@@ -447,31 +446,31 @@
                         <br/>
 
                         <div class="access-list-div">
-                                                    <!--            Add new member to access list               -->
+                            <!--            Add new member to access list               -->
 
-                             <div class="card">
-                            <div class="card-body">
-                                <h6 class="card-title font-weight-bold">Access list</h6>
-                                <ul class="access-list"></ul>
-                                <p class="card-text">
-                                <ul id="user-access-list">
-                                </ul>
-                                <label for="allergens">Add Med id to your access list</label>
-                                </p>
-                                <div class="input-div">
-                                    <input class="form-control" id="access-member-search" name="id"
-                                           placeholder="Enter Member ID"
-                                           type="text">
-                                </div>
-                                <div class="search-result" id="access-search-result">
-                                    <!--                            result output                      -->
-                                </div>
-                                <div class="search-access-btn">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h6 class="card-title font-weight-bold">Access list</h6>
+                                    <ul class="access-list"></ul>
+                                    <p class="card-text">
+                                    <ul id="user-access-list">
+                                    </ul>
+                                    <label for="allergens">Add Med id to your access list</label>
+                                    </p>
+                                    <div class="input-div">
+                                        <input class="form-control" id="access-member-search" name="id"
+                                               placeholder="Enter Member ID"
+                                               type="text">
+                                    </div>
+                                    <div class="search-result" id="access-search-result">
+                                        <!--                            result output                      -->
+                                    </div>
+                                    <div class="search-access-btn">
 
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <!--            Add new member to access list               -->
+                            <!--            Add new member to access list               -->
                         </div>
 
 
@@ -494,43 +493,131 @@
 {% elif card %}
 <div class="cards-container" id="app">
     <div class="documents-container">
-        <div class="modal-add">
-            <div class="modal-add-header"><h1>Add new information</h1></div>
-            <div class="modal-add-head">
-                <input type="text" class="custom-input" placeholder="Hospital Name">
-                <input type="date" class="custom-input" placeholder="Date">
-                <input type="text" class="custom-input" placeholder="Address">
-                <input type="text" class="custom-input" placeholder="Doctor Name">
+        <div class="recognized">
+            <div class="recognized-header">
+                <h4>Medical card</h4>
+
+
             </div>
+            <div class="open-modal"></div>
+<!--            Start add report template               -->
+            <div class="modal-container">
+                <div class="modal-add">
+                <div class="modal-add-header"><h4>Add new Laboratory test</h4></div>
+                    <div class="row-main">
+                    <div class="column-quater">
+
+                                                <h4 >{{user.name}}</h4>
+                                                <p >Gender: {{ user.gender }} </p>
+                                                <p >Birth: {{ user.birth_date }}</p>
+                                                <p ><span>User ID: </span><span >{{ user.med_id }}</span></p >
+                        <p ><span>Document ID: </span><span id = "generated-doc-id"></span></p>
 
 
-            <input type="text" class="link" placeholder="Ссылка на профиль *"> <input type="text" class="amount" placeholder="Кол-во">
-                        <input type="text" class="link" placeholder="Ссылка на профиль *"> <input type="text" class="amount" placeholder="Кол-во">
+                    </div>
+                    <div class="column-quater">
 
-                        <input type="text" class="link" placeholder="Ссылка на профиль *"> <input type="text" class="amount" placeholder="Кол-во">
+                    <input class="custom-input top-input" name="report_name" placeholder="Report Name" type="text">
+                    <input class="custom-input top-input" name="hospital_name" placeholder="Hospital Name" type="text">
+                    <input class="custom-input top-input" name="date" placeholder="Date" type="date">
+                    <input class="custom-input top-input" name="address" placeholder="Address" type="text">
+                    </div>
+                    </div>
 
-                        <input type="text" class="link" placeholder="Ссылка на профиль *"> <input type="text" class="amount" placeholder="Кол-во">
-            <input type="text" class="link" placeholder="Ссылка на профиль *"> <input type="text" class="amount" placeholder="Кол-во">
 
 
-            <div id="input0"></div>
+                <div class="modal-add-body">
 
+
+                    <div class="modal-add-header"><h4>Results</h4></div>
+
+                    <span class="right lines-info"></span>
+                    <br/>
+                <div id="input0"></div>
+                <div class="summary-info">
+                    <div class="form-group">
+                        <textarea class="form-control"
+                                  maxlength="500"
+                                  placeholder="Summary information"
+                                  rows="5"></textarea>
+                    </div>
+                </div>
+                </div>
+            </div>
+                <div class="modal-add-constructor">
+                    <div class="modal-add-header"></div>
+                    <div class="modal-control-buttons"></div>
+                </div>
+            </div>
+<!--                End add report template                 -->
+
+            <div class="document-container">
+                <!--            Start add report template               -->
+            <div class="modal-container">
+                <div class="modal-add">
+                <div class="modal-add-header"><h4>Result</h4></div>
+                    <div class="row-main">
+                    <div class="column-quater">
+
+                                                <h4 >{{user.name}}</h4>
+                                                <p >Gender: {{ user.gender }} </p>
+                                                <p >Birth: {{ user.birth_date }}</p>
+                                                <p ><span>User ID: </span><span >{{ user.med_id }}</span></p >
+                        <p ><span>Document ID: </span><span id = ""></span></p>
+
+
+                    </div>
+                    <div class="column-quater">
+
+                    <input class="custom-input top-input" name="report_name" placeholder="Report Name" type="text" disabled>
+                    <input class="custom-input top-input" name="hospital_name" placeholder="Hospital Name" type="text" disabled>
+                    <input class="custom-input top-input" name="date" placeholder="Date" type="date" disabled>
+                    <input class="custom-input top-input" name="address" placeholder="Address" type="text" disabled>
+                    </div>
+                    </div>
+
+
+
+                <div class="modal-add-body">
+
+
+                    <div class="modal-add-header"><h4>Results</h4></div>
+
+                    <span class="right lines-info"></span>
+                    <br/>
+                <div id="output0"></div>
+                <div class="summary-info">
+                    <div class="form-group">
+                        <textarea class="form-control"
+                                  maxlength="500"
+                                  placeholder="Summary information"
+                                  rows="5" disabled></textarea>
+                    </div>
+                </div>
+                </div>
+            </div>
+            </div>
+<!--                End add report template                 -->
+            </div>
         </div>
 
         <div class="uploaded">
             <div class="card-sidebar-header"><h5>Choose documents date range</h5></div>
             <div class="date-picker">
-                <input type="date" class="custom-input" placeholder="Date From">
-                <input type="date" class="custom-input" placeholder="Date To">
-                <div class="form-check form-switch">
-                  <input class="form-check-input switch" type="checkbox" id="switch" checked>
-                  <label class="form-check-label" for="switch">Show All?</label>
-                </div>
+                <input class="custom-input" placeholder="Date From" type="date">
+                <input class="custom-input" placeholder="Date To" type="date">
+<!--                <div class="form-check form-switch">-->
+<!--                    <input checked class="form-check-input switch" id="switch" type="checkbox">-->
+<!--                    <label class="form-check-label" for="switch">Show All?</label>-->
+<!--                </div>-->
+            </div>
+            <div class="search-record-container">
+
             </div>
         </div>
     </div>
 
-    </div>
+</div>
 {% endif %}
 
 

@@ -1,23 +1,3 @@
-//init vue app
-Vue.use(DatePicker.default);
-    var vm = new Vue({
-      el: '#app',
-      components: { DatePicker },
-      data: {
-        startDate: '',
-      },
-      computed: {
-
-      },
-      mounted() {
-
-      },
-      methods: {
-
-      }
-    });
-
-
 //Initialization Cloud FireStore and Firebase Datastore
 
 const firebaseConfig = {
@@ -35,7 +15,7 @@ const db = firebase.firestore(app);
 
 
 function buttonMaker(tag, classlist, textcontent) {
-    const button = document.createElement("tag")
+    const button = document.createElement(tag)
     button.classList.add(...classlist)
     button.textContent = textcontent
     return button
@@ -48,10 +28,131 @@ document.addEventListener('DOMContentLoaded', function () {
 
     //Card section
 
-    if (window.location.href.indexOf("portal/card") > 1){
+    if (window.location.href.indexOf("portal/card") > 1) {
+        const modalContainer = document.querySelector(".modal-container")
+        const addLineButton = buttonMaker("button", ["btn", "btn-outline-warning"], "+")
+        const saveResultButton = buttonMaker("button", ["btn", "btn-outline-info"], "Save")
+        const searchResultButton = buttonMaker("button", ["btn", "btn-outline-info"], "Search")
+        const hideModalButton = buttonMaker("button", ["btn", "btn-outline-info"], "Hide")
+        const showModalButton = buttonMaker("button", ["btn", "btn-outline-info"], "Open")
 
+
+
+        const inputDivPlace = document.querySelector("#input0")
+        const buttonsDivPlace = document.querySelector('.modal-control-buttons')
+        const linesInfo = document.querySelector(".lines-info")
+        const documentId = document.querySelector('#generated-doc-id')
+        const datePicker = document.querySelector(".date-picker")
+        const modalTrigerDiv = document.querySelector(".open-modal")
+
+        getFromFireStore(currentUserMedId)
+        //Generate document uniqueid number
+        const documentIdGenerator = () => "MD-" + Math.random().toString(36).substring(2)
+
+        //Limit maximum fields to add in form
+        let counter = 20
+        datePicker.insertAdjacentElement("afterend", searchResultButton)
+        inputDivPlace.insertAdjacentElement("afterend", addLineButton)
+        buttonsDivPlace.insertAdjacentElement("beforeend", saveResultButton)
+        modalTrigerDiv.insertAdjacentElement("beforeend", hideModalButton)
+        modalTrigerDiv.insertAdjacentElement("beforeend", showModalButton)
+
+        documentId.innerHTML = documentIdGenerator()
+        modalContainer.style.display="none"
+        hideModalButton.style.display="none"
+
+
+        hideModalButton.addEventListener("click", () => {
+            modalContainer.style.display="none"
+            showModalButton.style.display="block"
+            hideModalButton.style.display="none"
+
+
+        })
+        showModalButton.addEventListener("click", () => {
+            modalContainer.style.display="block"
+            showModalButton.style.display="none"
+            hideModalButton.style.display="block"
+        })
+
+        saveResultButton.addEventListener("click", () => {
+            const contextData = () => {
+                let context = Array
+                    .from(document.querySelectorAll('.input-container'))
+                    .reduce((acc, el, i) => (
+                            acc[`input${i + 1}`] = [
+                                'parameter',
+                                'result',
+                                'select',
+                                'range',
+                            ].map(name => el.querySelector(`[name="${name}"]`).value),
+                                acc
+                        ), {
+                            med_id: currentUserMedId,
+                            document_id: documentId.innerHTML
+                        }
+                    );
+                const topInputs = document.querySelectorAll(".top-input")
+                topInputs.forEach(input => {
+                    context[input.name] = input.value
+                })
+                return context
+            }
+            const context = contextData()
+            db.collection(`reports/users/${currentUserMedId}`).add(context)
+                .then((docRef) => {
+                    console.log("Document written with ID: ", docRef.id);
+                })
+                .catch((error) => {
+                    console.error("Error adding document: ", error);
+                });
+        })
+
+
+        //Work with add report modal
+        addLineButton.addEventListener("click", () => {
+            linesInfo.innerHTML = `* Can add more ${counter} fields`
+            //set limit of add input fields
+            if (counter > 0) {
+                inputDivPlace.insertAdjacentHTML("beforeend", `
+                <div class="input-container" >
+                <input type="text" name="parameter" class="custom-input body-input" placeholder="Parametr">
+                <input type="text" name="result" class="custom-input body-input" placeholder="Result">
+                <select name="select" class="custom-input body-input">
+                <option value="10^9L">10^9L</option>
+                <option value="%">%</option>
+                <option value="g/dL">g/dL</option>
+                <option value="fL">fL</option>
+                <option value="pg">pg</option>
+                <option value="fl">fl</option>
+                <option value="mg/L">mg/L</option>
+                <option value="g/L">g/L</option>
+                <option value="mmol/L">mmol/L</option>
+                <option value="umol/L">umol/L</option>
+                <option value="Ery/uL">Ery/uL</option>
+                <option value="none">none</option>
+                </select>
+                <input type="text" name="range" class="custom-input body-input" placeholder="Normal Range">
+                <div class="remove-line" data-name="${counter}">
+                                &times;
+                              </div>
+            </div>
+                    `)
+                counter--
+            }
+        })
+
+        //    Listener for remove fiels in form
+        inputDivPlace.addEventListener("click", (event) => {
+            if (!event.target.dataset.name) {
+                return
+            }
+            const remove = document.querySelector(`[data-name="${event.target.dataset.name}"`).closest(".input-container")
+            remove.remove()
+        })
 
     }
+
 
     //Profile page section
     if (window.location.href.indexOf("portal/profile") > 1) {
@@ -148,7 +249,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     (snapshot) => {
                         // Observe state change events such as progress, pause, and resume
                         // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
-                        var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                        let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
                         console.log('Upload is ' + progress + '% done');
                         switch (snapshot.state) {
                             case firebase.storage.TaskState.PAUSED: // or 'paused'
@@ -262,7 +363,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                             <div class="recognized-preview-container"> 
                                                 <div class="rejected-recognized"></div>
                                                 <h6>Rejected</h6>
-                                                <img src="${url}" alt="document" width="auto" height="150px">
+                                                <img src="${url}" alt="document" >
                                         </div>
                                         `)
                                 console.log("Rejected")
@@ -271,14 +372,14 @@ document.addEventListener('DOMContentLoaded', function () {
                                             <div class="recognized-preview-container"> 
                                                 <div class="success-recognized"></div>
                                                 <h6>Recognized</h6>
-                                                <img src="${url}" alt="document" width="auto" height="150px">
+                                                <img src="${url}" alt="document">
                                         </div>
                                         `)
                                 console.log("Recognized")
                             } else {
                                 recognized.insertAdjacentHTML("beforeend", `
-                                            <div class="recognized-preview-container"> 
-                                                <img src="${url}" alt="document" width="auto" height="150px">
+                                            <div class="recognized-preview-container">
+                                                <img src="${url}" alt="document">
                                             </div>`)
                                 console.log("Uploaded")
                             }
@@ -498,6 +599,27 @@ document.addEventListener('DOMContentLoaded', function () {
 
     }
 })
+
+function getFromFireStore(med_id) {
+    const searchResultContainer = document.querySelector(".search-record-container")
+    db.collection(`reports/users/${med_id}/`).get().then((querySnapshot) => {
+    querySnapshot.forEach((doc) => {
+        searchResultContainer.insertAdjacentHTML("beforeend", `
+
+        <div class="result-item" data-id="${doc.id}">
+            <span><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard-check" viewBox="0 0 16 16">
+                  <path fill-rule="evenodd" d="M10.854 7.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7.5 9.793l2.646-2.647a.5.5 0 0 1 .708 0z"/>
+                  <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
+                  <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/>
+                </svg>
+            </span>
+            <div class="record-date"><span>${JSON.stringify(doc.data().date)}</span></div>
+            <div class="record-name"><span>${JSON.stringify(doc.data().report_name)}</span></div>
+        </div>
+        `)
+    })
+})
+}
 
 
 function getAccessList() {

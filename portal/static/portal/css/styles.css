@@ -6,6 +6,48 @@
     font-family: 'Poppins', sans-serif;
 }
 
+/*Global*/
+.custom-input{
+    border: 1px solid #fb6f0cd1;
+    padding: 0.5rem;
+    width:100%;
+    margin: 0px 10px 10px 0px;
+    border-radius: 5px;
+    -webkit-transition: all 0.30s ease-in-out;
+    -moz-transition: all 0.30s ease-in-out;
+    -ms-transition: all 0.30s ease-in-out;
+    -o-transition: all 0.30s ease-in-out;
+    outline: none;
+}
+
+.custom-input:focus{
+    box-shadow: 0 0 5px rgba(81, 203, 238, 1);
+    border: 1px solid rgba(81, 203, 238, 1);
+
+}
+
+.row-main{
+    display: flex;
+    justify-content: space-between;
+}
+
+.column-quater{
+width: 25%;
+}
+
+.column-half{
+width: 50%;
+}
+
+.center {
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+}
+
+.right{
+    float: right;
+}
 /*Error page*/
 .error-template {
     padding: 40px 15px;
@@ -687,6 +729,19 @@ section .section-title {
 
 }
 
+.recognized-preview-container img{
+    width: auto;
+    height: 150px;
+    transition-property: height;
+    transition-duration: 1s;
+}
+.recognized-preview-container:hover > img{
+
+width: auto;
+    height: 350px;
+}
+
+
 .success-recognized {
     position: absolute;
     top: 0;
@@ -774,6 +829,14 @@ section .section-title {
 }
 
 
+.preview-image{
+    width: 400px;
+    height: auto;
+    display: none;
+
+}
+
+
 /*Profile page*/
 
 .profile-container {
@@ -822,6 +885,34 @@ select {
 
 /*Card page Styles*/
 
+.modal-container{
+    display:flex;
+    flex-wrap: wrap;
+    margin: 15px;
+    padding: 10px;
+    background-color: rgba(0 ,0 ,0 ,0.2);
+    justify-content:center;
+    border: 1px solid #0dcaf0 !important;
+}
+.modal-add-header{
+    display:flex;
+    justify-content: center;
+    text-align: center;
+    align-items: center;
+
+
+}
+
+.open-modal{
+    float:right;
+    margin-top: 12px;
+    margin-right: 25px;
+}
+
+
+
+
+
 .modal-add-head{
     display: flex;
     justify-content: space-between;
@@ -837,7 +928,6 @@ select {
 
 .date-picker{
     display: flex;
-    flex-wrap: wrap;
 
     justify-content: space-around;
 
@@ -847,8 +937,66 @@ select {
     margin-top: 0.5rem;
 }
 
-.custom-input{
-    border: 1px solid #fb6f0cd1;
-    padding: 0.5rem;
-    border-radius: 5px;
+.input-container{
+    display: flex;
 }
+
+.add-field-button{
+    justify-content:center
+}
+
+
+
+
+
+.search-record-container{
+    margin-right: 10px;
+
+
+}
+
+
+.result-item{
+    margin-top:10px;
+    margin-right: 5px;
+        border: 1px solid #fb6f0cd1;
+    align-items: center;
+    color: #b8bfce;
+    display:flex;
+    width: 100%;
+    justify-content: space-around;
+    cursor: pointer;
+    height: 40px;
+}
+.record-date{
+
+}
+
+.record-name{
+
+}
+
+.custom-card-input{
+    margin: 10px;
+}
+
+.modal-add-constructor{
+
+
+}
+
+.modal-control-buttons > button{
+    margin: 5px;
+}
+.lines-info{
+    color: #b8bfce;
+    font-size: 12px;
+}
+
+.remove-line{
+    height: 25px;
+    width: 25px;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
