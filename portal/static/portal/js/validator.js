@@ -41,3 +41,21 @@ function validateSize(file, size) {
         return true
     }
 }
+
+//Validate 4 important fields at Medical Card page add new result
+function validateResult(inputs){
+    const message = document.querySelector(".error-message-card")
+    let result = true
+    inputs.forEach(input => {
+        if (input.value.trim() == "") result=false
+    })
+    //clean error messages
+    if (!result){
+        message.innerHTML = `<span class="error-message-card">Error: Please Fill all fields</span>`
+        setTimeout(() => {
+        message.innerHTML=""
+    }, 3000)
+    }
+
+    return result
+}

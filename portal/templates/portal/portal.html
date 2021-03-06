@@ -504,6 +504,7 @@
             <div class="modal-container">
                 <div class="modal-add">
                 <div class="modal-add-header"><h4>Add new Laboratory test</h4></div>
+                    <div class="error-message-card"></div>
                     <div class="row-main">
                     <div class="column-quater">
 
@@ -517,10 +518,10 @@
                     </div>
                     <div class="column-quater">
 
-                    <input class="custom-input top-input" name="report_name" placeholder="Report Name" type="text">
-                    <input class="custom-input top-input" name="hospital_name" placeholder="Hospital Name" type="text">
-                    <input class="custom-input top-input" name="date" placeholder="Date" type="date">
-                    <input class="custom-input top-input" name="address" placeholder="Address" type="text">
+                    <input class="custom-input top-input" name="report_name" placeholder="Report Name" type="text" required>
+                    <input class="custom-input top-input" name="hospital_name" placeholder="Hospital Name" type="text" required>
+                    <input class="custom-input top-input" name="date" placeholder="Date" type="date" required>
+                    <input class="custom-input top-input" name="address" placeholder="Address" type="text" required>
                     </div>
                     </div>
 
@@ -536,7 +537,7 @@
                 <div id="input0"></div>
                 <div class="summary-info">
                     <div class="form-group">
-                        <textarea class="form-control"
+                        <textarea class="form-control summary"
                                   maxlength="500"
                                   placeholder="Summary information"
                                   rows="5"></textarea>
@@ -552,69 +553,25 @@
 <!--                End add report template                 -->
 
             <div class="document-container">
-                <!--            Start add report template               -->
-            <div class="modal-container">
-                <div class="modal-add">
-                <div class="modal-add-header"><h4>Result</h4></div>
-                    <div class="row-main">
-                    <div class="column-quater">
+                <!--            Start report output template               -->
+                <div class="report-container">
 
-                                                <h4 >{{user.name}}</h4>
-                                                <p >Gender: {{ user.gender }} </p>
-                                                <p >Birth: {{ user.birth_date }}</p>
-                                                <p ><span>User ID: </span><span >{{ user.med_id }}</span></p >
-                        <p ><span>Document ID: </span><span id = ""></span></p>
-
-
-                    </div>
-                    <div class="column-quater">
-
-                    <input class="custom-input top-input" name="report_name" placeholder="Report Name" type="text" disabled>
-                    <input class="custom-input top-input" name="hospital_name" placeholder="Hospital Name" type="text" disabled>
-                    <input class="custom-input top-input" name="date" placeholder="Date" type="date" disabled>
-                    <input class="custom-input top-input" name="address" placeholder="Address" type="text" disabled>
-                    </div>
-                    </div>
-
-
-
-                <div class="modal-add-body">
-
-
-                    <div class="modal-add-header"><h4>Results</h4></div>
-
-                    <span class="right lines-info"></span>
-                    <br/>
-                <div id="output0"></div>
-                <div class="summary-info">
-                    <div class="form-group">
-                        <textarea class="form-control"
-                                  maxlength="500"
-                                  placeholder="Summary information"
-                                  rows="5" disabled></textarea>
-                    </div>
                 </div>
-                </div>
-            </div>
-            </div>
-<!--                End add report template                 -->
             </div>
         </div>
 
+<!--        Search documents sidebar        -->
         <div class="uploaded">
             <div class="card-sidebar-header"><h5>Choose documents date range</h5></div>
             <div class="date-picker">
                 <input class="custom-input" placeholder="Date From" type="date">
                 <input class="custom-input" placeholder="Date To" type="date">
-<!--                <div class="form-check form-switch">-->
-<!--                    <input checked class="form-check-input switch" id="switch" type="checkbox">-->
-<!--                    <label class="form-check-label" for="switch">Show All?</label>-->
-<!--                </div>-->
             </div>
             <div class="search-record-container">
-
             </div>
         </div>
+        <!--        Search documents sidebar        -->
+
     </div>
 
 </div>

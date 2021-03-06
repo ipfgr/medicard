@@ -20,10 +20,15 @@
     outline: none;
 }
 
+
 .custom-input:focus{
     box-shadow: 0 0 5px rgba(81, 203, 238, 1);
     border: 1px solid rgba(81, 203, 238, 1);
 
+}
+
+input:disabled {
+  background: rgb(255, 255, 255);
 }
 
 .row-main{
@@ -886,6 +891,7 @@ select {
 /*Card page Styles*/
 
 .modal-container{
+    color: #b8bfce;
     display:flex;
     flex-wrap: wrap;
     margin: 15px;
@@ -894,7 +900,7 @@ select {
     justify-content:center;
     border: 1px solid #0dcaf0 !important;
 }
-.modal-add-header{
+.modal-add-header .report-add-header{
     display:flex;
     justify-content: center;
     text-align: center;
@@ -903,14 +909,23 @@ select {
 
 }
 
+.report-container{
+    color: #b8bfce;
+    display:flex;
+    flex-wrap: wrap;
+    margin: 15px;
+    padding: 10px;
+    background-color: rgba(0 ,0 ,0 ,0.2);
+    justify-content:center;
+    border: 1px solid #fb6f0cd1 !important;
+}
+
 .open-modal{
-    float:right;
+    display:flex;
+    justify-content: flex-end;
     margin-top: 12px;
     margin-right: 25px;
 }
-
-
-
 
 
 .modal-add-head{
@@ -918,6 +933,10 @@ select {
     justify-content: space-between;
     margin: 5px;
     padding: 10px;
+}
+
+.summary-info{
+    margin-top: 5px;
 }
 
 .card-sidebar-header{
@@ -1000,3 +1019,8 @@ select {
     cursor: pointer;
 }
 
+.error-message-card{
+    color: #fb6f0cd1;
+    display:flex;
+    justify-content: flex-end;
+}
