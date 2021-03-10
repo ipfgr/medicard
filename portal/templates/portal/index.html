@@ -82,9 +82,11 @@
     <div class="main-info">
         <section id="what-we-do">
             <div class="container-fluid">
-                <h2 class="section-title mb-2 h1">What we do</h2>
-                <p class="text-center text-muted h5">Having and managing a correct marketing strategy is crucial in a
-                    fast moving market.</p>
+                <h2 class="section-title mb-2 h1">What is it?</h2>
+                <p class="text-center text-muted h5">
+                    An electronic medical record is an alternative to the existing paper record
+                    You will receive information about your health, diagnostics, treatment in polyclinics, prescriptions
+                    and other data. View them anytime anywhere!</p>
                 <div class="row mt-5">
                     <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 col-xl-4">
                         <div class="card">
@@ -159,17 +161,17 @@
         </section>
     </div>
     {% elif login %}
-     {% if message %}
-        <div>{{ message }}</div>
+    {% if message %}
+    <div>{{ message }}</div>
     {% endif %}
 
     <form action="{% url 'login' %}" method="post">
         {% csrf_token %}
         <div class="form-group">
-            <input autofocus class="form-control" type="text" name="username" placeholder="Username">
+            <input autofocus class="form-control" name="username" placeholder="Username" type="text">
         </div>
         <div class="form-group">
-            <input class="form-control" type="password" name="password" placeholder="Password">
+            <input class="form-control" name="password" placeholder="Password" type="password">
         </div>
         <input class="btn btn-primary" type="submit" value="Login">
     </form>
@@ -178,38 +180,38 @@
 
     login page
     {% else %}
- <h2>Register</h2>
+    <h2>Register</h2>
 
     {% if message %}
-        <div>{{ message }}</div>
+    <div>{{ message }}</div>
     {% endif %}
 
     <form action="{% url 'register' %}" method="post">
         {% csrf_token %}
         <div class="form-group form-mdc">
-            <input class="form-control" autofocus type="text" name="username" placeholder="Username">
+            <input autofocus class="form-control" name="username" placeholder="Username" type="text">
         </div>
         <div class="form-group form-mdc">
-            <input class="form-control" type="email" name="email" placeholder="Email Address">
+            <input class="form-control" name="email" placeholder="Email Address" type="email">
         </div>
         <div class="form-group form-mdc">
             <label for="select_role">Select your role</label>
-            <select name="role_name" class="form-control" id="select_role">
-              <option value="user">Standart user</option>
-              <option value="doctor">Doctor</option>
-              <option value="another">Another</option>
+            <select class="form-control" id="select_role" name="role_name">
+                <option value="user">Standart user</option>
+                <option value="doctor">Doctor</option>
+                <option value="another">Another</option>
             </select>
         </div>
         <div class="form-group form-mdc">
-            <input class="form-control" type="password" name="password" placeholder="Password">
+            <input class="form-control" name="password" placeholder="Password" type="password">
         </div>
         <div class="form-group form-mdc">
-            <input class="form-control " type="password" name="confirmation" placeholder="Confirm Password">
+            <input class="form-control " name="confirmation" placeholder="Confirm Password" type="password">
         </div>
         <input class="btn btn-outline-info" type="submit" value="Register">
     </form>
 
-    Already have an account? <a href="{% url 'login' %}">Log In here.</a>    {% endif %}
+    Already have an account? <a href="{% url 'login' %}">Log In here.</a> {% endif %}
     <br/>
     {{ messagedoc }}
 </div>

@@ -2,6 +2,7 @@
 {% load static %}
 
 
+
 {% block body %}
 {{ request.user.med_id| json_script:'user-med-id' }}
 
@@ -13,61 +14,75 @@
         Sorry, an error has occured, Requested page not found!
     </div>
     <div class="error-actions">
-        <a class="btn btn-outline-warning btn-lg" href="{% url 'portal' %}">Take Me Home </a>
+        <a class="btn btn-warning btn-lg" href="{% url 'portal' %}">Take Me Home </a>
     </div>
 </div>
 {% endif %}
 {% if dashboard and owner %}
 <div class="body-portal">
 
-    <div class="scope-info">
-        <div class="header-edit">
-            <h5>User information</h5>
-            <button class="btn btn-outline-info" type="button">
-                <svg class="bi bi-clipboard-plus" fill="currentColor" height="16" viewBox="0 0 16 16"
-                     width="16" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M8 7a.5.5 0 0 1 .5.5V9H10a.5.5 0 0 1 0 1H8.5v1.5a.5.5 0 0 1-1 0V10H6a.5.5 0 0 1 0-1h1.5V7.5A.5.5 0 0 1 8 7z"
-                          fill-rule="evenodd"/>
-                    <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
-                    <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/>
-                </svg>
-            </button>
-        </div>
-
-        <ul class="list-inline ratings text-center" title="Ratings">
-
-            <li>First Name:</li>
-            <hr/>
-            <li>Last Name:</li>
-            <hr/>
-            <li>Birth Date:</li>
-            <hr/>
-            <li>Gender:</li>
-            <hr/>
-            <li>Email:</li>
-            <hr/>
-            <li>Mobile phone:</li>
-            <hr/>
-            <li>Emergency Contact</li>
-            <hr/>
-            <li>Contact type:</li>
-        </ul>
-
-
-    </div>
 
     <div class="dash-top1">
-        <canvas class="weight-chart" id="weight-chart1"></canvas>
+        <div class="dash-header-main">Recognize old clinical tests and reports</div>
+            <div class="dash-container">
+                <div class="dash-info">
+                    <img src="{% static 'portal/img/recognizer-page.png' %}" alt="card page icon">
+                    <span>You can scan and upload any of your old medical tests, results and our system recognize it and automatically add information to your medical card</span>
+                </div>
+                <div class="dash-button">
+                    <button class="btn btn-info"><a href="{% url 'portal' %}/recognizer/{{user.med_id}}">Upload</a></button>
+                </div>
+            </div>
 
     </div>
 
     <div class="dash-top2">
-        <canvas class="weight-chart" id="weight-chart2"></canvas>
+        <div class="dash-header-special">My Covid-19 Vaccine Passport</div>
+        <div class="dash-container">
+            <div class="dash-info">
+                    <img src="{% static 'portal/img/vaccinated.jpg' %}" alt="card page icon">
+                    <span>You get your Covid-19 Vaccine "XX" month ago</span>
+                    <h6>You can upload new vaccination document to update information</h6>
+                </div>
+                <div class="dash-button">
+                    <button class="btn btn-info"><a href="{% url 'portal' %}/recognizer/{{user.med_id}}">Open</a></button>
+                </div>
+
+        </div>
+    </div>
+
+    <div class="dash-top3">
+        <div class="dash-header-main">Check yoy Laboratory tests</div>
+        <div class="dash-container">
+            <div class="dash-info">
+                    <img src="{% static 'portal/img/card-page.png' %}" alt="card page icon">
+                    <span>You can scan and upload any of your old medical tests, results and our system recognize it and automaticly add information to your medical card</span>
+                </div>
+                <div class="dash-button">
+                    <button class="btn btn-info"><a href="{% url 'portal' %}/recognizer/{{user.med_id}}">Open</a></button>
+                </div>
+        </div>
 
     </div>
 
-    <div class="dash-footer">
+    <div class="dash-top4">
+        <div class="dash-header-main">Header 4</div>
+       <div class="dash-container">
+             <div class="dash-info">
+                    <img src="{% static 'portal/img/recognizer-page.png' %}" alt="card page icon">
+                    <span>You can scan and upload any of your old medical tests, results and our system recognize it and automaticly add information to your medical card</span>
+                </div>
+                <div class="dash-button">
+                    <button class="btn btn-info"><a href="{% url 'portal' %}/recognizer/{{user.med_id}}">Open</a></button>
+                </div>
+        </div>
+    </div>
 
+    <div class="dash-footer">
+            <div class="dash-header-main">Chronology list</div>
+                <div class="dash-footer-info">
+                    <span>Here is we make chronology list all what happen with you</span>
+                </div>
     </div>
 </div>
 
@@ -112,9 +127,9 @@
 
             <div class="add-remove-btns">
                 <a href="{% url 'portal' %}/profile/{{ member.med_id }}">
-                    <button class="btn btn-outline-info remove-member">Profile</button>
+                    <button class="btn btn-info remove-member">Profile</button>
                 </a>
-                <button class="btn btn-outline-warning remove-member" value="{{ member.id }}">Remove</button>
+                <button class="btn btn-warning remove-member" value="{{ member.id }}">Remove</button>
             </div>
 
         </div>
@@ -125,17 +140,17 @@
             <div class="add-member">
                 <h6>Add your family member</h6>
                 <div class="input-div">
-                    <input class="form-search-member" id="member-id" name="patient_id" placeholder="Enter Member ID"
+                    <input class="form-search-member custom-input" id="member-id" name="patient_id" placeholder="Enter Member ID"
                            type="text">
                 </div>
                 <div class="search-result" id="search-result">
                     <!--                            result output                      -->
                 </div>
                 <div class="search-btn">
-                    <button class="btn btn-outline-info search-member-btn" type="button">Search Family
+                    <button class="btn btn-info search-member-btn" type="button">Search Family
                         member
                     </button>
-                    <button class="btn btn-outline-primary add-member-btn" type="button">Add Family member
+                    <button class="btn btn-primary add-member-btn" type="button">Add Family member
                     </button>
                 </div>
             </div>
@@ -214,7 +229,7 @@
                                                     <input accept=".jpg, .png, .gif" id="avatar-upload"
                                                            id="upload-avatar"
                                                            multiple="false" type="file">
-                                                    <button class="btn btn-outline-info" id="avatar-upload-button">
+                                                    <button class="btn btn-info" id="avatar-upload-button">
                                                         <i class="fa fa-fw fa-camera"></i> Change avatar
                                                     </button>
 
@@ -431,7 +446,7 @@
 
                                 <div class="select-allergens">
                                     <label for="allergens">Choose yor allergen</label>
-                                    <select class="allergens" id="allergens">
+                                    <select class="allergens custom-input" id="allergens">
                                         <optgroup label="Allrgens">
                                             <option>Select</option>
                                     </select>
@@ -458,7 +473,7 @@
                                     <label for="allergens">Add Med id to your access list</label>
                                     </p>
                                     <div class="input-div">
-                                        <input class="form-control" id="access-member-search" name="id"
+                                        <input class="custom-input" id="access-member-search" name="id"
                                                placeholder="Enter Member ID"
                                                type="text">
                                     </div>
@@ -479,7 +494,7 @@
                             <div class="card-body">
                                 <h6 class="card-title font-weight-bold">Support</h6>
                                 <p class="card-text">Get fast, free help from our friendly assistants.</p>
-                                <button class="btn btn-outline-info" type="button">Contact Us</button>
+                                <button class="btn btn-info" type="button">Contact Us</button>
                             </div>
                         </div>
                     </div>
@@ -564,8 +579,8 @@
         <div class="uploaded">
             <div class="card-sidebar-header"><h5>Choose documents date range</h5></div>
             <div class="date-picker">
-                <input class="custom-input" placeholder="Date From" type="date">
-                <input class="custom-input" placeholder="Date To" type="date">
+                <input id="date-from" class="custom-input" placeholder="Date From" type="date">
+                <input id="date-to" class="custom-input" placeholder="Date To" type="date">
             </div>
             <div class="search-record-container">
             </div>

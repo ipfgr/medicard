@@ -1,0 +1,12 @@
+{% extends 'portal/portal_layout.html' %}
+{% load static %}
+
+
+{% block body %}
+{%if login%}
+<div id="firebaseui-auth-container"></div>
+
+{% endif %}
+<script rel="text/javascript" src="{% static 'portal/js/app.js' %}"></script>
+
+{% endblock %}

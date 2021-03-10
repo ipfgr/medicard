@@ -18,6 +18,11 @@ from .models import AccessList
 from django.http import HttpResponse
 
 
+def fblogin_view(request):
+    return render(request, 'portal/login.html' , {
+        "login": True
+    })
+
 
 def index_view(request):
     context = {
@@ -93,7 +98,6 @@ def portal_view(request, med_id="", page=""):
         # Check if user have access to look another user page
         access_user = User.objects.get(med_id=med_id)
         access_check = AccessList.objects.filter(user_id=access_user.id, access_user=request.user.id)
-        print(access_check)
         info = User.objects.get(med_id=med_id)
         if not access_check:
             return render(request, 'portal/portal.html', {
