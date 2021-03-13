@@ -1,5 +1,4 @@
 //Initialization Cloud FireStore and Firebase Datastore
-
 const firebaseConfig = {
     apiKey: "AIzaSyCKGs3Hy8wmIT7M4OJ2SYWlwSVV2-d3TNg",
     authDomain: "medicard-db.firebaseapp.com",
@@ -12,29 +11,13 @@ const firebaseConfig = {
 const app = firebase.initializeApp(firebaseConfig);
 const storageRef = firebase.storage().ref();
 const db = firebase.firestore(app);
-const ui = new firebaseui.auth.AuthUI(firebase.auth());
-
-
-function buttonMaker(tag, classlist, textcontent) {
-    const button = document.createElement(tag)
-    button.classList.add(...classlist)
-    button.textContent = textcontent
-    return button
-}
-
-ui.start('#firebaseui-auth-container', {
-  signInOptions: [
-    firebase.auth.EmailAuthProvider.PROVIDER_ID
-  ],
-  // Other config options...
-});
 
 //Register ServiceWorker
 // window.addEventListener("load" , async () => {
 //     //Register service workers
 //         if (navigator.serviceWorker){
 //             try{
-//                const reg = await navigator.serviceWorker.register(`http://127.00.0.1:8000/sw.js`)
+//                const reg = await navigator.serviceWorker.register(`http://127.0.0.1:8000/sw.js`)
 //             }
 //             catch (e) {
 //                 console.error(e)
@@ -44,21 +27,21 @@ ui.start('#firebaseui-auth-container', {
 
 document.addEventListener('DOMContentLoaded', function () {
 
-
-
         //Get current user ID from django template
         const currentUserMedId = JSON.parse(document.querySelector('#user-med-id').textContent)
 
         //Card section
-
         if (window.location.href.indexOf("portal/card") > 1) {
-            const modalContainer = document.querySelector(".modal-container")
-            const addLineButton = buttonMaker("button", ["btn", "btn-warning"], "+")
+            //Create buttons
+            const addLineButton = buttonMaker("button", ["btn", "btn-warning"], "+Add Line")
+            const addImageButton = buttonMaker("button", ["btn", "btn-success"], "+ Add image")
             const saveResultButton = buttonMaker("button", ["btn", "btn-info"], "Save")
             const searchResultButton = buttonMaker("button", ["btn", "btn-info"], "Search")
             const hideModalButton = buttonMaker("button", ["btn", "btn-info"], "Hide")
             const showModalButton = buttonMaker("button", ["btn", "btn-info"], "Add new results")
 
+            const modalContainer = document.querySelector(".modal-container")
+            const inputFile = document.querySelector("#image-add-record")
             const inputDivPlace = document.querySelector("#input0")
             const buttonsDivPlace = document.querySelector('.modal-control-buttons')
             const linesInfo = document.querySelector(".lines-info")
@@ -68,17 +51,21 @@ document.addEventListener('DOMContentLoaded', function () {
             const searchRecordContainer = document.querySelector(".search-record-container")
             const lookingId = document.querySelector(".id-number").innerHTML.trim()
             const reportContainer = document.querySelector(".report-container")
-
-            //get all documents list from firestore and put to search page
-            // getFromFireStore(lookingId)
-
+            const previewContainerRecord = document.querySelector("#preview-container-record")
+            const modalButtonsContainer = document.querySelector(".modal-buttons-container")
             //Generate document uniqueid number
             const documentIdGenerator = () => "MD-" + Math.random().toString(36).substring(2)
 
+            //Global files array for add images
+            let recordFiles = []
+            //For effect open modal window
+            let opacity = 0
             //Limit maximum fields to add in form
             let counter = 20
+
             datePicker.insertAdjacentElement("afterend", searchResultButton)
-            inputDivPlace.insertAdjacentElement("afterend", addLineButton)
+            modalButtonsContainer.insertAdjacentElement("beforeend", addLineButton)
+            modalButtonsContainer.insertAdjacentElement("beforeend", addImageButton)
             buttonsDivPlace.insertAdjacentElement("beforeend", saveResultButton)
             modalTriggerDiv.insertAdjacentElement("beforeend", hideModalButton)
             modalTriggerDiv.insertAdjacentElement("beforeend", showModalButton)
@@ -87,9 +74,8 @@ document.addEventListener('DOMContentLoaded', function () {
             modalContainer.style.display = "none"
             hideModalButton.style.display = "none"
             reportContainer.style.display = "none"
+            inputFile.style.display = "none"
 
-            //For effect open modal window
-            let opacity = 0
             hideModalButton.addEventListener("click", () => {
                 opacity = 0
                 modalContainer.style.opacity = "0"
@@ -97,8 +83,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 showModalButton.style.display = "block"
                 hideModalButton.style.display = "none"
             })
+
+            //Add fade in effect for modal window
             showModalButton.addEventListener("click", () => {
-                //Add fade in effect for modal window
                 setTimeout(function () {
                     while (opacity < 100) {
                         modalContainer.style.opacity = opacity + "%"
@@ -107,65 +94,23 @@ document.addEventListener('DOMContentLoaded', function () {
                 }, 200)
 
                 reportContainer.innerHTML = ""
+                reportContainer.style.display = "none"
                 modalContainer.style.display = "block"
                 showModalButton.style.display = "none"
                 hideModalButton.style.display = "block"
             })
 
-
+            //
             searchResultButton.addEventListener("click", () => {
                 const dateFromSearch = document.querySelector("#date-from").value
                 const dateToSearch = document.querySelector("#date-to").value
                 if (dateFromSearch && dateToSearch) {
                     getFromFireStore(lookingId, dateFromSearch, dateToSearch)
-
-                    console.log(dateFromSearch, dateToSearch)
-
+                    console.log("Search from", dateFromSearch, "to", dateToSearch)
                 }
             })
-            //Handler for save input results when press save button
-            saveResultButton.addEventListener("click", () => {
-                const topInputs = document.querySelectorAll(".top-input")
-                const summary = document.querySelector(".summary")
-                //Check if important data [ Name, date, hospital and address inputed ]
-                if (validateResult(topInputs)) {
-                    const contextData = () => {
-                        let context = Array
-                            .from(document.querySelectorAll('.input-container'))
-                            .reduce((acc, el, i) => (
-                                    acc[`input${i + 1}`] = [
-                                        'parameter',
-                                        'result',
-                                        'select',
-                                        'range',
-                                    ].map(name => el.querySelector(`[name="${name}"]`).value),
-                                        acc
-                                ), {
-                                    med_id: currentUserMedId,
-                                    document_id: documentId.innerHTML,
-                                    summary: summary.value
-                                }
-                            );
-                        topInputs.forEach(input => {
-                            context[input.name] = input.value
-                        })
-                        return context
-                    }
-                    const context = contextData()
-                    //    Write data to FireStore
-                    db.collection(`reports/users/${currentUserMedId}`).add(context)
-                        .then((docRef) => {
-                            console.log("Document written with ID: ", docRef.id);
-                        })
-                        .catch((error) => {
-                            console.error("Error adding document: ", error);
-                        })
-                        .finally(() => location.reload())
-                } else console.log("not valid")
 
-            })
-
-            //Work with add report modal
+            //Add line to report modal
             addLineButton.addEventListener("click", () => {
                 linesInfo.innerHTML = `* Can add more ${counter} fields`
                 //set limit of add input fields
@@ -197,7 +142,49 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             })
 
-            //    Listener for remove fiels in form
+            //Add image to report modal
+            addImageButton.addEventListener('click', () => inputFile.click())
+
+            //Show images preview at modal container
+            inputFile.addEventListener("change", (event) => {
+                //clean from old files
+                recordFiles = []
+                previewContainerRecord.innerHTML = ""
+
+                recordFiles = Array.from(event.target.files)
+                //Validate upload files size
+                recordFiles.forEach(file => {
+                    if (validateSize(file, 2)) {
+                        const fReader = new FileReader()
+                        fReader.onload = ev => {
+                            previewContainerRecord.insertAdjacentHTML("beforeend",
+                                `<div class="img-preview-container">
+                                   <div class="remove-img" data-name="${file.name}">
+                                    &times;
+                                  </div>
+                                  <div class="img-info">${file.name} , ${formatBytes(file.size)}</div>
+                                  <img src="${ev.target.result}" alt="${file.name}">
+                                  </div>
+                                  `)
+                        }
+                        fReader.readAsDataURL(file)
+                    }
+                })
+            })
+
+            //Remove IMG preview handler
+            previewContainerRecord.addEventListener("click", event => {
+                //Check for empty input
+                if (!event.target.dataset.name) {
+                    return
+                }
+                const {name} = event.target.dataset
+                recordFiles = recordFiles.filter(file => file.name != name)
+                const remove = document.querySelector(`[data-name="${name}"`).closest(".img-preview-container")
+                remove.remove()
+            })
+
+            //    Listener for remove fields in form
             inputDivPlace.addEventListener("click", (event) => {
                 if (!event.target.dataset.name) return
                 const remove = document.querySelector(`[data-name="${event.target.dataset.name}"`).closest(".input-container")
@@ -217,7 +204,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 reportContainer.innerHTML = ""
                 hideModalButton.click()
                 console.log("Get info from document:", ident)
-                db.collection(`reports/users/${lookingId}`)
+                db.collection(`users/${lookingId}/reports/`)
                     .doc(ident)
                     .get()
                     .then((doc) => {
@@ -228,9 +215,9 @@ document.addEventListener('DOMContentLoaded', function () {
                             <div class="report-header"><h4>Result</h4></div>
                                 <div class="row-main">
                                 <div class="column-quater">
-                                                            <p><span>User ID: </span><span >${report.med_id}</span></p >
-                                                            <p><span>Document ID: </span><span>${report.document_id}</span></p>
-                                                            <button class="btn btn-warning" onclick="window.print()">Print</button>
+                                    <p><span>User ID: </span><span >${report.med_id}</span></p >
+                                    <p><span>Document ID: </span><span>${report.document_id}</span></p>
+                                    <button class="btn btn-warning" onclick="window.print()">Print</button>
                                 </div>
                                     <div class="column-quater">
                                         <input class="custom-input" value="${report.report_name}" type="text" disabled>
@@ -243,7 +230,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             <div class="report-add-body">
                                 <div class="report-add-header"><h4>Results</h4></div>
                             <div class="output0"></div>
-                              
+                            <div class="recognized-images"></div>
                             <div class="summary-info">
                                 <div class="form-group">
                                     <textarea class="form-control"
@@ -257,8 +244,9 @@ document.addEventListener('DOMContentLoaded', function () {
                         </div>
             <!--                End report output template                 -->
                 `)
-
+                        //Add results information if existing in report
                         const output = document.querySelector(".output0")
+                        const recordImages = document.querySelector(".recognized-images")
                         for (let i = 1; i < 21; i++) {
                             if (report.hasOwnProperty("input" + i)) {
                                 output.insertAdjacentHTML("beforeend", `
@@ -268,16 +256,110 @@ document.addEventListener('DOMContentLoaded', function () {
                                 <input type="text" value="${report["input" + i][2]}" class="custom-input" disabled>
                                 <input type="text" value="${report["input" + i][3]}" class="custom-input" disabled>
                             </div>
-`)
+                            `)
                             }
                         }
-
+                        //Add images preview's if have links at report
+                        if (report.files.length) {
+                            recordImages.insertAdjacentHTML("beforebegin", `<h6> Uploaded images </h6>`)
+                            report.files.forEach(file => {
+                                recordImages.insertAdjacentHTML("beforeend", `<div class="recognized-preview-container"><img class="" src=${file} alt="Image in record" height="150px"> </div>`)
+                            })
+                        }
 
                     })
             })
 
-        }
+            //Handler for save input results when press save button
+            saveResultButton.addEventListener("click", () => {
+                const topInputs = document.querySelectorAll(".top-input")
+                const summary = document.querySelector(".summary")
+                //array for images links
+                const fileLinksArr = []
 
+                //Check if important data [ Name, date, hospital and address inputed ]
+                if (validateResult(topInputs)) {
+                    // Upload images to storage and get links to array
+                    const uploadImageFirst = new Promise(function (resolve, reject) {
+                        if (recordFiles.length) {
+                            //If have images before start upload we remove "delete image" button
+                            const remover = document.querySelectorAll(".remove-img")
+                            remover.forEach(el => {
+                                el.remove()
+                            })
+                            // write each file to firebase storage and get files links
+                            recordFiles.forEach(file => {
+                                const uploadTask = storageRef.child(`documents/${currentUserMedId}/added/${file.name}`).put(file)
+                                uploadTask.on('state_changed',
+                                    (snapshot) => {
+                                        // Observe state change events such as progress, pause, and resume
+                                        // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+                                        var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                                        console.log('Upload is ' + progress + '% done');
+                                        switch (snapshot.state) {
+                                            case firebase.storage.TaskState.RUNNING: // or 'running'
+                                                console.log('Upload is running');
+                                                break;
+                                        }
+                                    },
+                                    (error) => {
+                                        console.error(error)
+                                    },
+                                    () => {
+                                        //Write file links to array
+                                        uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
+                                            fileLinksArr.push(downloadURL)
+                                            if (fileLinksArr.length == recordFiles.length) {
+                                                console.log(fileLinksArr, recordFiles)
+                                                resolve()
+                                            }
+                                        });
+                                    }
+                                );
+                            })
+                        } else resolve()
+                    })
+
+                    // After we make array with image links, upload data to FireStore
+                    uploadImageFirst.then(() => {
+                        //Make object with data to upload to firestore
+                        const contextData = () => {
+                            let context = Array
+                                .from(document.querySelectorAll('.input-container'))
+                                .reduce((acc, el, i) => (
+                                        acc[`input${i + 1}`] = [
+                                            'parameter',
+                                            'result',
+                                            'select',
+                                            'range',
+                                        ].map(name => el.querySelector(`[name="${name}"]`).value),
+                                            acc
+                                    ), {
+                                        med_id: currentUserMedId,
+                                        document_id: documentId.innerHTML,
+                                        summary: summary.value,
+                                        files: fileLinksArr
+                                    }
+                                );
+                            topInputs.forEach(input => {
+                                context[input.name] = input.value
+                            })
+                            return context
+                        }
+
+                        //    Write all data to FireStore
+                        db.collection(`users/${currentUserMedId}/reports/`).add(contextData())
+                            .then((docRef) => {
+                                console.log("Document written with ID: ", docRef.id);
+                            })
+                            .catch((error) => {
+                                console.error("Error adding document: ", error);
+                            })
+                            .finally(() => location.reload())
+                    })
+                } else console.log("not valid")
+            })
+        }
 
         //Profile page section
         if (window.location.href.indexOf("portal/profile") > 1) {
@@ -369,7 +451,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             extension = ".png"
                             break
                     }
-                    let uploadTask = storageRef.child(`portal/img/uploaded/${currentUserMedId}/avatar/${uniqueId}${extension}`).put(avatar)
+                    let uploadTask = storageRef.child(`portal/img/${currentUserMedId}/uploaded/avatar/${uniqueId}${extension}`).put(avatar)
                     uploadTask.on('state_changed',
                         (snapshot) => {
                             // Observe state change events such as progress, pause, and resume
@@ -409,27 +491,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 } else {
 
                 }
-
             }
 
-            //Handler to update profile information at DB
-            const updateProfileHandler = (profileBody) => {
-                fetch(`/portal/api/v1/profile`, {
-                    method: "POST",
-                    headers: {
-                        "X-CSRFToken": getCookie("csrftoken")
-                    },
-                    body: JSON.stringify(profileBody)
-                })
-                    .then(response => response.json())
-                    .then(result => console.log(result))
-                    .catch(error => console.error(error))
-                    .finally(() => location.reload())
-            }
+
             getUserAllergenHandler(currentUserMedId, requested_med_id)
 
             //array of allergens for choose at profile page
-
             const allergInput = document.querySelector(".custom-allergen")
             allergInput.style.display = "none"
 
@@ -463,7 +530,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             //Get list of all medical reports in user upload storage for output
             const getUploadedImages = () => {
-                const storageList = firebase.storage().ref(`documents/uploaded/${currentUserMedId}/`)
+                const storageList = firebase.storage().ref(`documents/${currentUserMedId}/uploaded/`)
                 storageList.listAll()
                     .then(result => {
                         result.items.forEach(imageRef => {
@@ -520,8 +587,8 @@ document.addEventListener('DOMContentLoaded', function () {
             let files = []
             //Upload pictures options
             const options = {
-                multiply: true,
-                accepttype: [".jpg", ".png", ".jpeg", ".gif"]
+                multiple: true,
+                accept: [".jpg", ".png", ".jpeg", ".gif"]
             }
 
             const openInput = document.querySelector("#file-input")
@@ -530,22 +597,21 @@ document.addEventListener('DOMContentLoaded', function () {
             const openButton = buttonMaker("button", ["btn", "btn-primary"], "Open")
             const uploadButton = buttonMaker("button", ["btn", "btn-info"], "Upload")
 
-            if (options.multiply) {
+            if (options.multiple) {
                 openInput.setAttribute("multiple", true)
             }
-            if (options.accepttype && Array.isArray(options.accepttype)) {
-                openInput.setAttribute("accept", options.accepttype.join(","))
+            if (options.accept && Array.isArray(options.accept)) {
+                openInput.setAttribute("accept", options.accept.join(","))
             }
 
             headerUpload.insertAdjacentElement("beforeend", openButton)
             openButton.addEventListener("click", () => openInput.click())
 
-            //When open pictures for upload you come her
+            //When open pictures for upload you come here
             const changeHandler = (event) => {
-                console.log(event)
                 preview.innerHTML = ""
                 files = Array.from(event.target.files)
-                uploadButton.addEventListener("click", () => uploadHandler(files))
+                uploadButton.addEventListener("click", () => uploadRecognizeHandler(files))
                 files.forEach(file => {
                     if (!file.type.match("image")) {
                         return
@@ -553,7 +619,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     //insert upload button when have files to upload
                     headerUpload.insertAdjacentElement("beforeend", uploadButton)
                     uploadButton.style.display = "block"
-
 
                     //Add previews of opened pictures
                     const reader = new FileReader
@@ -586,17 +651,22 @@ document.addEventListener('DOMContentLoaded', function () {
                 const remove = document.querySelector(`[data-name="${name}"`).closest(".img-preview-container")
                 remove.remove()
 
-
             }
+
             //Upload pictures to Firebase Storage
-            const uploadHandler = (files) => {
+
+
+
+
+            //Handler to upload pictures to recognizer
+            function uploadRecognizeHandler(files) {
                 const progressBar = document.querySelector(".progress-bar")
                 preview.querySelectorAll(".remove-img").forEach(e => e.remove())
                 let idArray = []
+                let checker = files.length
                 files.forEach(file => {
                     //make unique id for each new picture
                     let uniqueId = Date.now() + Math.random().toString(36).substring(2);
-
                     let extension = ""
                     switch (file.type) {
                         case "image/jpeg":
@@ -609,17 +679,16 @@ document.addEventListener('DOMContentLoaded', function () {
                             extension = ".png"
                             break
                     }
+
                     //Add all uploaded picture names to array
                     idArray.push(uniqueId + extension)
-                    let uploadTask = storageRef.child(`documents/uploaded/${currentUserMedId}/${uniqueId}${extension}`).put(file)
+                    let uploadTask = storageRef.child(`documents/${currentUserMedId}/uploaded/${uniqueId}${extension}`).put(file)
                     uploadTask.on('state_changed',
                         (snapshot) => {
                             // Observe state change events such as progress, pause, and resume
                             // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
                             let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-
                             console.log('Upload is ' + progress.toFixed(0) + '% done');
-
                             switch (snapshot.state) {
                                 case firebase.storage.TaskState.PAUSED: // or 'paused'
                                     console.log('Upload is paused')
@@ -637,19 +706,24 @@ document.addEventListener('DOMContentLoaded', function () {
                             // For instance, get the download URL: https://firebasestorage.googleapis.com/...
                             preview.innerHTML = ""
                             uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
-                                console.log('File available at', downloadURL)
                                 progressBar.innerHTML = ""
                                 uploadButton.style.display = "none"
+                                checker-=1
+                                //When we upload all files go to next step
+                                if (checker == 0){
+                                    saveNames(idArray)
+                                }
                             })
                         }
                     )
                 })
-                //save picture names array to DB
-                saveNames(idArray)
+                //Return file names to write it to database
+                return idArray
             }
 
             //Fetch all picture names to save at DB
             function saveNames(arr) {
+                console.log("test")
                 fetch(`/portal/api/v1/recognizer`, {
                     method: "POST",
                     headers: {
@@ -658,12 +732,12 @@ document.addEventListener('DOMContentLoaded', function () {
                     body: JSON.stringify({
                         filenames: arr
                     })
-                })
+                }).finally(() => location.reload())
             }
+
 
             openInput.addEventListener("change", changeHandler)
             preview.addEventListener("click", removeHandler)
-
 
         }
 
@@ -671,65 +745,57 @@ document.addEventListener('DOMContentLoaded', function () {
         if (window.location.href.indexOf("portal/family") > 1) {
             document.querySelector(".add-member-btn").style.visibility = "hidden"
             const searchMemberButton = document.querySelector(".search-member-btn")
-            let idInput = document.getElementById("member-id")
-            searchMemberButton.addEventListener('click', () => searchMember(idInput.value, "member"))
-
             const removeMemberButton = document.querySelectorAll(".remove-member")
+            let idInput = document.getElementById("member-id")
+
+            searchMemberButton.addEventListener('click', () => searchMember(idInput.value, "member"))
             removeMemberButton.forEach(button => {
-                const memberToRemoveId = button.value
-                button.addEventListener("click", () => removeMember(memberToRemoveId))
+                button.addEventListener("click", () => removeMember(button.value))
             })
         }
 
         //When you on index portal page
         if (window.location.href.indexOf("portal/dashboard") > 1) {
-            let dateArr = ["10:11:20", "10.12.20"]
-            let dataArr = [88, 90]
-            const ctx = document.getElementById('weight-chart1').getContext('2d');
-            const ctx2 = document.getElementById('weight-chart2').getContext('2d');
-            const chart = new Chart(ctx, {
-                // The type of chart we want to create
-                type: 'line',
 
-                // The data for our dataset
-                data: {
-                    labels: dateArr,
-                    datasets: [{
-                        label: 'Your Weight ',
-                        borderColor: '#fb6f0cd1',
-                        data: dataArr
-                    }]
-                },
 
-                // Configuration options go here
-                options: {}
-            });
-            const chart2 = new Chart(ctx2, {
-                // The type of chart we want to create
-                type: 'line',
+        }
 
-                // The data for our dataset
-                data: {
-                    labels: dateArr,
-                    datasets: [{
-                        label: 'Your Weight ',
-                        borderColor: '#fb6f0cd1',
-                        data: dataArr
-                    }]
-                },
+        if (window.location.href.indexOf("portal/covidpass") > 1) {
+            const uploadButton = buttonMaker("button", ["btn", "btn-outline-info"], "Upload conformation")
+            const passportPageButtons = document.querySelector(".passport-page-buttons")
+            const inputConformationFile = document.querySelector("#confirmation-file-input")
 
-                // Configuration options go here
-                options: {}
-            });
+            passportPageButtons.insertAdjacentElement("beforeend", uploadButton)
+            uploadButton.addEventListener("click", () => inputConformationFile.click())
+            inputConformationFile.addEventListener("change", event => {
+                console.log(event)
+            })
 
         }
     }
 )
 
+
+//Handler to update profile information at DB
+function updateProfileHandler(profileBody) {
+    fetch(`/portal/api/v1/profile`, {
+        method: "POST",
+        headers: {
+            "X-CSRFToken": getCookie("csrftoken")
+        },
+        body: JSON.stringify(profileBody)
+    })
+        .then(response => response.json())
+        .then(result => console.log(result))
+        .catch(error => console.error(error))
+        .finally(() => location.reload())
+}
+
+//Search documents in firestore
 function getFromFireStore(med_id, from, to) {
     const searchResultContainer = document.querySelector(".search-record-container")
     searchResultContainer.innerHTML = ""
-    db.collection(`reports/users/${med_id}`)
+    db.collection(`users/${med_id}/reports/`)
         .where('date', '>', from)
         .where('date', '<', to)
         .get()
@@ -751,6 +817,7 @@ function getFromFireStore(med_id, from, to) {
         })
 }
 
+//load list of people who have access to your page
 function getAccessList() {
     const accessList = document.querySelector(".access-list")
     accessList.innerHTML = ""
@@ -787,8 +854,6 @@ function getAccessList() {
 
 //Get lis of user allergens and insert it to profile page
 function getUserAllergenHandler(current_user_id, requested_med_id) {
-
-    console.log("Get Allergen list for user", requested_med_id)
     const insertList = document.querySelector("#user-allergen-list")
     insertList.innerHTML = ""
     fetch(`/portal/api/v1/allergens/${requested_med_id}`)
@@ -821,7 +886,6 @@ function getUserAllergenHandler(current_user_id, requested_med_id) {
             body: JSON.stringify({
                 delete: name
             })
-
         })
             .then(response => response.json())
             .then(result => console.log(result))
@@ -831,7 +895,6 @@ function getUserAllergenHandler(current_user_id, requested_med_id) {
                 const currentUserMedId = JSON.parse(document.querySelector('#user-med-id').textContent)
                 getUserAllergenHandler(currentUserMedId, requested_med_id)
             })
-
     })
 }
 
@@ -965,4 +1028,10 @@ function formatBytes(bytes, decimals) {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(decimals)) + " " + sizes[i]
 }
 
-
+//Helper function for make buttons
+function buttonMaker(tag, classlist, textcontent) {
+    const button = document.createElement(tag)
+    button.classList.add(...classlist)
+    button.textContent = textcontent
+    return button
+}

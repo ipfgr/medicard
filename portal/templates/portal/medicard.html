@@ -1,0 +1,85 @@
+
+{% extends 'portal/portal_layout.html' %}
+{% load static %}
+
+{% block body %}
+<div class="cards-container" id="app">
+    <div class="documents-container">
+        <div class="recognized">
+            <div class="recognized-header">
+                <h4>Medical card</h4>
+            </div>
+            <div class="open-modal"></div>
+            <!--            Start add report template               -->
+            <div class="modal-container">
+                <div class="modal-add">
+                    <div class="modal-add-header"><h4>Add new Laboratory test</h4></div>
+                    <div class="error-message-card"></div>
+                    <div class="row-main">
+                        <div class="column-quater">
+                            <h4>{{user.name}}</h4>
+                            <p>Gender: {{ user.gender }} </p>
+                            <p>Birth: {{ user.birth_date }}</p>
+                            <p><span>User ID: </span><span>{{ user.med_id }}</span></p>
+                            <p><span>Document ID: </span><span id="generated-doc-id"></span></p>
+                        </div>
+                        <div class="column-quater">
+                            <input class="custom-input top-input" name="report_name" placeholder="Report Name"
+                                   required type="text">
+                            <input class="custom-input top-input" name="hospital_name" placeholder="Hospital Name"
+                                   required type="text">
+                            <input class="custom-input top-input" name="date" placeholder="Date" required type="date">
+                            <input class="custom-input top-input" name="address" placeholder="Address" required
+                                   type="text">
+                        </div>
+                    </div>
+                    <input accept="jpg,png, gif" id="image-add-record" multiple="true" type="file">
+                    <div class="modal-add-body">
+                        <div class="modal-add-header"><h4>Results</h4></div>
+                        <span class="right lines-info"></span>
+                        <br/>
+                        <div id="input0"></div>
+                        <div class="modal-buttons-container"></div>
+                        <br/>
+                        <!--                    preview container                       -->
+                        <div class="already-uploaded">
+                            <div id="preview-container-record"></div>
+                        </div>
+                        <!--                    preview container                       -->
+                        <div class="summary-info">
+                            <div class="form-group">
+                        <textarea class="form-control summary"
+                                  maxlength="500"
+                                  placeholder="Summary information"
+                                  rows="5"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-add-constructor">
+                    <div class="modal-add-header"></div>
+                    <div class="modal-control-buttons"></div>
+                </div>
+            </div>
+            <!--                End add report template                 -->
+            <div class="document-container">
+                <!--            Start report output template               -->
+                <div class="report-container">
+                </div>
+            </div>
+        </div>
+        <!--        Search documents sidebar        -->
+        <div class="uploaded">
+            <div class="card-sidebar-header"><h5>Choose documents date range</h5></div>
+            <div class="date-picker">
+                <input class="custom-input" id="date-from" placeholder="Date From" type="date">
+                <input class="custom-input" id="date-to" placeholder="Date To" type="date">
+            </div>
+            <div class="search-record-container">
+            </div>
+        </div>
+        <!--        Search documents sidebar        -->
+    </div>
+</div>
+
+{% endblock %}

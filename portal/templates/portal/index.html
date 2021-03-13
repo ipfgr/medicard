@@ -34,51 +34,50 @@
 {% block body %}
 <div class="container xl c-custom">
     {% if index %}
-    <div class="carousel slide" data-bs-ride="carousel" id="carouselExampleIndicators">
-        <div class="carousel-indicators">
-            <button aria-current="true" aria-label="Slide 1" class="active" data-bs-slide-to="0"
-                    data-bs-target="#carouselExampleIndicators" type="button"></button>
-            <button aria-label="Slide 2" data-bs-slide-to="1" data-bs-target="#carouselExampleIndicators"
-                    type="button"></button>
-            <button aria-label="Slide 3" data-bs-slide-to="2" data-bs-target="#carouselExampleIndicators"
-                    type="button"></button>
+    <div class="container">
+        <div class="info-cards">
+            <div class="static-card">
+                <div class="image-card">
+                    <img alt="Personal" class="background-img" src="{% static 'portal/img/personal.jpg' %}">
+                </div>
+                <div class="text-card">
+                    <ul>
+                        <li>All medical records in your pocket.</li>
+                        <li>Recognize any paper reports.</li>
+                        <li>Give your doctor direct access to your records.</li>
+                        <li>Health care network with real doctors</li>
+                        <li>And more......</li>
+                    </ul>
+                </div>
+                <div class="button-card">
+                    <button class="btn btn-outline-info">Get Started</button>
+                </div>
+            </div>
+            <div class="static-card">
+                <div class="image-card">
+                    <img alt="Personal" class="background-img" src="{% static 'portal/img/business.jpg' %}">
+                </div>
+                <div class="text-card">
+                    <ul>
+                        <li><span class="fa-li"><i class="fas fa-spinner fa-pulse"></i></span>Get apoinments from patients directly</li>
+                        <li>Access to all your patient records</li>
+                        <li>Face recognize patient in emergency situations</li>
+                        <li>Improve your services. Work with patients feedback's</li>
+                        <li>And more......</li>
+                    </ul>
+                </div>
+                <div class="button-card">
+                    <button class="btn btn-outline-primary">Get Started</button>
+                </div>
+            </div>
         </div>
-        <div class="carousel-inner">
-            <div class="carousel-item active">
-                <img alt="Banner" class="d-block w-100" src="{% static 'portal/img/banner.jpg' %}">
-            </div>
-            <div class="carousel-item">
-                <img alt="..." class="d-block w-100" src="...">
-            </div>
-            <div class="carousel-item">
-                <img alt="..." class="d-block w-100" src="...">
-            </div>
-        </div>
-        <button class="carousel-control-prev" data-bs-slide="prev" data-bs-target="#carouselExampleIndicators"
-                type="button">
-            <span aria-hidden="true" class="carousel-control-prev-icon"></span>
-            <span class="visually-hidden">Previous</span>
-        </button>
-        <button class="carousel-control-next" data-bs-slide="next" data-bs-target="#carouselExampleIndicators"
-                type="button">
-            <span aria-hidden="true" class="carousel-control-next-icon"></span>
-            <span class="visually-hidden">Next</span>
-        </button>
     </div>
+</div>
+<!--End first container-->
+    <br/>
+    <hr/>
+<div class="container">
 
-
-    <div class="container-grid">
-        <div class="col-l">
-            <img alt="doctor picture" class="background-img" src="{% static 'portal/img/doctor-animation.jpg' %}">
-        </div>
-        <div class="col-c">
-            <img alt="user picture" class="background-img" src="{% static 'portal/img/user.png' %}">
-        </div>
-        <div class="col-r">
-            <img alt="user picture" class="background-img" src="{% static 'portal/img/user.png' %}">
-        </div>
-
-    </div>
     <div class="main-info">
         <section id="what-we-do">
             <div class="container-fluid">

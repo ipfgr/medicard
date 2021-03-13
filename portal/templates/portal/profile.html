@@ -1,0 +1,300 @@
+{% extends 'portal/portal_layout.html' %}
+{% load static %}
+{% block body %}
+<div class="profile-container">
+    <div class="container">
+        <div class="row flex-lg-nowrap">
+            <div class="col">
+                <div class="row">
+                    <div class="col mb-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="e-profile">
+                                    <div class="row">
+                                        <div class="col-12 col-sm-auto mb-3">
+                                            <div class="mx-auto" style="width: 140px;">
+                                                <div class="d-flex justify-content-center align-items-center rounded">
+                                                    <img alt="avatar"
+                                                         height="140px" src="{{ user.avatar_url }}"
+                                                         width="140px">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col d-flex flex-column flex-sm-row justify-content-between mb-3"
+                                             id="profile">
+                                            <div class="text-center text-sm-left mb-2 mb-sm-0">
+                                                <h4 class="pt-sm-2 pb-1 mb-0 text-nowrap">{{user.name}}</h4>
+                                                <p class="mb-0">Gender: {{ user.gender }} </p>
+                                                <p class="mb-0">Birth: {{ user.birth_date }}</p>
+                                                <span>ID: </span><span class="mb-0 med_id">{{ user.med_id }}</span>
+                                                <div class="mt-2">
+                                                    <input accept=".jpg, .png, .gif" id="avatar-upload"
+                                                           id="upload-avatar"
+                                                           multiple="false" type="file">
+                                                    <button class="btn btn-info" id="avatar-upload-button">
+                                                        <i class="fa fa-fw fa-camera"></i> Change avatar
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="text-center text-sm-right">
+                                                <p>Role: {{user.user_role}}</p>
+                                                <div class="text-muted"><small>Joined: {{ user.date_joined}}</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="tab-content pt-3">
+                                        <div class="tab-pane active">
+                                            <!--                          Start form                      -->
+                                            <div class="form">
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <div class="row">
+                                                            <div class="col">
+                                                                <div class="form-group">
+                                                                    <label>Full Name</label>
+                                                                    <input class="form-control input-p" id="full-name"
+                                                                           placeholder="John Smith"
+                                                                           type="text" v-model="name"
+                                                                           value="{{ user.full_name}}">
+                                                                </div>
+                                                            </div>
+                                                            <div class="col">
+                                                                <div class="form-group">
+                                                                    <label>Username</label>
+                                                                    <input class="form-control" disabled
+                                                                           type="text"
+                                                                           value="{{ user.username}}">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col mb-3">
+                                                        <div class="form-group">
+                                                            <label>Short info</label>
+                                                            <textarea class="form-control input-p" id="bio"
+                                                                      maxlength="500"
+                                                                      placeholder="My Bio"
+                                                                      rows="5">{{ user.bio }}</textarea>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+
+                                                <div class="row">
+                                                    <div class="col-12 col-sm-6 mb-3">
+
+                                                        <div class="row">
+                                                            <div class="col">
+                                                                <div class="form-group">
+                                                                    <label for="gender">Gender</label>
+                                                                    <select class="form-control input-p"
+                                                                            id="gender"
+                                                                            selected="{{user.gender}}">
+
+                                                                       {% if user.gender == "Male" %}
+                                                                        <option selected value="Male">Male</option>
+                                                                        <option value="Female">Female</option>
+                                                                        {% else %}
+                                                                        <option value="Male">Male</option>
+                                                                        <option selected value="Female">Female</option>
+                                                                        {% endif %}
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="row">
+                                                            <div class="col">
+                                                                <div class="form-group">
+                                                                    <label for="birthday">Birthday</label>
+                                                                    <div class="col-10">
+                                                                        <input class="form-control input-p"
+                                                                               id="birthday"
+                                                                               type="date"
+                                                                               value="{{ user.birth_date}}">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <hr/>
+
+                                                        <div class="row">
+                                                            <div class="col">
+                                                                <div class="form-group">
+                                                                    <label>Home Address</label>
+                                                                    <input class="form-control input-p"
+                                                                           id="home-address"
+                                                                           placeholder="Home Address"
+                                                                           type="text"
+                                                                           value="{{user.home_address}}">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="row">
+                                                            <div class="col">
+                                                                <div class="form-group">
+                                                                    <label>Job place</label>
+                                                                    <input class="form-control input-p" id="job"
+                                                                           placeholder="Job place"
+                                                                           type="text" value="{{user.job}}">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <hr/>
+
+                                                        <div class="row">
+                                                            <div class="col">
+                                                                <div class="form-group">
+                                                                    <label>Email</label>
+                                                                    <input class="form-control input-p" id="email"
+                                                                           placeholder="user@example.com"
+                                                                           type="email" value="{{user.email}}">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="row">
+                                                            <div class="col">
+                                                                <div class="form-group">
+                                                                    <label>Contact phone</label>
+                                                                    <input class="form-control input-p"
+                                                                           id="phone_number"
+                                                                           max="13"
+                                                                           min="8" placeholder="Phone number"
+                                                                           type="number"
+                                                                           value="{{user.phone_number}}">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col">
+                                                                <div class="form-group">
+                                                                    <label>Emergency Phone</label>
+                                                                    <input class="form-control input-p"
+                                                                           id="emergency_number"
+                                                                           max="13"
+                                                                           min="8" placeholder="Emergency Phone"
+                                                                           type="number"
+                                                                           value="{{user.emergency_number}}">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <hr/>
+
+                                                    </div>
+                                                    <div class="col-12 col-sm-5 offset-sm-1 mb-3">
+
+                                                        <div class="row">
+                                                            <div class="col">
+                                                                <div class="form-group">
+                                                                    <label for="role-select">Your Role</label>
+                                                                    <select class="form-control" disabled
+                                                                            id="role-select">
+                                                                        <option value="user">User</option>
+                                                                        <option value="doctor">Doctor</option>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <hr/>
+
+                                                        <div class="mb-2"><b>Emergency contacts methods</b></div>
+                                                        <div class="row">
+                                                            <div class="col">
+                                                                <div class="custom-controls-stacked px-2">
+
+                                                                    <div class="custom-control custom-checkbox">
+                                                                        <input
+                                                                                class="custom-control-input input-p"
+                                                                                id="notifications"
+                                                                                type="checkbox">
+                                                                        <label class="custom-control-label"
+                                                                               for="notifications">Any</label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col d-flex justify-content-end">
+                                                        <div id="buttons-save-edit">
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--                        Right sidebar                               -->
+                    <div class="col-12 col-md-3 mb-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <h6 class="card-title font-weight-bold">Allergens list</h6>
+                                <p class="card-text">
+                                    {% if allrergen %}
+                                <h5>Not have allergy</h5>
+                                {% endif %}
+                                <ul id="user-allergen-list">
+                                </ul>
+                                <div class="select-allergens">
+                                    <label for="allergens">Choose yor allergen</label>
+                                    <select class="allergens custom-input" id="allergens">
+                                        <optgroup label="Allrgens">
+                                            <option>Select</option>
+                                    </select>
+                                    <input class="custom-allergen" placeholder="input your allergen" type="text">
+                                </div>
+                                <div class="add-allergen-button">
+                                </div>
+                            </div>
+                        </div>
+                        <br/>
+                        <div class="access-list-div">
+                            <!--            Add new member to access list               -->
+                            <div class="card">
+                                <div class="card-body">
+                                    <h6 class="card-title font-weight-bold">Access list</h6>
+                                    <ul class="access-list"></ul>
+                                    <p class="card-text">
+                                    <ul id="user-access-list">
+                                    </ul>
+                                    <label for="allergens">Add Med id to your access list</label>
+                                    </p>
+                                    <div class="input-div">
+                                        <input class="custom-input" id="access-member-search" name="id"
+                                               placeholder="Enter Member ID"
+                                               type="text">
+                                    </div>
+                                    <div class="search-result" id="access-search-result">
+                                        <!--                            result output                      -->
+                                    </div>
+                                    <div class="search-access-btn">
+                                    </div>
+                                </div>
+                            </div>
+                            <!--            Add new member to access list               -->
+                        </div>
+                        <br/>
+                        <div class="card">
+                            <div class="card-body">
+                                <h6 class="card-title font-weight-bold">Support</h6>
+                                <p class="card-text">Get fast, free help from our friendly assistants.</p>
+                                <button class="btn btn-info" type="button">Contact Us</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

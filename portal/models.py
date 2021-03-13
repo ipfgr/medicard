@@ -12,8 +12,9 @@ class User(AbstractUser):
     avatar_url = models.URLField(
         default="https://firebasestorage.googleapis.com/v0/b/medicard-db.appspot.com/o/portal%2Fimg%2Fnoimage.jpg?alt=media&token=defb69c4-2ffc-4e10-be83-75498408c2e2")
     med_id = models.CharField(max_length=255, default=uuid.uuid4().hex[:12])
+    passport = models.CharField(max_length=64, default=None, null=True, unique=True)
     full_name = models.CharField(max_length=100, null=True)
-    gender = models.CharField(max_length=15, default='unknow')
+    gender = models.CharField(max_length=15, default='Male', null=True)
     birth_date = models.CharField(max_length=30, default="1920-01-01", null=True)
     bio = models.CharField(max_length=1000, default=None, null=True)
     home_address = models.CharField(max_length=255, null=True)

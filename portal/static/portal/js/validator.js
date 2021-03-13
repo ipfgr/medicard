@@ -14,12 +14,12 @@ function validationForm(inputs) {
                 input.insertAdjacentHTML("beforebegin", `<span class="error-message">Cant be Empty</span>`)
                 result = false
             }
-        } else if (input.id == "contact-phone"
-            || input.id == "emergency-phone") {
-            if (!regex.test(input.value)) {
-                input.insertAdjacentHTML("beforebegin", `<span class="error-message">Not correct number</span>`)
-                result = false
-            }
+        } else if (input.id == "phone_number"
+            || input.id == "emergency_number") {
+                if (!regex.test(input.value) ) {
+                    input.insertAdjacentHTML("beforebegin", `<span class="error-message">Not correct number</span>`)
+                    result = false
+                }
         }
     })
     //clean error messages

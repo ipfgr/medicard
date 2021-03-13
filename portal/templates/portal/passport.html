@@ -1,0 +1,36 @@
+{% extends 'portal/portal_layout.html' %}
+{% load static %}
+
+{% block body %}
+<div class="passport-page-container">
+    <input accept=".jpg, .pdf, .gif, .jpeg" id="confirmation-file-input" style="display:none" type="file">
+    <div class="passport-container static-card">
+        <div class="passport-top-level">
+            <div class="passport-photo ">
+                <img alt="avatar" src="{{ user.avatar_url }}">
+            </div>
+            <div class="passport-info">
+                <div class="name"><strong>Name:</strong> {{ user.full_name}}</div>
+                <div class="name"><strong>Birth:</strong> {{ user.birth_date}}</div>
+                <div class="passport-status">
+                    <span><strong>Status:</strong></span>
+                    <img alt="status"
+                         src="https://firebasestorage.googleapis.com/v0/b/medicard-db.appspot.com/o/portal%2Fimg%2Fimunity.png?alt=media&token=53fe2eba-41f2-45ee-8e89-f8166080c574">
+                </div>
+            </div>
+            <div class="passport-label">
+                <button class="btn btn-outline-warning" onclick="window.print()">Print</button>
+            </div>
+        </div>
+        <div class="passport-bottom-level">
+            <div class="name"><strong>Medicard ID:</strong> {{ user.med_id}}</div>
+            <div class="name"><strong>Passport Number:</strong> {{ user.passport}}</div>
+            <div class="name"><strong>Valid until:</strong> xx*xx*xxxx</div>
+        </div>
+    </div>
+    <div class="passport-page-buttons static-card">
+        <div class="passport-info"><h6>You can upload new vaccination conformation or scan of existing covid passport,
+            to check and update your online passport information</h6></div>
+    </div>
+</div>
+{% endblock %}

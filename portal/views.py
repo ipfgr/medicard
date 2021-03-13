@@ -74,18 +74,27 @@ def portal_view(request, med_id="", page=""):
 
             })
         elif page == "profile":
-            return render(request, 'portal/portal.html', {
+            return render(request, 'portal/profile.html', {
                 "user": info,
-                "profile": True,
                 "owner": True,
 
             })
         elif page == "card":
-            return render(request, 'portal/portal.html', {
-                "card": True,
+            return render(request, 'portal/medicard.html', {
                 "user": info,
                 "owner": True,
 
+            })
+        elif page == "findhelp":
+            return render(request, 'portal/portal.html', {
+                "user": info,
+                "findhelp": True,
+                "owner": True
+            })
+        elif page == "covidpass":
+            return render(request, 'portal/passport.html', {
+                "user": info,
+                "owner": True
             })
         else:
             return render(request, 'portal/portal.html', {
@@ -106,7 +115,7 @@ def portal_view(request, med_id="", page=""):
             })
         else:
             if page == "card":
-                return render(request, 'portal/portal.html', {
+                return render(request, 'portal/medicard.html', {
                     "card": True,
                     "user": info
                 })
@@ -134,10 +143,12 @@ def portal_view(request, med_id="", page=""):
                     })
 
             elif page == "profile":
-                return render(request, 'portal/portal.html', {
+                return render(request, 'portal/profile.html', {
+                    "user": info
+                })
+            elif page == "covidpass":
+                return render(request, 'portal/passport.html', {
                     "user": info,
-                    "profile": True,
-
                 })
             else:
                 return render(request, 'portal/portal.html', {
@@ -207,6 +218,8 @@ def api_view(request,  link, med_id=""):
             emergency_number = data.get("emergency_number", "")
             notifications = data.get("notifications", "")
             checkbox = True
+            print(gender)
+
             if notifications == "off":
                 checkbox = False
             User.objects.filter(id=request.user.id).update(full_name=full_name,
@@ -220,7 +233,7 @@ def api_view(request,  link, med_id=""):
                                                         emergency_number=emergency_number,
                                                         notifications=checkbox)
 
-            return JsonResponse({"Message: Saved"}, status=201)
+            return JsonResponse("Message: Saved", safe=False, status=201)
 
     if request.method == "GET":
         # If we search for user

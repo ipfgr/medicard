@@ -1,17 +1,13 @@
 {% extends 'portal/portal_layout.html' %}
 {% load static %}
 
-
-
 {% block body %}
-{{ request.user.med_id| json_script:'user-med-id' }}
-
 {% if error %}
 <div class="error-template">
     <h1>Oops!</h1>
     <h2>404 Not Found</h2>
     <div class="error-details">
-        Sorry, an error has occured, Requested page not found!
+        Sorry, an error has occurred, Requested page not found!
     </div>
     <div class="error-actions">
         <a class="btn btn-warning btn-lg" href="{% url 'portal' %}">Take Me Home </a>
@@ -20,76 +16,71 @@
 {% endif %}
 {% if dashboard and owner %}
 <div class="body-portal">
-
-
     <div class="dash-top1">
-        <div class="dash-header-main">Recognize old clinical tests and reports</div>
-            <div class="dash-container">
-                <div class="dash-info">
-                    <img src="{% static 'portal/img/recognizer-page.png' %}" alt="card page icon">
-                    <span>You can scan and upload any of your old medical tests, results and our system recognize it and automatically add information to your medical card</span>
-                </div>
-                <div class="dash-button">
-                    <button class="btn btn-info"><a href="{% url 'portal' %}/recognizer/{{user.med_id}}">Upload</a></button>
-                </div>
+        <div class="dash-header-main"><h6>Recognize old clinical tests and reports</h6></div>
+        <div class="dash-container">
+            <div class="dash-info">
+                <img alt="card page icon" src="{% static 'portal/img/recognizer-page.png' %}">
+                <span>You can scan and upload any of your old medical tests, results and our system recognize it and automatically add information to your medical card</span>
             </div>
-
+            <div class="dash-button">
+                <button class="btn btn-info"><a href="{% url 'portal' %}/recognizer/{{user.med_id}}">Open</a></button>
+            </div>
+        </div>
     </div>
 
     <div class="dash-top2">
-        <div class="dash-header-special">My Covid-19 Vaccine Passport</div>
+        <div class="dash-header-main dash-header-special"><h6>My Covid-19 Vaccine Passport</h6></div>
         <div class="dash-container">
             <div class="dash-info">
-                    <img src="{% static 'portal/img/vaccinated.jpg' %}" alt="card page icon">
-                    <span>You get your Covid-19 Vaccine "XX" month ago</span>
-                    <h6>You can upload new vaccination document to update information</h6>
-                </div>
-                <div class="dash-button">
-                    <button class="btn btn-info"><a href="{% url 'portal' %}/recognizer/{{user.med_id}}">Open</a></button>
-                </div>
-
+                <img alt="card page icon" src="{% static 'portal/img/not-vaccinated.jpg' %}">
+                <span>You are not yet vaccinated</span>
+            </div>
+            <div class="dash-button">
+                <button class="btn btn-info"><a href="{% url 'portal' %}/covidpass/{{user.med_id}}">Your Passport</a>
+                </button>
+            </div>
         </div>
     </div>
 
     <div class="dash-top3">
-        <div class="dash-header-main">Check yoy Laboratory tests</div>
+        <div class="dash-header-main"><h6>Check your Laboratory tests</h6></div>
         <div class="dash-container">
             <div class="dash-info">
-                    <img src="{% static 'portal/img/card-page.png' %}" alt="card page icon">
-                    <span>You can scan and upload any of your old medical tests, results and our system recognize it and automaticly add information to your medical card</span>
-                </div>
-                <div class="dash-button">
-                    <button class="btn btn-info"><a href="{% url 'portal' %}/recognizer/{{user.med_id}}">Open</a></button>
-                </div>
+                <img alt="card page icon" src="{% static 'portal/img/card-page.png' %}">
+                <span>Check all your records in one place. Go to your electronic medial card</span>
+            </div>
+            <div class="dash-button">
+                <button class="btn btn-info"><a href="{% url 'portal' %}/card/{{user.med_id}}">Open</a></button>
+            </div>
         </div>
-
     </div>
 
     <div class="dash-top4">
-        <div class="dash-header-main">Header 4</div>
-       <div class="dash-container">
-             <div class="dash-info">
-                    <img src="{% static 'portal/img/recognizer-page.png' %}" alt="card page icon">
-                    <span>You can scan and upload any of your old medical tests, results and our system recognize it and automaticly add information to your medical card</span>
-                </div>
-                <div class="dash-button">
-                    <button class="btn btn-info"><a href="{% url 'portal' %}/recognizer/{{user.med_id}}">Open</a></button>
-                </div>
+        <div class="dash-header-main"><h6>Add your family information</h6></div>
+        <div class="dash-container">
+            <div class="dash-info">
+                <img alt="card page icon" src="{% static 'portal/img/family-page.png' %}">
+                <span>Add all your family members to your family list and give them access to your profile at Profile page</span>
+            </div>
+            <div class="dash-button">
+                <button class="btn btn-info"><a href="{% url 'portal' %}/family/{{user.med_id}}">Open</a></button>
+            </div>
         </div>
     </div>
 
     <div class="dash-footer">
-            <div class="dash-header-main">Chronology list</div>
-                <div class="dash-footer-info">
-                    <span>Here is we make chronology list all what happen with you</span>
-                </div>
+        <div class="dash-header-main"><h6>Chronology list</h6></div>
+        <div class="dash-footer-info">
+            <span>Here is we make chronology list all what happen with you</span>
+        </div>
     </div>
 </div>
 
 {% elif family %}
 <div class="family-container">
-    <div class="family-header">
-        <h3>My Family members</h3>
+    <div class="family-header text-center">
+        <h5>My Family members</h5>
     </div>
     <div class="family-members">
         {% for member in my_family %}
@@ -110,37 +101,33 @@
                     </div>
                 </div>
             </div>
-
             <div class="family-member-info">
                 <span>Gender: {{ member.gender }}</span>
             </div>
             <div class="family-member-info">
                 <span>Birth: {{ member.birth_date }}</span>
             </div>
-
             <div class="id-box">
                 <h6><strong>Medical record ID</strong></h6>
                 <div class="id-number">
                     {{ member.med_id }}
                 </div>
             </div>
-
             <div class="add-remove-btns">
                 <a href="{% url 'portal' %}/profile/{{ member.med_id }}">
                     <button class="btn btn-info remove-member">Profile</button>
                 </a>
                 <button class="btn btn-warning remove-member" value="{{ member.id }}">Remove</button>
             </div>
-
         </div>
         {% endfor %}
-
         <!--            Add new family member               -->
         <div class="family-member-container">
             <div class="add-member">
                 <h6>Add your family member</h6>
                 <div class="input-div">
-                    <input class="form-search-member custom-input" id="member-id" name="patient_id" placeholder="Enter Member ID"
+                    <input class="form-search-member custom-input" id="member-id" name="patient_id"
+                           placeholder="Enter Member ID"
                            type="text">
                 </div>
                 <div class="search-result" id="search-result">
@@ -160,439 +147,34 @@
 </div>
 
 {% elif recognizer and owner %}
-
-<div class="cards-container">
-    <h3>Recognize paper medical cards and add to your medical cards</h3>
+<div class="cards-container text-center">
+    <h5>Recognize paper medical cards and add to your medical cards</h5>
     <div class="documents-container">
         <div class="recognized">
             <div class="recognized-header">
                 <h4>Files to recognized</h4>
             </div>
             <div class="recognized-images">
-
             </div>
         </div>
         <div class="uploaded">
             <div class="header-upload">
                 <h4>Upload files</h4>
                 <div class="progress-bar"></div>
-
-
             </div>
-            <div class="already-uploaded">
-
-            </div>
+            <div class="already-uploaded"></div>
             <div class="upload">
-
                 <input id="file-input" name="upload" type="file">
             </div>
         </div>
     </div>
 
-
-</div>
-{% elif profile %}
-
-
-<div class="profile-container">
-    <div class="container">
-        <div class="row flex-lg-nowrap">
-            <div class="col">
-                <div class="row">
-                    <div class="col mb-3">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="e-profile">
-                                    <div class="row">
-                                        <div class="col-12 col-sm-auto mb-3">
-                                            <div class="mx-auto" style="width: 140px;">
-                                                <div class="d-flex justify-content-center align-items-center rounded">
-                                                    <img alt="avatar"
-                                                         height="140px" src="{{ user.avatar_url }}"
-                                                         width="140px">
-                                                </div>
-
-
-                                            </div>
-                                        </div>
-
-
-                                        <div class="col d-flex flex-column flex-sm-row justify-content-between mb-3"
-                                             id="profile">
-                                            <div class="text-center text-sm-left mb-2 mb-sm-0">
-                                                <h4 class="pt-sm-2 pb-1 mb-0 text-nowrap">{{user.name}}</h4>
-                                                <p class="mb-0">Gender: {{ user.gender }} </p>
-                                                <p class="mb-0">Birth: {{ user.birth_date }}</p>
-                                                <span>ID: </span><span class="mb-0 med_id">{{ user.med_id }}</span>
-                                                <div class="mt-2">
-
-                                                    <input accept=".jpg, .png, .gif" id="avatar-upload"
-                                                           id="upload-avatar"
-                                                           multiple="false" type="file">
-                                                    <button class="btn btn-info" id="avatar-upload-button">
-                                                        <i class="fa fa-fw fa-camera"></i> Change avatar
-                                                    </button>
-
-
-                                                </div>
-                                            </div>
-                                            <div class="text-center text-sm-right">
-                                                <p>Role: {{user.user_role}}</p>
-                                                <div class="text-muted"><small>Joined: {{ user.date_joined}}</small>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="tab-content pt-3">
-                                        <div class="tab-pane active">
-                                            <!--                          Start form                      -->
-                                            <div class="form">
-                                                <div class="row">
-                                                    <div class="col">
-                                                        <div class="row">
-                                                            <div class="col">
-                                                                <div class="form-group">
-                                                                    <label>Full Name</label>
-                                                                    <input class="form-control input-p" id="full-name"
-                                                                           placeholder="John Smith"
-                                                                           type="text" v-model="name"
-                                                                           value="{{ user.full_name}}">
-                                                                </div>
-                                                            </div>
-                                                            <div class="col">
-                                                                <div class="form-group">
-                                                                    <label>Username</label>
-                                                                    <input class="form-control" disabled
-                                                                           type="text"
-                                                                           value="{{ user.username}}">
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col mb-3">
-                                                        <div class="form-group">
-                                                            <label>Short info</label>
-                                                            <textarea class="form-control input-p" id="bio"
-                                                                      maxlength="500"
-                                                                      placeholder="My Bio"
-                                                                      rows="5">{{ user.bio }}</textarea>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-
-                                                <div class="row">
-                                                    <div class="col-12 col-sm-6 mb-3">
-
-                                                        <div class="row">
-                                                            <div class="col">
-                                                                <div class="form-group">
-                                                                    <label for="gender">Gender</label>
-                                                                    <select class="form-control input-p"
-                                                                            id="gender"
-                                                                            selected="{{ user.gender }}">
-
-                                                                        <option value="male">Male</option>
-                                                                        <option value="female">Female</option>
-                                                                    </select>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-
-                                                        <div class="row">
-                                                            <div class="col">
-                                                                <div class="form-group">
-                                                                    <label for="birthday">Birthday</label>
-                                                                    <div class="col-10">
-                                                                        <input class="form-control input-p"
-                                                                               id="birthday"
-                                                                               type="date"
-                                                                               value="{{ user.birth_date}}">
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <hr/>
-
-                                                        <div class="row">
-                                                            <div class="col">
-                                                                <div class="form-group">
-                                                                    <label>Home Address</label>
-                                                                    <input class="form-control input-p"
-                                                                           id="home-address"
-                                                                           placeholder="Home Address"
-                                                                           type="text"
-                                                                           value="{{user.home_address}}">
-                                                                </div>
-                                                            </div>
-                                                        </div>
-
-                                                        <div class="row">
-                                                            <div class="col">
-                                                                <div class="form-group">
-                                                                    <label>Job place</label>
-                                                                    <input class="form-control input-p" id="job"
-                                                                           placeholder="Job place"
-                                                                           type="text" value="{{user.job}}">
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <hr/>
-
-                                                        <div class="row">
-                                                            <div class="col">
-                                                                <div class="form-group">
-                                                                    <label>Email</label>
-                                                                    <input class="form-control input-p" id="email"
-                                                                           placeholder="user@example.com"
-                                                                           type="email" value="{{user.email}}">
-                                                                </div>
-                                                            </div>
-                                                        </div>
-
-                                                        <div class="row">
-                                                            <div class="col">
-                                                                <div class="form-group">
-                                                                    <label>Contact phone</label>
-                                                                    <input class="form-control input-p"
-                                                                           id="phone_number"
-                                                                           max="13"
-                                                                           min="8" placeholder="Phone number"
-                                                                           type="number"
-                                                                           value="{{user.phone_number}}">
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col">
-                                                                <div class="form-group">
-                                                                    <label>Emergency Phone</label>
-                                                                    <input class="form-control input-p"
-                                                                           id="emergency_number"
-                                                                           max="13"
-                                                                           min="8" placeholder="Emergency Phone"
-                                                                           type="number"
-                                                                           value="{{user.emergency_number}}">
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <hr/>
-
-                                                    </div>
-                                                    <div class="col-12 col-sm-5 offset-sm-1 mb-3">
-
-                                                        <div class="row">
-                                                            <div class="col">
-                                                                <div class="form-group">
-                                                                    <label for="role-select">Your Role</label>
-                                                                    <select class="form-control" disabled
-                                                                            id="role-select">
-                                                                        <option value="user">User</option>
-                                                                        <option value="doctor">Doctor</option>
-                                                                    </select>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <hr/>
-
-                                                        <div class="mb-2"><b>Emergency contacts methods</b></div>
-                                                        <div class="row">
-                                                            <div class="col">
-                                                                <div class="custom-controls-stacked px-2">
-
-                                                                    <div class="custom-control custom-checkbox">
-                                                                        <input
-                                                                                class="custom-control-input input-p"
-                                                                                id="notifications"
-                                                                                type="checkbox">
-                                                                        <label class="custom-control-label"
-                                                                               for="notifications">Any</label>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col d-flex justify-content-end">
-                                                        <div id="buttons-save-edit">
-
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!--                        Right sidebar                               -->
-                    <div class="col-12 col-md-3 mb-3">
-                        <div class="card">
-                            <div class="card-body">
-                                <h6 class="card-title font-weight-bold">Allergens list</h6>
-                                <p class="card-text">
-                                    {% if allrergen %}
-                                <h5>Not have allergy</h5>
-                                {% endif %}
-
-                                <ul id="user-allergen-list">
-                                </ul>
-
-                                <div class="select-allergens">
-                                    <label for="allergens">Choose yor allergen</label>
-                                    <select class="allergens custom-input" id="allergens">
-                                        <optgroup label="Allrgens">
-                                            <option>Select</option>
-                                    </select>
-
-                                    <input class="custom-allergen" placeholder="input your allergen" type="text">
-                                </div>
-
-                                <div class="add-allergen-button">
-                                </div>
-                            </div>
-                        </div>
-                        <br/>
-
-                        <div class="access-list-div">
-                            <!--            Add new member to access list               -->
-
-                            <div class="card">
-                                <div class="card-body">
-                                    <h6 class="card-title font-weight-bold">Access list</h6>
-                                    <ul class="access-list"></ul>
-                                    <p class="card-text">
-                                    <ul id="user-access-list">
-                                    </ul>
-                                    <label for="allergens">Add Med id to your access list</label>
-                                    </p>
-                                    <div class="input-div">
-                                        <input class="custom-input" id="access-member-search" name="id"
-                                               placeholder="Enter Member ID"
-                                               type="text">
-                                    </div>
-                                    <div class="search-result" id="access-search-result">
-                                        <!--                            result output                      -->
-                                    </div>
-                                    <div class="search-access-btn">
-
-                                    </div>
-                                </div>
-                            </div>
-                            <!--            Add new member to access list               -->
-                        </div>
-
-
-                        <br/>
-                        <div class="card">
-                            <div class="card-body">
-                                <h6 class="card-title font-weight-bold">Support</h6>
-                                <p class="card-text">Get fast, free help from our friendly assistants.</p>
-                                <button class="btn btn-info" type="button">Contact Us</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </div>
 </div>
 
-{% elif card %}
-<div class="cards-container" id="app">
-    <div class="documents-container">
-        <div class="recognized">
-            <div class="recognized-header">
-                <h4>Medical card</h4>
 
-
-            </div>
-            <div class="open-modal"></div>
-<!--            Start add report template               -->
-            <div class="modal-container">
-                <div class="modal-add">
-                <div class="modal-add-header"><h4>Add new Laboratory test</h4></div>
-                    <div class="error-message-card"></div>
-                    <div class="row-main">
-                    <div class="column-quater">
-
-                                                <h4 >{{user.name}}</h4>
-                                                <p >Gender: {{ user.gender }} </p>
-                                                <p >Birth: {{ user.birth_date }}</p>
-                                                <p ><span>User ID: </span><span >{{ user.med_id }}</span></p >
-                        <p ><span>Document ID: </span><span id = "generated-doc-id"></span></p>
-
-
-                    </div>
-                    <div class="column-quater">
-
-                    <input class="custom-input top-input" name="report_name" placeholder="Report Name" type="text" required>
-                    <input class="custom-input top-input" name="hospital_name" placeholder="Hospital Name" type="text" required>
-                    <input class="custom-input top-input" name="date" placeholder="Date" type="date" required>
-                    <input class="custom-input top-input" name="address" placeholder="Address" type="text" required>
-                    </div>
-                    </div>
-
-
-
-                <div class="modal-add-body">
-
-
-                    <div class="modal-add-header"><h4>Results</h4></div>
-
-                    <span class="right lines-info"></span>
-                    <br/>
-                <div id="input0"></div>
-                <div class="summary-info">
-                    <div class="form-group">
-                        <textarea class="form-control summary"
-                                  maxlength="500"
-                                  placeholder="Summary information"
-                                  rows="5"></textarea>
-                    </div>
-                </div>
-                </div>
-            </div>
-                <div class="modal-add-constructor">
-                    <div class="modal-add-header"></div>
-                    <div class="modal-control-buttons"></div>
-                </div>
-            </div>
-<!--                End add report template                 -->
-
-            <div class="document-container">
-                <!--            Start report output template               -->
-                <div class="report-container">
-
-                </div>
-            </div>
-        </div>
-
-<!--        Search documents sidebar        -->
-        <div class="uploaded">
-            <div class="card-sidebar-header"><h5>Choose documents date range</h5></div>
-            <div class="date-picker">
-                <input id="date-from" class="custom-input" placeholder="Date From" type="date">
-                <input id="date-to" class="custom-input" placeholder="Date To" type="date">
-            </div>
-            <div class="search-record-container">
-            </div>
-        </div>
-        <!--        Search documents sidebar        -->
-
-    </div>
-
-</div>
+{% elif findhelp %}
+dsdadadadsas
 {% endif %}
 
-
-</div>
 {% endblock %}
 
