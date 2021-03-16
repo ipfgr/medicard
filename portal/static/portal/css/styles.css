@@ -6,12 +6,86 @@
     font-family: 'Poppins', sans-serif;
 }
 
+
+/*Animations*/
+/*Fade in*/
+@-webkit-keyframes visability {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@-moz-keyframes visability {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@-o-keyframes visability {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes visability {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+/*Animations*/
+
+
+/*Modal image preview*/
+.modal-preview {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    padding-top: 100px; /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0, 0, 0); /* Fallback color */
+    background-color: rgba(0, 0, 0, 0.9); /* Black w/ opacity */
+    animation: 1s visability;
+}
+
+.modal-preview-image {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-preview-image img{
+    height: 100vh;
+    width: auto;
+}
+/*Modal image preview*/
+
+
 /*Styles for print page*/
 @media print {
 
 }
 
 /*Global*/
+.active {
+    background-color: #24ad9c75;
+}
+
 .custom-input {
     border: 1px solid #fb6f0cd1;
     padding: 0.5rem;
@@ -32,6 +106,14 @@
 
 }
 
+.label {
+    background-color: rgb(161 178 178) !important;
+    text-align: center;
+    color: white;
+    border: none;
+    border-radius: 0px;
+    font-size: 16px;
+}
 
 input:disabled {
     background: rgb(255, 255, 255);
@@ -60,8 +142,9 @@ input:disabled {
 .right {
     float: right;
 }
+
 /*use for page titles*/
-.text-center h1 h2 h3 h4 h5 h6{
+.text-center h1 h2 h3 h4 h5 h6 {
     margin-top: 10px !important;
     margin-left: 15px !important;
     text-align: center !important;
@@ -82,8 +165,6 @@ input:disabled {
 .error-actions .btn {
     margin-right: 10px;
 }
-
-
 
 
 /* Topbar Styles */
@@ -171,66 +252,66 @@ body {
 }
 
 /*Index page styles*/
-.info-cards{
+.info-cards {
     margin-top: 50px;
-    display:flex;
+    display: flex;
     flex-wrap: wrap;
-    justify-content:space-around;
+    justify-content: space-around;
 
 }
 
-.static-card{
+.static-card {
     border-radius: 15px;
     background-color: rgba(13, 202, 240, 0.05);
-    -webkit-box-shadow:  0px 0px 20px 1px rgba(156, 232, 229, 1);
-    -moz-box-shadow:  0px 0px 20px 1px rgba(156, 232, 229, 1);
-    box-shadow:  0px 0px 20px 1px rgba(156, 232, 229, 1);
+    -webkit-box-shadow: 0px 0px 20px 1px rgba(156, 232, 229, 1);
+    -moz-box-shadow: 0px 0px 20px 1px rgba(156, 232, 229, 1);
+    box-shadow: 0px 0px 20px 1px rgba(156, 232, 229, 1);
+    animation: 2s visability;
 
 }
 
 
-
-.image-card > img{
+.image-card > img {
     width: 550px;
-  height: 250px;
-  object-fit: fill;
+    height: 250px;
+    object-fit: fill;
     border-top-left-radius: 15px;
     border-top-right-radius: 15px;
 }
 
-.text-card{
+.text-card {
     margin: 10px;
     padding: 15px;
 }
 
 
-
-@media screen and (max-width: 992px){
-    .text-card >ul:only-child{
+@media screen and (max-width: 992px) {
+    .text-card > ul:only-child {
         font-size: 14px;
     }
+
     .button-card {
-        display:flex;
-        justify-content:center;
+        display: flex;
+        justify-content: center;
     }
 }
 
-.button-card{
+.button-card {
     margin: 0px 0px 15px 35px;
 }
 
 .text-card ul {
-  list-style: none;
+    list-style: none;
 }
 
-.text-card  ul li::before {
+.text-card ul li::before {
     line-height: 1;
-  content: "\2022";  /* Add content: \2022 is the CSS Code/unicode for a bullet */
-  color: #69fff3; /* Change the color */
-  font-weight: bold; /* If you want it to be bold */
-  display: inline-block; /* Needed to add space between the bullet and the text */
+    content: "\2022"; /* Add content: \2022 is the CSS Code/unicode for a bullet */
+    color: #69fff3; /* Change the color */
+    font-weight: bold; /* If you want it to be bold */
+    display: inline-block; /* Needed to add space between the bullet and the text */
     width: 1em; /* Also needed for space (tweak if needed) */
-  margin-left: -1em; /* Also needed for space (tweak if needed) */
+    margin-left: -1em; /* Also needed for space (tweak if needed) */
 }
 
 /**/
@@ -408,13 +489,6 @@ section .section-title {
 }
 
 
-/*Register Styles*/
-
-.form-mdc {
-    padding: 5px;
-}
-
-
 /* Portal CSS Styles */
 
 .container-portal {
@@ -562,7 +636,6 @@ section .section-title {
     border-radius: 5px;
     margin: 10px;
     background-color: #e7ffff;
-    height: 60px;
     align-items: flex-end;
     border: 1px solid #fb6f0cd1;
     transition: border 0.8s;
@@ -594,7 +667,7 @@ section .section-title {
     grid-column-gap: 15px;
     grid-row-gap: 15px;
     grid-template-areas: "dash-top1 dash-top2" "dash-top3 dash-top4" "dash-footer dash-footer";
-
+    animation: 2s visability;
 }
 
 .body-portal > * {
@@ -621,18 +694,18 @@ section .section-title {
     border-top-right-radius: 5px;
     grid-area: dash-top1;
     background-color: white;
-    -webkit-box-shadow: 0px 0px 15px 0px rgba(0,0,0,0.6);
-    -moz-box-shadow: 0px 0px 15px 0px rgba(0,0,0,0.6);
-    box-shadow: 0px 0px 15px 0px rgba(0,0,0,0.6);
+    -webkit-box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.6);
+    -moz-box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.6);
+    box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.6);
 }
 
 .dash-top2 {
     border-radius: 5px;
     grid-area: dash-top2;
     background-color: white;
-    -webkit-box-shadow: 0px 0px 15px 0px rgba(0,0,0,0.6);
-    -moz-box-shadow: 0px 0px 15px 0px rgba(0,0,0,0.6);
-    box-shadow: 0px 0px 15px 0px rgba(0,0,0,0.6);
+    -webkit-box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.6);
+    -moz-box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.6);
+    box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.6);
 
 }
 
@@ -640,33 +713,33 @@ section .section-title {
     border-radius: 5px;
     grid-area: dash-top3;
     background-color: white;
-    -webkit-box-shadow: 0px 0px 15px 0px rgba(0,0,0,0.6);
-    -moz-box-shadow: 0px 0px 15px 0px rgba(0,0,0,0.6);
-    box-shadow: 0px 0px 15px 0px rgba(0,0,0,0.6);
+    -webkit-box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.6);
+    -moz-box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.6);
+    box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.6);
 
 }
 
 .dash-top4 {
-        border-radius: 5px;
+    border-radius: 5px;
 
     grid-area: dash-top4;
     background-color: white;
-    -webkit-box-shadow: 0px 0px 15px 0px rgba(0,0,0,0.6);
-    -moz-box-shadow: 0px 0px 15px 0px rgba(0,0,0,0.6);
-    box-shadow: 0px 0px 15px 0px rgba(0,0,0,0.6);
+    -webkit-box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.6);
+    -moz-box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.6);
+    box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.6);
 }
 
 .dash-footer {
     border-radius: 5px;
     grid-area: dash-footer;
     background-color: white;
-    -webkit-box-shadow: 0px 0px 15px 0px rgba(0,0,0,0.6);
-    -moz-box-shadow: 0px 0px 15px 0px rgba(0,0,0,0.6);
-    box-shadow: 0px 0px 15px 0px rgba(0,0,0,0.6);
+    -webkit-box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.6);
+    -moz-box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.6);
+    box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.6);
 }
 
 
-.dash-header-main{
+.dash-header-main {
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
     height: 35px;
@@ -675,12 +748,12 @@ section .section-title {
     padding: 10px;
 }
 
-.dash-header-special{
+.dash-header-special {
     background-color: #1b99b5d6;
 }
 
-.dash-container{
-    overflow:hidden;
+.dash-container {
+    overflow: hidden;
     margin: 10px;
     display: flex;
     justify-content: space-between;
@@ -693,12 +766,13 @@ section .section-title {
     flex-wrap: wrap;
 }
 
-.dash-info > img{
+.dash-info > img {
     height: 150px;
     opacity: 0.5;
     width: auto;
 }
-.dash-info > span{
+
+.dash-info > span {
     opacity: 0.8;
     padding-left: 15px;
     font-style: normal;
@@ -707,11 +781,8 @@ section .section-title {
 }
 
 
-
-
-
-.dash-button{
-    margin-left:    5px;
+.dash-button {
+    margin-left: 5px;
     justify-content: flex-end;
     width: 20%;
     display: flex;
@@ -722,6 +793,7 @@ section .section-title {
 /*Family page*/
 .family-container {
     margin: 10px;
+    animation: 2s visability;
 
 }
 
@@ -809,12 +881,15 @@ section .section-title {
 }
 
 /*Medical cards*/
+
+
+
+
 .cards-container {
     background-color: #e7ffff;
     -webkit-box-shadow: inset 0px 0px 20px 1px rgba(156, 232, 229, 1);
     -moz-box-shadow: inset 0px 0px 20px 1px rgba(156, 232, 229, 1);
     box-shadow: inset 0px 0px 20px 1px rgba(156, 232, 229, 1);
-
 }
 
 
@@ -822,6 +897,7 @@ section .section-title {
     display: grid;
     grid-template-columns: 70% 30%;
     grid-template-areas: "recognized uploaded";
+    animation: 2s visability;
 }
 
 .recognized {
@@ -881,14 +957,13 @@ section .section-title {
 .recognized-preview-container img {
     width: auto;
     height: 150px;
-    transition-property: height;
+    transition-property: opacity;
     transition-duration: 1s;
 }
 
 .recognized-preview-container:hover > img {
-
-    width: auto;
-    height: 350px;
+    opacity: 0.5;
+    cursor: pointer;
 }
 
 
@@ -900,7 +975,8 @@ section .section-title {
     height: 100%;
     background-color: rgba(71, 239, 50, 0.6);
     z-index: 1;
-    cursor: pointer;
+    pointer-events: none;
+
 }
 
 .rejected-recognized {
@@ -911,7 +987,7 @@ section .section-title {
     height: 100%;
     background-color: rgba(239, 50, 50, 0.6);
     z-index: 1;
-    cursor: pointer;
+    pointer-events: none;
 }
 
 .recognized-preview-container h6 {
@@ -995,6 +1071,8 @@ section .section-title {
     box-shadow: inset 0px 0px 20px 1px rgba(156, 232, 229, 1);
     padding: 10px;
     background-color: #e7ffff !important;
+    animation: 2s visability;
+
 }
 
 .alergens {
@@ -1012,9 +1090,7 @@ section .section-title {
 
 .remove {
     cursor: pointer;
-    border: 1px solid black;
     background-color: rgba(255, 255, 255 0.5);
-    border-radius: 5px;
 }
 
 select {
@@ -1037,7 +1113,6 @@ select {
 
 .modal-container {
     border-radius: 15px;
-    opacity: 0;
     color: #fff;
     display: flex;
     flex-wrap: wrap;
@@ -1046,23 +1121,26 @@ select {
     background-color: rgba(0, 0, 0, 0.2);
     justify-content: center;
     border: 1px solid #0dcaf0 !important;
-    transition: opacity 1s;
+    animation: 1s visability;
+    transition: 1s all ease;
 }
 
+.hide-modal {
+    transform: translateY(8rem) rotateZ(20deg);
+    opacity: 0;
+}
 
 .modal-add-header .report-add-header {
     display: flex;
     justify-content: center;
     text-align: center;
     align-items: center;
-
-
 }
 
 
-#preview-container-record{
-    display:flex;
-    flex-wrap:wrap;
+#preview-container-record {
+    display: flex;
+    flex-wrap: wrap;
 }
 
 
@@ -1150,6 +1228,10 @@ select {
     transition: border 0.8s;
 }
 
+.result-item * {
+    pointer-events: none;
+}
+
 .result-item:hover {
     border: 1px solid #0dcaf0 !important;
 }
@@ -1194,13 +1276,14 @@ select {
 }
 
 /*Covid 19 passport*/
-.passport-page-container{
+.passport-page-container {
     justify-content: center;
     align-items: center;
     display: flex;
     flex-direction: column;
 }
-.passport-container{
+
+.passport-container {
     height: 250px;
     width: 500px;
     padding: 25px;
@@ -1210,20 +1293,20 @@ select {
 
 }
 
-.passport-photo > img{
+.passport-photo > img {
     width: 100px;
     height: auto;
     overflow: hidden;
 }
 
-.passport-info{
+.passport-info {
     margin-left: 15px;
 }
 
-.passport-label{
+.passport-label {
     position: absolute;
     top: 0;
-    right:0;
+    right: 0;
     margin: 15px;
     height: 50px;
     width: auto;
@@ -1231,20 +1314,20 @@ select {
 
 }
 
-.passport-label > img{
+.passport-label > img {
     object-fit: fill;
 }
 
-.passport-top-level{
-    display:flex;
+.passport-top-level {
+    display: flex;
 }
 
-.passport-status > img{
- height: 75px;
+.passport-status > img {
+    height: 75px;
     width: 75px;
 }
 
-.passport-bottom-level{
+.passport-bottom-level {
     display: flex;
     font-size: 12px;
     justify-content: space-between;
@@ -1252,7 +1335,7 @@ select {
     align-items: center;
 }
 
-.passport-page-buttons{
+.passport-page-buttons {
     padding: 10px;
     text-align: center;
     margin-top: 35px;
@@ -1260,6 +1343,6 @@ select {
     border: 1px solid #6ccc7c;
 }
 
-.passport-page-buttons  h6 {
+.passport-page-buttons h6 {
     font-size: 12px;
 }

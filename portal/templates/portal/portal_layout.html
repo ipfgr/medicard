@@ -80,7 +80,7 @@
         <div class="title-menu"><h3 class="title-menu-text">Menu</h3></div>
         <hr/>
         <div class="user-info">
-            <div class="avatar">
+            <div class="avatar" data-link="{{ user.avatar_url }}">
                 <img alt="avatar" src="{{ user.avatar_url }}">
             </div>
             <div class="about">
@@ -231,6 +231,13 @@
         <h6 class="footer-text">© 2021, Medicard.com , Inc. or its affiliates</h6>
     </div>
 </div>
+
+<!--For images previews -->
+ <div class="modal-preview">
+                    some text
+ </div>
+<!--For images previews -->
+
 
 {{ request.user.med_id| json_script:'user-med-id' }}
 <script defer src="{% static 'portal/js/app.js' %}"></script>

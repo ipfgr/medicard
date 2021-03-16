@@ -44,188 +44,180 @@
                                         </div>
                                     </div>
                                     <div class="tab-content pt-3">
-                                        <div class="tab-pane active">
-                                            <!--                          Start form                      -->
-                                            <div class="form">
-                                                <div class="row">
-                                                    <div class="col">
-                                                        <div class="row">
-                                                            <div class="col">
-                                                                <div class="form-group">
-                                                                    <label>Full Name</label>
-                                                                    <input class="form-control input-p" id="full-name"
-                                                                           placeholder="John Smith"
-                                                                           type="text" v-model="name"
-                                                                           value="{{ user.full_name}}">
+                                        <!--                          Start form                      -->
+                                        <div class="form">
+                                            <div class="row">
+                                                <div class="col">
+                                                    <div class="row">
+                                                        <div class="col">
+                                                            <div class="form-group">
+                                                                <label>Full Name</label>
+                                                                <input class="form-control input-p" id="full-name"
+                                                                       placeholder="John Smith"
+                                                                       type="text"
+                                                                       value="{{ user.full_name}}">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col">
+                                                            <div class="form-group">
+                                                                <label>Username</label>
+                                                                <input class="form-control" disabled
+                                                                       type="text"
+                                                                       value="{{ user.username}}">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col mb-3">
+                                                    <div class="form-group">
+                                                        <label>Short info</label>
+                                                        <textarea class="form-control input-p" id="bio"
+                                                                  maxlength="500"
+                                                                  placeholder="My Bio"
+                                                                  rows="5">{{ user.bio }}</textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-12 col-sm-6 mb-3">
+                                                    <div class="row">
+                                                        <div class="col">
+                                                            <div class="form-group">
+                                                                <label for="gender">Gender</label>
+                                                                <select class="form-control input-p"
+                                                                        id="gender"
+                                                                        selected="{{user.gender}}">
+
+                                                                    {% if user.gender == "Male" %}
+                                                                    <option selected value="Male">Male</option>
+                                                                    <option value="Female">Female</option>
+                                                                    {% else %}
+                                                                    <option value="Male">Male</option>
+                                                                    <option selected value="Female">Female</option>
+                                                                    {% endif %}
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row">
+                                                        <div class="col">
+                                                            <div class="form-group">
+                                                                <label for="birthday">Birthday</label>
+                                                                <div class="col-10">
+                                                                    <input class="form-control input-p"
+                                                                           id="birthday"
+                                                                           type="date"
+                                                                           value="{{ user.birth_date}}">
                                                                 </div>
                                                             </div>
-                                                            <div class="col">
-                                                                <div class="form-group">
-                                                                    <label>Username</label>
-                                                                    <input class="form-control" disabled
-                                                                           type="text"
-                                                                           value="{{ user.username}}">
+                                                        </div>
+                                                    </div>
+                                                    <hr/>
+
+                                                    <div class="row">
+                                                        <div class="col">
+                                                            <div class="form-group">
+                                                                <label>Home Address</label>
+                                                                <input class="form-control input-p"
+                                                                       id="home-address"
+                                                                       placeholder="Home Address"
+                                                                       type="text"
+                                                                       value="{{user.home_address}}">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row">
+                                                        <div class="col">
+                                                            <div class="form-group">
+                                                                <label>Job place</label>
+                                                                <input class="form-control input-p" id="job"
+                                                                       placeholder="Job place"
+                                                                       type="text" value="{{user.job}}">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <hr/>
+
+                                                    <div class="row">
+                                                        <div class="col">
+                                                            <div class="form-group">
+                                                                <label>Email</label>
+                                                                <input class="form-control input-p" id="email"
+                                                                       placeholder="user@example.com"
+                                                                       type="email" value="{{user.email}}">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row">
+                                                        <div class="col">
+                                                            <div class="form-group">
+                                                                <label>Contact phone</label>
+                                                                <input class="form-control input-p"
+                                                                       id="phone_number"
+                                                                       max="13"
+                                                                       min="8" placeholder="Phone number"
+                                                                       type="number"
+                                                                       value="{{user.phone_number}}">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col">
+                                                            <div class="form-group">
+                                                                <label>Emergency Phone</label>
+                                                                <input class="form-control input-p"
+                                                                       id="emergency_number"
+                                                                       max="13"
+                                                                       min="8" placeholder="Emergency Phone"
+                                                                       type="number"
+                                                                       value="{{user.emergency_number}}">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <hr/>
+
+                                                </div>
+                                                <div class="col-12 col-sm-5 offset-sm-1 mb-3">
+                                                    <div class="row">
+                                                        <div class="col">
+                                                            <div class="form-group">
+                                                                <label for="role-select">Your Role</label>
+                                                                <select class="form-control" disabled
+                                                                        id="role-select">
+                                                                    <option value="user">User</option>
+                                                                    <option value="doctor">Doctor</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <hr/>
+
+                                                    <div class="mb-2"><b>Emergency contacts methods</b></div>
+                                                    <div class="row">
+                                                        <div class="col">
+                                                            <div class="custom-controls-stacked px-2">
+                                                                <div class="custom-control custom-checkbox">
+                                                                    <input
+                                                                            class="custom-control-input input-p"
+                                                                            id="notifications"
+                                                                            type="checkbox">
+                                                                    <label class="custom-control-label"
+                                                                           for="notifications">Any</label>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="row">
-                                                    <div class="col mb-3">
-                                                        <div class="form-group">
-                                                            <label>Short info</label>
-                                                            <textarea class="form-control input-p" id="bio"
-                                                                      maxlength="500"
-                                                                      placeholder="My Bio"
-                                                                      rows="5">{{ user.bio }}</textarea>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-
-                                                <div class="row">
-                                                    <div class="col-12 col-sm-6 mb-3">
-
-                                                        <div class="row">
-                                                            <div class="col">
-                                                                <div class="form-group">
-                                                                    <label for="gender">Gender</label>
-                                                                    <select class="form-control input-p"
-                                                                            id="gender"
-                                                                            selected="{{user.gender}}">
-
-                                                                       {% if user.gender == "Male" %}
-                                                                        <option selected value="Male">Male</option>
-                                                                        <option value="Female">Female</option>
-                                                                        {% else %}
-                                                                        <option value="Male">Male</option>
-                                                                        <option selected value="Female">Female</option>
-                                                                        {% endif %}
-                                                                    </select>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-
-                                                        <div class="row">
-                                                            <div class="col">
-                                                                <div class="form-group">
-                                                                    <label for="birthday">Birthday</label>
-                                                                    <div class="col-10">
-                                                                        <input class="form-control input-p"
-                                                                               id="birthday"
-                                                                               type="date"
-                                                                               value="{{ user.birth_date}}">
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <hr/>
-
-                                                        <div class="row">
-                                                            <div class="col">
-                                                                <div class="form-group">
-                                                                    <label>Home Address</label>
-                                                                    <input class="form-control input-p"
-                                                                           id="home-address"
-                                                                           placeholder="Home Address"
-                                                                           type="text"
-                                                                           value="{{user.home_address}}">
-                                                                </div>
-                                                            </div>
-                                                        </div>
-
-                                                        <div class="row">
-                                                            <div class="col">
-                                                                <div class="form-group">
-                                                                    <label>Job place</label>
-                                                                    <input class="form-control input-p" id="job"
-                                                                           placeholder="Job place"
-                                                                           type="text" value="{{user.job}}">
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <hr/>
-
-                                                        <div class="row">
-                                                            <div class="col">
-                                                                <div class="form-group">
-                                                                    <label>Email</label>
-                                                                    <input class="form-control input-p" id="email"
-                                                                           placeholder="user@example.com"
-                                                                           type="email" value="{{user.email}}">
-                                                                </div>
-                                                            </div>
-                                                        </div>
-
-                                                        <div class="row">
-                                                            <div class="col">
-                                                                <div class="form-group">
-                                                                    <label>Contact phone</label>
-                                                                    <input class="form-control input-p"
-                                                                           id="phone_number"
-                                                                           max="13"
-                                                                           min="8" placeholder="Phone number"
-                                                                           type="number"
-                                                                           value="{{user.phone_number}}">
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col">
-                                                                <div class="form-group">
-                                                                    <label>Emergency Phone</label>
-                                                                    <input class="form-control input-p"
-                                                                           id="emergency_number"
-                                                                           max="13"
-                                                                           min="8" placeholder="Emergency Phone"
-                                                                           type="number"
-                                                                           value="{{user.emergency_number}}">
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <hr/>
-
-                                                    </div>
-                                                    <div class="col-12 col-sm-5 offset-sm-1 mb-3">
-
-                                                        <div class="row">
-                                                            <div class="col">
-                                                                <div class="form-group">
-                                                                    <label for="role-select">Your Role</label>
-                                                                    <select class="form-control" disabled
-                                                                            id="role-select">
-                                                                        <option value="user">User</option>
-                                                                        <option value="doctor">Doctor</option>
-                                                                    </select>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <hr/>
-
-                                                        <div class="mb-2"><b>Emergency contacts methods</b></div>
-                                                        <div class="row">
-                                                            <div class="col">
-                                                                <div class="custom-controls-stacked px-2">
-
-                                                                    <div class="custom-control custom-checkbox">
-                                                                        <input
-                                                                                class="custom-control-input input-p"
-                                                                                id="notifications"
-                                                                                type="checkbox">
-                                                                        <label class="custom-control-label"
-                                                                               for="notifications">Any</label>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col d-flex justify-content-end">
-                                                        <div id="buttons-save-edit">
-
-                                                        </div>
-                                                    </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col d-flex justify-content-end">
+                                                    <div id="buttons-save-edit"></div>
                                                 </div>
                                             </div>
                                         </div>
@@ -253,8 +245,7 @@
                                     </select>
                                     <input class="custom-allergen" placeholder="input your allergen" type="text">
                                 </div>
-                                <div class="add-allergen-button">
-                                </div>
+                                <div class="add-allergen-button"></div>
                             </div>
                         </div>
                         <br/>

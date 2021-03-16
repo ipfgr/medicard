@@ -298,7 +298,7 @@ def login_view(request):
 
     }
     if request.method == "GET":
-        return render(request, 'portal/index.html', context)
+        return render(request, 'portal/login.html', context)
 
     if request.method == "POST":
 
@@ -312,12 +312,12 @@ def login_view(request):
             login(request, user)
             return HttpResponseRedirect(reverse("index"))
         else:
-            return render(request, "portal/index.html", {
+            return render(request, "portal/login.html", {
                 "message": "Invalid username and/or password.",
                 "login": True
             })
     else:
-        return render(request, "portal/index.html", context)
+        return render(request, "portal/login.html", context)
 
 
 
@@ -330,7 +330,7 @@ def register_view(request):
     }
 
     if request.method == "GET":
-        return render(request, 'portal/index.html', context)
+        return render(request, 'portal/login.html', context)
 
     if request.method == "POST":
         user_role = request.POST["role_name"]
@@ -340,7 +340,7 @@ def register_view(request):
         password = request.POST["password"]
         confirmation = request.POST["confirmation"]
         if password != confirmation:
-            return render(request, "portal/index.html", {
+            return render(request, "portal/login.html", {
                 "message": "Passwords must match.",
                 "register": True
             })
@@ -356,12 +356,12 @@ def register_view(request):
 
 
         except IntegrityError:
-            return render(request, "portal/index.html", {
+            return render(request, "portal/login.html", {
                 "message": "Username already taken.",
                 "register": True
             })
         if user_role == "doctor":
-            return render(request, 'portal/index.html', {
+            return render(request, 'portal/login.html', {
                 "register": True,
                 "messagedoc": "You registred as Doctor, we need review your license for activate account. Its take up to 12 hours"
             })
@@ -369,7 +369,7 @@ def register_view(request):
             login(request, user)
             return HttpResponseRedirect(reverse("index"))
     else:
-        return render(request, "portal/index.html", context)
+        return render(request, "portal/login.html", context)
 
 
 

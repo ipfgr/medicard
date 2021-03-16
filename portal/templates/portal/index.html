@@ -4,31 +4,7 @@
 
 {% block nav %}
 
-<nav class="navbar navbar-expand-lg nav-top">
-    <div class="container-fluid">
-        <button aria-controls="navbarScroll" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler"
-                data-bs-target="#navbarScroll" data-bs-toggle="collapse" type="button">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarScroll">
-            <ul class="navbar-nav me-auto my-2 my-lg-0 navbar-nav-scroll" style="--bs-scroll-height: 100px;">
-                <li class="nav-item">
-                    <a aria-current="page" class="nav-link active" href="#">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Link</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Link</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Link</a>
-                </li>
-            </ul>
 
-        </div>
-    </div>
-</nav>
 {% endblock %}
 
 {% block body %}
@@ -159,62 +135,9 @@
             </div>
         </section>
     </div>
-    {% elif login %}
-    {% if message %}
-    <div>{{ message }}</div>
-    {% endif %}
 
-    <form action="{% url 'login' %}" method="post">
-        {% csrf_token %}
-        <div class="form-group">
-            <input autofocus class="form-control" name="username" placeholder="Username" type="text">
-        </div>
-        <div class="form-group">
-            <input class="form-control" name="password" placeholder="Password" type="password">
-        </div>
-        <input class="btn btn-primary" type="submit" value="Login">
-    </form>
-
-    Don't have an account? <a href="{% url 'register' %}">Register here.</a>
-
-    login page
-    {% else %}
-    <h2>Register</h2>
-
-    {% if message %}
-    <div>{{ message }}</div>
-    {% endif %}
-
-    <form action="{% url 'register' %}" method="post">
-        {% csrf_token %}
-        <div class="form-group form-mdc">
-            <input autofocus class="form-control" name="username" placeholder="Username" type="text">
-        </div>
-        <div class="form-group form-mdc">
-            <input class="form-control" name="email" placeholder="Email Address" type="email">
-        </div>
-        <div class="form-group form-mdc">
-            <label for="select_role">Select your role</label>
-            <select class="form-control" id="select_role" name="role_name">
-                <option value="user">Standart user</option>
-                <option value="doctor">Doctor</option>
-                <option value="another">Another</option>
-            </select>
-        </div>
-        <div class="form-group form-mdc">
-            <input class="form-control" name="password" placeholder="Password" type="password">
-        </div>
-        <div class="form-group form-mdc">
-            <input class="form-control " name="confirmation" placeholder="Confirm Password" type="password">
-        </div>
-        <input class="btn btn-outline-info" type="submit" value="Register">
-    </form>
-
-    Already have an account? <a href="{% url 'login' %}">Log In here.</a> {% endif %}
-    <br/>
-    {{ messagedoc }}
 </div>
-
+{% endif %}
 
 {% endblock %}
 
