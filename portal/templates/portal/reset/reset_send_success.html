@@ -1,0 +1,49 @@
+{% extends 'portal/login_layout.html' %}
+{% load static %}
+
+
+{% block body %}
+<div class="container register">
+                <div class="row">
+
+
+                    <div class="col-md-3 register-left">
+                        <img src="{% static 'portal/img/logo.png' %}" alt=""/>
+                        <h3>Welcome</h3>
+                        <p>Thanks for choose Medicard Global</p>
+                        <a href="{% url 'login' %}">Login here.</a><br/>
+                    </div>
+                    <div class="col-md-9 register-right">
+
+                        <div class="tab-content" id="myTabContent">
+                            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                                <h3 class="register-heading">Reset your password</h3>
+                                <div class="row register-form">
+                                    <div class="col-md-12">
+                                        <form action="" method="post">
+                                            {% csrf_token %}
+
+                                            <div class="form-group form-mdc">
+                                                <div class="alert alert-info">Reset Success send to your email! Please check your Email</div>
+                                            </div>
+
+
+
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+        </div>
+    </div>
+
+
+
+<br/>
+
+
+
+{% endblock %}

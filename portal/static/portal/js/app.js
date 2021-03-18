@@ -55,9 +55,6 @@ document.addEventListener('DOMContentLoaded', function () {
             const reportContainer = document.querySelector(".report-container")
             const previewContainerRecord = document.querySelector("#preview-container-record")
             const modalButtonsContainer = document.querySelector(".modal-buttons-container")
-            const modalPreview = document.querySelector(".modal-preview")
-            const recognized = document.querySelector(".recognized-images")
-
 
             //Generate document uniqueid number
             const documentIdGenerator = () => "MD-" + Math.random().toString(36).substring(2)
@@ -67,6 +64,23 @@ document.addEventListener('DOMContentLoaded', function () {
 
             //Limit maximum fields to add in form
             let counter = 20
+
+            //Options thats can selected in input unit field
+            const selectOptions = [
+                        "<option value='10^9L'>10^9L</option>",
+                        "<option value='10^12L'>10^12L</option>",
+                        "<option value='%'>%</option>",
+                        "<option value='g/dL'>g/dL</option>",
+                        "<option value='fL'>fL</option>",
+                        "<option value='pg'>pg</option>",
+                        "<option value='fl'>fl</option>",
+                        "<option value='mg/L'>mg/L</option>",
+                        "<option value='g/L'>g/L</option>",
+                        "<option value='mmol/L'>mmol/L</option>",
+                        "<option value='umol/L'>umol/L</option>",
+                        "<option value='Ery/uL'>Ery/uL</option>",
+                        "<option value='none'>none</option>",
+            ]
 
             datePicker.insertAdjacentElement("afterend", searchResultButton)
             modalButtonsContainer.insertAdjacentElement("beforeend", addLineButton)
@@ -109,6 +123,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             })
 
+
             //Add line to report modal
             addLineButton.addEventListener("click", () => {
                 linesInfo.innerHTML = `* Can add more ${counter} fields`
@@ -119,19 +134,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     <input type="text" name="parameter" class="custom-input body-input" placeholder="Parametr">
                     <input type="text" name="result" class="custom-input body-input" placeholder="Result">
                     <select name="select" class="custom-input body-input">
-                        <option value="10^9L">10^9L</option>
-                        <option value="10^12L">10^12L</option>
-                        <option value="%">%</option>
-                        <option value="g/dL">g/dL</option>
-                        <option value="fL">fL</option>
-                        <option value="pg">pg</option>
-                        <option value="fl">fl</option>
-                        <option value="mg/L">mg/L</option>
-                        <option value="g/L">g/L</option>
-                        <option value="mmol/L">mmol/L</option>
-                        <option value="umol/L">umol/L</option>
-                        <option value="Ery/uL">Ery/uL</option>
-                        <option value="none">none</option>
+                        ${selectOptions}
                     </select>
                     <input type="text" name="range" class="custom-input body-input" placeholder="Normal Range">
                     <div class="remove-line" data-name="${counter}">&times;</div>
@@ -206,6 +209,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 //remove visability for modal container
                 reportContainer.style.display = "block"
                 reportContainer.innerHTML = ""
+                modalContainer.style.display = "none"
 
                 hideModalButton.click()
                 console.log("Get info from document:", ident)
@@ -581,20 +585,21 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
              //Check in our database with documents  reconized / uploaded or rejected
-            function compareDatabaseRecognizeInfo (url, name){
+            function compareDatabaseRecognizeInfo (url){
                 //Get info from database
                 fetch(`/portal/api/v1/recognizer`)
                     .then(response => response.json())
                     .then(result => {
                         result.forEach(file => {
-                            if (file.file_name == name) {
+                            if (file.full_file_url == url) {
+                                console.log("yes")
                                 //If in database have flag Rejecter, cover by div
                                 if (file.rejected && !file.recognized) {
                                     recognized.insertAdjacentHTML("beforeend", `
                                             <div class="recognized-preview-container"> 
                                                 <div class="rejected-recognized"></div>
                                                 <h6>Rejected</h6>
-                                                <img src="${url}" alt="document" >
+                                                <img src="${file.full_file_url}" alt="document" >
                                         </div>
                                         `)
                                 }
@@ -604,7 +609,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                             <div class="recognized-preview-container"> 
                                                 <div class="success-recognized"></div>
                                                 <h6>Recognized</h6>
-                                                <img src="${url}" alt="document">
+                                                <img src="${file.full_file_url}" alt="document">
                                         </div>
                                         `)
                                 }
@@ -612,7 +617,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                 else {
                                     recognized.insertAdjacentHTML("beforeend", `
                                             <div class="recognized-preview-container">
-                                                <img src="${url}" alt="document">
+                                                <img src="${file.full_file_url}" alt="document">
                                             </div>`)
                                 }
                             }
@@ -628,7 +633,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         result.items.forEach(imageRef => {
                             imageRef.getDownloadURL()
                                 .then(url => {
-                                    compareDatabaseRecognizeInfo(url, imageRef.name)
+                                    compareDatabaseRecognizeInfo(url)
                                 })
                         })
                     }).catch(error => console.error("Error:", error))
@@ -658,7 +663,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
 
                     //Add all uploaded picture names to array
-                    idArray.push(uniqueId + extension)
                     let uploadTask = storageRef.child(`documents/${currentUserMedId}/uploaded/${uniqueId}${extension}`).put(file)
                     uploadTask.on('state_changed',
                         (snapshot) => {
@@ -683,6 +687,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             // For instance, get the download URL: https://firebasestorage.googleapis.com/...
                             preview.innerHTML = ""
                             uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
+                                idArray.push(downloadURL)
                                 progressBar.innerHTML = ""
                                 uploadButton.style.display = "none"
                                 checker -= 1
@@ -706,7 +711,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         "X-CSRFToken": getCookie("csrftoken")
                     },
                     body: JSON.stringify({
-                        filenames: arr
+                        files: arr
                     })
                 }).finally(() => location.reload())
             }
@@ -762,6 +767,36 @@ document.addEventListener('DOMContentLoaded', function () {
 
         //When you on index portal page
         if (window.location.href.indexOf("portal/dashboard") > 1) {
+            const vacctinationStatus = document.querySelector(".vaccination-status")
+            let info = getStatus()
+            async function getStatus(){
+                let info = ""
+                const passportBase = await db.collection(`users/${currentUserMedId}/passport/`)
+                const snapShoot = await passportBase.get()
+                snapShoot.forEach(i => {
+                    info = i.data()
+                })
+                return info
+            }
+            info.then((info) => {
+                if (info.vaccinated){
+                    vacctinationStatus.insertAdjacentHTML("afterbegin", `
+                    <img alt="card page icon" src="https://firebasestorage.googleapis.com/v0/b/medicard-db.appspot.com/o/portal%2Fimg%2Fimunity.png?alt=media&token=53fe2eba-41f2-45ee-8e89-f8166080c574">
+                    <div class="passport-status">
+                        <span>You are vaccinated</span>
+                        <span>Last vaccination date is ${info.vaccinating_date}</span>
+                        <span>Proof document id is: ${info.vaccination_document_id}</span>
+                    </div>
+
+                    `)
+                }
+                else {
+                    vacctinationStatus.insertAdjacentHTML("afterbegin", `
+                    <img alt="card page icon" src="https://firebasestorage.googleapis.com/v0/b/medicard-db.appspot.com/o/portal%2Fimg%2Fnot-imunity.png?alt=media&token=34f6511f-0790-4185-ae0a-a3819d81bc92">
+                    <span>You are not yet vaccinated</span>
+                    `)
+                }
+            })
 
         }
         //When you on  covid-19 passport page
@@ -769,30 +804,39 @@ document.addEventListener('DOMContentLoaded', function () {
             const uploadButton = buttonMaker("button", ["btn", "btn-outline-info"], "Upload conformation")
             const passportPageButtons = document.querySelector(".passport-page-buttons")
             const inputConformationFile = document.querySelector("#confirmation-file-input")
+            const profileUserId = document.querySelector(".id-number")
+            const requested_med_id = profileUserId.innerHTML.trim()
+            console.log(requested_med_id)
 
             //Get data from Firebase
             const covidPassportData = async function getPassportData() {
                 let result = ""
-                const passportBase = db.collection(`users/${currentUserMedId}/passport/`)
+                const passportBase = db.collection(`users/${requested_med_id}/passport/`)
                 await passportBase.get()
                     .then((querySnapshot) => {
                         querySnapshot.forEach((doc) => {
                             // doc.data() is never undefined for query doc snapshots
                             result = doc.data()
+
                         })
                     }).catch(err => console.error(err))
+                console.log(result)
                 return result
             }
             covidPassportData()
-                .then(data => drawPassport(data, currentUserMedId))
+                .then(data => drawPassport(data, requested_med_id))
 
-            //Upload new information handler
-            uploadButton.addEventListener("click", () => inputConformationFile.click())
-            inputConformationFile.addEventListener("change", event => {
-                let files = Array.from(event.target.files)
-                uploadExistingPassport(files[0], currentUserMedId)
-            })
+            //CHECK IF USER LOOKING FOR HIS OWN PASSPORT
+            if (requested_med_id === currentUserMedId){
+                //Upload new information handler
+                uploadButton.addEventListener("click", () => inputConformationFile.click())
+                inputConformationFile.addEventListener("change", event => {
+                    let files = Array.from(event.target.files)
+                    uploadExistingPassport(files[0], currentUserMedId)
+                })
             passportPageButtons.insertAdjacentElement("beforeend", uploadButton)
+            }
+
         }
     }
 )

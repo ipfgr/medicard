@@ -55,7 +55,7 @@ class AllergyList(models.Model):
 
 class RecognizedFiles(models.Model):
     user = models.ForeignKey(User, default=None, related_name="username_r", on_delete=models.CASCADE)
-    file_name = models.CharField(max_length=255)
+    full_file_url = models.CharField(max_length=255, default="None")
     uploaded = models.BooleanField(default=True)
     recognized = models.BooleanField(default=False)
     rejected = models.BooleanField(default=False)
@@ -68,10 +68,10 @@ class RecognizedFiles(models.Model):
     def serialize(self):
         return {
             "user_id": self.user.id,
-            "file_name": self.file_name,
             "uploaded": self.uploaded,
             "recognized": self.recognized,
-            "rejected": self.rejected
+            "rejected": self.rejected,
+            "full_file_url": self.full_file_url
         }
 
 

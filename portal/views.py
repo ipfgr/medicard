@@ -1,25 +1,22 @@
 import json
-from django.shortcuts import render
-from django.urls import reverse
-from django.http import HttpResponseRedirect, JsonResponse
-from django.db import IntegrityError
+
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.db import IntegrityError
 from django.db.models import Q
-from json import dumps
-from django.core import serializers
+from django.http import HttpResponseRedirect, JsonResponse
+from django.shortcuts import render
+from django.urls import reverse
 
-from .models import User
-from .models import FamilyMembers
-from .models import AllergyList
-from .models import RecognizedFiles
 from .models import AccessList
-
-from django.http import HttpResponse
+from .models import AllergyList
+from .models import FamilyMembers
+from .models import RecognizedFiles
+from .models import User
 
 
 def fblogin_view(request):
-    return render(request, 'portal/login.html' , {
+    return render(request, 'portal/login.html', {
         "login": True
     })
 
@@ -32,12 +29,12 @@ def index_view(request):
     }
     return render(request, 'portal/index.html', context)
 
+
 @login_required()
 def portal_view(request, med_id="", page=""):
     # if user link to portal index page he automaticly get to pages with his med_id
     if med_id == "":
         med_id = request.user.med_id
-
     # Check if logged user looking his pages
     if med_id == request.user.med_id:
         current_user = User.objects.get(med_id=request.user.med_id)
@@ -47,7 +44,7 @@ def portal_view(request, med_id="", page=""):
             # Get all family members from DB
             members = FamilyMembers.objects.filter(user_id=request.user.id)
             if not members:
-                return render(request, 'portal/portal.html', {
+                return render(request, 'portal/family.html', {
                     "user": info,
                     "family": True,
                     "owner": True
@@ -60,7 +57,7 @@ def portal_view(request, med_id="", page=""):
                 for ident in family_members:
                     query.add(Q(id=ident), Q.OR)
                 my_family = User.objects.filter(query)
-                return render(request, 'portal/portal.html', {
+                return render(request, 'portal/family.html', {
                     "user": info,
                     "family": True,
                     "owner": True,
@@ -124,7 +121,7 @@ def portal_view(request, med_id="", page=""):
                 # Get all family members from DB
                 members = FamilyMembers.objects.filter(user_id=access_user.id)
                 if not members:
-                    return render(request, 'portal/portal.html', {
+                    return render(request, 'portal/family.html', {
                         "user": info,
                         "family": True,
                     })
@@ -136,7 +133,7 @@ def portal_view(request, med_id="", page=""):
                     for ident in family_members:
                         query.add(Q(id=ident), Q.OR)
                     my_family = User.objects.filter(query)
-                    return render(request, 'portal/portal.html', {
+                    return render(request, 'portal/family.html', {
                         "user": info,
                         "family": True,
                         "my_family": my_family
@@ -157,9 +154,8 @@ def portal_view(request, med_id="", page=""):
                 })
 
 
-
 @login_required()
-def api_view(request,  link, med_id=""):
+def api_view(request, link, med_id=""):
     user_id = request.user.id
     # Get user id from med id
     get_user = User.objects.filter(med_id=med_id)
@@ -195,14 +191,15 @@ def api_view(request,  link, med_id=""):
             if AllergyList.objects.filter(user_id=user_id, allergen_name=allergen):
                 return JsonResponse({"Message: Already exists"}, status=200)
             else:
-                AllergyList(user_id =user_id, allergen_name=allergen).save()
+                AllergyList(user_id=user_id, allergen_name=allergen).save()
                 return JsonResponse({"Message: Saved"}, status=201)
 
         if link == "recognizer":
             data = json.loads(request.body)
-            filenames = data.get("filenames", "")
-            for file in filenames:
-                RecognizedFiles(user_id=user_id, file_name=file).save()
+            files = data.get("files", "")
+            for file in files:
+                RecognizedFiles(user_id=user_id, full_file_url=file).save()
+
             return JsonResponse({"Message: Saved"}, status=201)
 
         if link == "profile":
@@ -223,26 +220,28 @@ def api_view(request,  link, med_id=""):
             if notifications == "off":
                 checkbox = False
             User.objects.filter(id=request.user.id).update(full_name=full_name,
-                                                        gender=gender,
-                                                        bio=bio,
-                                                        birth_date=birthday,
-                                                        home_address=home_address,
-                                                        job=job,
-                                                        email=email,
-                                                        phone_number=phone_number,
-                                                        emergency_number=emergency_number,
-                                                        notifications=checkbox)
+                                                           gender=gender,
+                                                           bio=bio,
+                                                           birth_date=birthday,
+                                                           home_address=home_address,
+                                                           job=job,
+                                                           email=email,
+                                                           phone_number=phone_number,
+                                                           emergency_number=emergency_number,
+                                                           notifications=checkbox)
 
             return JsonResponse("Message: Saved", safe=False, status=201)
 
     if request.method == "GET":
+
+
         # If we search for user
         if link == "search":
-                checker = User.objects.filter(med_id=med_id)
-                if not checker:
-                    return JsonResponse({"message": "Not correct ID"}, status=404)
-                else:
-                    return JsonResponse(checker[0].username, safe=False, status=200)
+            checker = User.objects.filter(med_id=med_id)
+            if not checker:
+                return JsonResponse({"message": "Not correct ID"}, status=404)
+            else:
+                return JsonResponse(checker[0].username, safe=False, status=200)
 
         if link == "allergens":
             report = []
@@ -255,6 +254,15 @@ def api_view(request,  link, med_id=""):
             answers = RecognizedFiles.objects.filter(user_id=user_id)
             answers = answers.order_by("id").all()
             return JsonResponse([answer.serialize() for answer in answers], safe=False)
+
+        if link == "get_unrecognized":
+            # Only admin can get this files list
+            if request.user.is_superuser:
+                answers = RecognizedFiles.objects.filter(recognized=0)
+                answers = answers.order_by("id").all()
+                return JsonResponse([answer.serialize() for answer in answers], safe=False)
+            else:
+                return JsonResponse("Error: you dont have access to this files", status=500, safe= False)
 
         if link == "access":
             answers = AccessList.objects.filter(user_id=user_id)
@@ -271,7 +279,7 @@ def api_view(request,  link, med_id=""):
             data = json.loads(request.body)
             allergen = data.get("delete", "")
             AllergyList.objects.filter(user_id=user_id, allergen_name=allergen).delete()
-            return JsonResponse({"Message": "Delete Success"}, status = 204)
+            return JsonResponse({"Message": "Delete Success"}, status=204)
 
         if link == "access":
             data = json.loads(request.body)
@@ -286,9 +294,9 @@ def api_view(request,  link, med_id=""):
             FamilyMembers.objects.filter(user_id=request.user.id, family_members_list=remove_id).delete()
 
 
-
 def family_profile_view(request, id):
     pass
+
 
 def login_view(request):
     context = {
@@ -318,8 +326,6 @@ def login_view(request):
             })
     else:
         return render(request, "portal/login.html", context)
-
-
 
 
 def register_view(request):
@@ -372,8 +378,16 @@ def register_view(request):
         return render(request, "portal/login.html", context)
 
 
-
 def logout_view(request):
     logout(request)
     return HttpResponseRedirect(reverse("index"))
 
+
+def admin_panel_view(request):
+    # Get all unrecogized filenames
+    files_list = RecognizedFiles.objects.raw('SELECT * FROM portal_recognizedfiles WHERE recognized = "0" AND uploaded="1"')
+    users_list = User.objects.all()
+    return render(request, "portal/admin/admin.html", {
+        "files": files_list,
+        "users": users_list
+    })

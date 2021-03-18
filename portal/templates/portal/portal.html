@@ -32,9 +32,7 @@
     <div class="dash-top2">
         <div class="dash-header-main dash-header-special"><h6>My Covid-19 Vaccine Passport</h6></div>
         <div class="dash-container">
-            <div class="dash-info">
-                <img alt="card page icon" src="{% static 'portal/img/not-vaccinated.jpg' %}">
-                <span>You are not yet vaccinated</span>
+            <div class="dash-info vaccination-status">
             </div>
             <div class="dash-button">
                 <button class="btn btn-info"><a href="{% url 'portal' %}/covidpass/{{user.med_id}}">Your Passport</a>
@@ -77,74 +75,7 @@
     </div>
 </div>
 
-{% elif family %}
-<div class="family-container">
-    <div class="family-header text-center">
-        <h5>My Family members</h5>
-    </div>
-    <div class="family-members">
-        {% for member in my_family %}
-        <div class="family-member-container">
-            <div class="main-info">
-                <div class="family-member-avatar">
-                    <img alt="avatar" src="{{ member.avatar_url }}">
-                </div>
-                <div class="about">
-                    <div class="name">Name: {{ member.first_name }}</div>
-                    <div class="role">Role: {{ member.user_role }}</div>
-                    <div class="status">
-                        <svg class="bi bi-brightness-alt-low-fill" fill="#5cb85c" height="16" viewBox="0 0 16 16"
-                             width="16" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M8.5 5.5a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0zm5 6a.5.5 0 1 1 0-1 .5.5 0 0 1 0 1zM2 11a.5.5 0 1 0 1 0 .5.5 0 0 0-1 0zm10.243-3.536a.5.5 0 1 1-.707-.707.5.5 0 0 1 .707.707zm-8.486-.707a.5.5 0 1 0 .707.707.5.5 0 0 0-.707-.707zM8 7a4 4 0 0 0-4 4 .5.5 0 0 0 .5.5h7a.5.5 0 0 0 .5-.5 4 4 0 0 0-4-4z"/>
-                        </svg>
-                        Online
-                    </div>
-                </div>
-            </div>
-            <div class="family-member-info">
-                <span>Gender: {{ member.gender }}</span>
-            </div>
-            <div class="family-member-info">
-                <span>Birth: {{ member.birth_date }}</span>
-            </div>
-            <div class="id-box">
-                <h6><strong>Medical record ID</strong></h6>
-                <div class="id-number">
-                    {{ member.med_id }}
-                </div>
-            </div>
-            <div class="add-remove-btns">
-                <a href="{% url 'portal' %}/profile/{{ member.med_id }}">
-                    <button class="btn btn-info remove-member">Profile</button>
-                </a>
-                <button class="btn btn-warning remove-member" value="{{ member.id }}">Remove</button>
-            </div>
-        </div>
-        {% endfor %}
-        <!--            Add new family member               -->
-        <div class="family-member-container">
-            <div class="add-member">
-                <h6>Add your family member</h6>
-                <div class="input-div">
-                    <input class="form-search-member custom-input" id="member-id" name="patient_id"
-                           placeholder="Enter Member ID"
-                           type="text">
-                </div>
-                <div class="search-result" id="search-result">
-                    <!--                            result output                      -->
-                </div>
-                <div class="search-btn">
-                    <button class="btn btn-info search-member-btn" type="button">Search Family
-                        member
-                    </button>
-                    <button class="btn btn-primary add-member-btn" type="button">Add Family member
-                    </button>
-                </div>
-            </div>
-        </div>
-        <!--            Add new family member               -->
-    </div>
-</div>
+
 
 {% elif recognizer and owner %}
 <div class="cards-container text-center">
@@ -168,9 +99,6 @@
             </div>
         </div>
     </div>
-
-
-
 </div>
 
 

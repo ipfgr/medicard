@@ -772,7 +772,7 @@ section .section-title {
     width: auto;
 }
 
-.dash-info > span {
+.dash-info span {
     opacity: 0.8;
     padding-left: 15px;
     font-style: normal;
@@ -780,6 +780,10 @@ section .section-title {
     max-width: 300px;
 }
 
+.passport-status{
+    display: flex;
+    flex-direction: column;
+}
 
 .dash-button {
     margin-left: 5px;

@@ -1,8 +1,9 @@
 //Get information from Database and draw to Covid-19 page
-function drawPassport(data,currentUserMedId) {
+function drawPassport(data,medId, currentUserMedId) {
     const passportContainer = document.querySelector(".passport-page-container")
     const avatarLink = document.querySelector(".avatar").dataset.link
-    console.log(avatarLink)
+    const validTo = new Date()
+    console.log(validTo)
     if (data.vaccinated) {
 
         passportContainer.insertAdjacentHTML("afterbegin", `
@@ -25,9 +26,9 @@ function drawPassport(data,currentUserMedId) {
                             </div>
                         </div>
                         <div class="passport-bottom-level">
-                            <div class="name"><strong>Medicard ID:</strong> ${currentUserMedId}</div>
+                            <div class="name"><strong>Medicard ID:</strong> ${medId}</div>
                             <div class="name"><strong>Passport Number:</strong> ${data.vaccination_document_id}</div>
-                            <div class="name"><strong>Valid until:</strong> ${validTo}</div>
+                            <div class="name"><strong>Vaccination date:</strong> ${data.vaccinating_date}</div>
                         </div>
                     </div>
                 `)
@@ -59,7 +60,9 @@ function drawPassport(data,currentUserMedId) {
                 </div>
                 `)
     }
+
 }
+
 
 //Upload existing documents for database, from page Covid-19 Passport
 function uploadExistingPassport(file, currentUserMedId) {

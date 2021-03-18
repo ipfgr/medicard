@@ -12,6 +12,8 @@
                         <h3>Welcome</h3>
                         <p>Thanks for choose Medicard Global</p>
                         <a href="{% url 'register' %}">Register here.</a><br/>
+                        <hr/>
+                            <a href="{% url 'password_reset' %}">Forget your password? Reset here.</a><br/>
                     </div>
                     <div class="col-md-9 register-right">
 
@@ -90,6 +92,6 @@
 <br/>
 
 
-<script rel="text/javascript" src="{% static 'portal/js/app.js' %}"></script>
+<!--<script rel="text/javascript" src="{% static 'portal/js/app.js' %}"></script>-->
 
 {% endblock %}

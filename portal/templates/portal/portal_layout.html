@@ -4,12 +4,13 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <link href="https://fonts.gstatic.com" rel="preconnect">
     <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'portal/css/styles.css' %}">
-    <link rel="manifest" href="{% static 'portal/manifest.json' %}">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+    <link href="{% static 'portal/css/styles.css' %}" rel="stylesheet">
+    <link href="{% static 'portal/manifest.json' %}" rel="manifest">
+    <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css"
+          integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" rel="stylesheet">
 
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.2.10/firebase-app.js"></script>
@@ -24,7 +25,8 @@
 
 <nav class="navbar navbar-expand-lg top-bar">
     <div class="container-fluid">
-        <a class="navbar-brand  brand" href="{% url 'index' %}"><img alt="logo" height="40px" src="{% static 'portal/img/logo.png'%}">MediCard</a>
+        <a class="navbar-brand  brand" href="{% url 'index' %}"><img alt="logo" height="40px"
+                                                                     src="{% static 'portal/img/logo.png'%}">MediCard</a>
         <button aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler"
                 data-bs-target="#navbarText" data-bs-toggle="collapse" type="button">
             <span class="navbar-toggler-icon"></span>
@@ -35,14 +37,18 @@
                     <a aria-current="page" class="nav-link active" href="{% url 'index' %}">Home</a>
                 </li>
 
-                {% if user.is_authenticated  %}
+                {% if user.is_authenticated and user.is_superuser %}
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'network'">MediCard Network</a>
+                    <a class="nav-link" href="{% url 'admin_panel' %}">Admin Panel</a>
                 </li>
-                 <li class="nav-item">
+                {% endif %}
+
+                {% if user.is_authenticated %}
+                <li class="nav-item">
                     <a class="nav-link" href="{% url 'portal' %}">MediCard User Portal</a>
                 </li>
                 {% endif %}
+
             </ul>
             <div class="search-bar">
                 <form class="d-flex">
@@ -64,10 +70,10 @@
                  Not login yet
                 {% endif %}
       </span>
-            {% if user.is_authenticated  %}
-            <a class="login" href="{% url 'logout' %}" >Logout</a>
+            {% if user.is_authenticated %}
+            <a class="login" href="{% url 'logout' %}">Logout</a>
             {% else %}
-            <a class="login" href="{% url 'login' %}" >Login</a>
+            <a class="login" href="{% url 'login' %}">Login</a>
             {% endif %}
         </div>
     </div>
@@ -99,12 +105,15 @@
         <hr/>
         <div class="title-general"><h3 class="title-general-text">General</h3></div>
         <ul class="ul-menu">
-            <a href="{% url 'portal' %}">
+            <a href="{% url 'portal' %}/dashboard/{{request.user.med_id}}">
                 <li class="menu-link">
                     <div class="background-ico">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-house" viewBox="0 0 16 16">
-                          <path fill-rule="evenodd" d="M2 13.5V7h1v6.5a.5.5 0 0 0 .5.5h9a.5.5 0 0 0 .5-.5V7h1v6.5a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 13.5zm11-11V6l-2-2V2.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5z"/>
-                          <path fill-rule="evenodd" d="M7.293 1.5a1 1 0 0 1 1.414 0l6.647 6.646a.5.5 0 0 1-.708.708L8 2.207 1.354 8.854a.5.5 0 1 1-.708-.708L7.293 1.5z"/>
+                        <svg class="bi bi-house" fill="currentColor" height="16" viewBox="0 0 16 16"
+                             width="16" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M2 13.5V7h1v6.5a.5.5 0 0 0 .5.5h9a.5.5 0 0 0 .5-.5V7h1v6.5a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 13.5zm11-11V6l-2-2V2.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5z"
+                                  fill-rule="evenodd"/>
+                            <path d="M7.293 1.5a1 1 0 0 1 1.414 0l6.647 6.646a.5.5 0 0 1-.708.708L8 2.207 1.354 8.854a.5.5 0 1 1-.708-.708L7.293 1.5z"
+                                  fill-rule="evenodd"/>
                         </svg>
                     </div>
                     <span class="link-desc">Homepage</span>
@@ -129,8 +138,10 @@
             <a href="{% url 'portal' %}/covidpass/{{user.med_id}}">
                 <li class="menu-link">
                     <div class="background-ico">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-shield-shaded" viewBox="0 0 16 16">
-                          <path fill-rule="evenodd" d="M8 14.933a.615.615 0 0 0 .1-.025c.076-.023.174-.061.294-.118.24-.113.547-.29.893-.533a10.726 10.726 0 0 0 2.287-2.233c1.527-1.997 2.807-5.031 2.253-9.188a.48.48 0 0 0-.328-.39c-.651-.213-1.75-.56-2.837-.855C9.552 1.29 8.531 1.067 8 1.067v13.866zM5.072.56C6.157.265 7.31 0 8 0s1.843.265 2.928.56c1.11.3 2.229.655 2.887.87a1.54 1.54 0 0 1 1.044 1.262c.596 4.477-.787 7.795-2.465 9.99a11.775 11.775 0 0 1-2.517 2.453 7.159 7.159 0 0 1-1.048.625c-.28.132-.581.24-.829.24s-.548-.108-.829-.24a7.158 7.158 0 0 1-1.048-.625 11.777 11.777 0 0 1-2.517-2.453C1.928 10.487.545 7.169 1.141 2.692A1.54 1.54 0 0 1 2.185 1.43 62.456 62.456 0 0 1 5.072.56z"/>
+                        <svg class="bi bi-shield-shaded" fill="currentColor" height="16" viewBox="0 0 16 16"
+                             width="16" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M8 14.933a.615.615 0 0 0 .1-.025c.076-.023.174-.061.294-.118.24-.113.547-.29.893-.533a10.726 10.726 0 0 0 2.287-2.233c1.527-1.997 2.807-5.031 2.253-9.188a.48.48 0 0 0-.328-.39c-.651-.213-1.75-.56-2.837-.855C9.552 1.29 8.531 1.067 8 1.067v13.866zM5.072.56C6.157.265 7.31 0 8 0s1.843.265 2.928.56c1.11.3 2.229.655 2.887.87a1.54 1.54 0 0 1 1.044 1.262c.596 4.477-.787 7.795-2.465 9.99a11.775 11.775 0 0 1-2.517 2.453 7.159 7.159 0 0 1-1.048.625c-.28.132-.581.24-.829.24s-.548-.108-.829-.24a7.158 7.158 0 0 1-1.048-.625 11.777 11.777 0 0 1-2.517-2.453C1.928 10.487.545 7.169 1.141 2.692A1.54 1.54 0 0 1 2.185 1.43 62.456 62.456 0 0 1 5.072.56z"
+                                  fill-rule="evenodd"/>
                         </svg>
                     </div>
                     <span class="link-desc">Covid-19 Passport</span>
@@ -164,15 +175,16 @@
                     <span class="link-desc">Recognizer</span>
                 </li>
             </a>
-{% endif %}
+            {% endif %}
 
 
             <a href="{% url 'portal' %}/card/{{user.med_id}}">
                 <li class="menu-link">
                     <div class="background-ico">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-card-heading" viewBox="0 0 16 16">
-                          <path d="M14.5 3a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h13zm-13-1A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2h-13z"/>
-                          <path d="M3 8.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5zm0-5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5v-1z"/>
+                        <svg class="bi bi-card-heading" fill="currentColor" height="16" viewBox="0 0 16 16"
+                             width="16" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M14.5 3a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h13zm-13-1A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2h-13z"/>
+                            <path d="M3 8.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5zm0-5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5v-1z"/>
                         </svg>
                     </div>
                     <span class="link-desc">Medical Card</span>
@@ -183,15 +195,15 @@
             <a href="{% url 'portal' %}/findhelp/{{user.med_id}}">
                 <li class="menu-link">
                     <div class="background-ico">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
-                          <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                        <svg class="bi bi-search" fill="currentColor" height="16" viewBox="0 0 16 16"
+                             width="16" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
                         </svg>
                     </div>
                     <span class="link-desc">Find Help</span>
                 </li>
             </a>
             {% endif %}
-
 
 
             <a href="{% url 'portal' %}/profile/{{user.med_id}}">
@@ -215,14 +227,14 @@
 
         </div>
     </div>
-<!--    Left menu end    -->
+    <!--    Left menu end    -->
 
 
-{% block body %}
-{% endblock %}
+    {% block body %}
+    {% endblock %}
 
 
-    </div>
+</div>
 <div class="footer">
     <div class="go-top">
         <a class="top">Top</a>
@@ -233,9 +245,9 @@
 </div>
 
 <!--For images previews -->
- <div class="modal-preview">
-                    some text
- </div>
+<div class="modal-preview">
+    some text
+</div>
 <!--For images previews -->
 
 
