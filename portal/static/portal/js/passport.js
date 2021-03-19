@@ -53,7 +53,7 @@ function drawPassport(data,medId, currentUserMedId) {
                         </div>
                     </div>
                     <div class="passport-bottom-level">
-                        <div class="name"><strong>Medicard ID:</strong> ${currentUserMedId}</div>
+                        <div class="name"><strong>Medicard ID:</strong> ${medId}</div>
                         <div class="name"><strong>Passport Number:</strong>Not yet vaccinated</div>
                         <div class="name"><strong>Valid until:</strong>Not yet vaccinated</div>
                     </div>

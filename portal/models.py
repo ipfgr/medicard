@@ -59,6 +59,7 @@ class RecognizedFiles(models.Model):
     uploaded = models.BooleanField(default=True)
     recognized = models.BooleanField(default=False)
     rejected = models.BooleanField(default=False)
+    upload_date = models.DateField(auto_now=True)
 
     def __str__(self):
         return "User {}. File Name: {}. Uploaded {}. Recognized{} Rejected{}. ".format(self.user, self.file_name,
@@ -71,7 +72,9 @@ class RecognizedFiles(models.Model):
             "uploaded": self.uploaded,
             "recognized": self.recognized,
             "rejected": self.rejected,
-            "full_file_url": self.full_file_url
+            "full_file_url": self.full_file_url,
+            "upload_date": self.upload_date,
+
         }
 
 

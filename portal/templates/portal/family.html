@@ -36,7 +36,7 @@
                     {{ member.med_id }}
                 </div>
             </div>
-            {% if owner %}}
+            {% if owner %}
             <div class="add-remove-btns">
                 <a href="{% url 'portal' %}/profile/{{ member.med_id }}">
                     <button class="btn btn-info remove-member">Profile</button>
@@ -47,7 +47,7 @@
 
         </div>
         {% endfor %}
-                    {% if owner %}}
+                    {% if owner %}
 
         <!--            Add new family member               -->
         <div class="family-member-container">

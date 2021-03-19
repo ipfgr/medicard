@@ -6,28 +6,99 @@
     <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css"
           integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" rel="stylesheet">
     <link href="{% static 'portal/css/admin.css' %}" rel="stylesheet">
+        <link href="{% static 'portal/css/styles.css' %}" rel="stylesheet">
+
+
     <script src="https://www.gstatic.com/firebasejs/8.2.10/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.2.10/firebase-storage.js"></script>
+    <!-- v2 -->
+    <script src='https://unpkg.com/tesseract.js@v2.1.0/dist/tesseract.min.js'></script>
     <title>Admin Panel</title>
 </head>
 <body>
-<div class="container">
+<div class="admin-container">
     <div class="row"><h6>Welcome to Recognizer Admin panel</h6></div>
     <div class="row">
-        <div class="col-5">
+        <div class="col-5 col-decoration">
             <div class="admin-page-title">
-                <h3>Files List</h3>
+                <h3>Files to recognize</h3>
+                <div class="ocr-container">
+                    <div class="ocr-message alert alert-info"></div>
+                    <div class="ocr-body"></div>
+                    <div class="ocr-buttons">
+                        <button type="button" id="ocr-button" class="btn btn-success" >Start OCR Tool</button>
+                    </div>
+
+
+                </div>
+
+                <br/>
+            </div>
+                            <div class="original-picture"></div>
+
+        </div>
+        <div class="col-5 col-decoration">
+            <div class="admin-page-title add-report">
+                <h3>Add to recognized files</h3>
+            </div>
+
+
+
+            <div class="modal-container">
+                <div class="modal-add">
+                    <div class="modal-add-header"><h4>Add new Laboratory test</h4></div>
+                    <div class="error-message-card"></div>
+                    <div class="row-main">
+                        <div class="column-quater">
+                            <h4>{{user.name}}</h4>
+                            <p>Gender: {{ user.gender }} </p>
+                            <p>Birth: {{ user.birth_date }}</p>
+                            <p><span>User ID: </span><span>{{ user.med_id }}</span></p>
+                            <p><span>Document ID: </span><span id="generated-doc-id"></span></p>
+                        </div>
+                        <div class="column-quater">
+                            <input class="custom-input top-input" name="report_name" placeholder="Report Name"
+                                   required type="text">
+                            <input class="custom-input top-input" name="hospital_name" placeholder="Hospital Name"
+                                   required type="text">
+                            <input class="custom-input top-input" name="date" placeholder="Date" required type="date">
+                            <input class="custom-input top-input" name="address" placeholder="Address" required
+                                   type="text">
+                        </div>
+                    </div>
+                    <input accept="jpg,png, gif" id="image-add-record" multiple="true" type="file">
+                    <div class="modal-add-body">
+                        <div class="modal-add-header"><h4>Results</h4></div>
+                        <span class="right lines-info"></span>
+                        <br/>
+                        <div id="input0"></div>
+                        <div class="modal-buttons-container"></div>
+                        <br/>
+                        <!--                    preview container                       -->
+                        <div class="already-uploaded">
+                            <div id="preview-container-record"></div>
+                        </div>
+                        <!--                    preview container                       -->
+                        <div class="summary-info">
+                            <div class="form-group">
+                        <textarea class="form-control summary"
+                                  maxlength="500"
+                                  placeholder="Summary information"
+                                  rows="5"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-add-constructor">
+                    <div class="modal-add-header"></div>
+                    <div class="modal-control-buttons"></div>
+                </div>
             </div>
         </div>
-        <div class="col-5">
-            <div class="admin-page-title">
-                <h3>Add to recognizer</h3>
-            </div>
-        </div>
-        <div class="col-2">
+        <div class="col-2 col-decoration">
             <div class="not-recognized">
                 <div class="admin-page-title">
-                    <h3>Not recognized files</h3>
+                    <h3>Not yet Recognize</h3>
                 </div>
                 <ul class="files-list">
                 </ul>

@@ -3,3 +3,56 @@
     padding: 0;
     box-sizing: border-box;
 }
+
+.col-decoration{
+   border: 1px solid grey;
+}
+.admin-container{
+    margin: 15px;
+    border: 1px black;
+    padding: 10px;
+    background-color: rgba(70, 74, 82, 0.1);
+}
+
+.admin-page-title{
+    text-align: center;
+}
+
+.original-picture{
+    overflow: hidden;
+    margin-top: 10px;
+}
+
+.original-picture >img{
+    width: 100%;
+
+}
+
+.ocr-container{
+
+}
+
+.ocr-message{
+    display: none;
+}
+
+.ocr-body{
+
+}
+
+.ocr-buttons{
+    display: flex;
+    justify-content: center;
+}
+
+#ocr-button{
+    display:none;
+ 
+}
+
+
+
+textarea {
+    resize: vertical;
+    width: 100%;
+}

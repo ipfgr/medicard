@@ -234,6 +234,9 @@ def api_view(request, link, med_id=""):
 
     if request.method == "GET":
 
+        if link == "getuser":
+            pass
+
 
         # If we search for user
         if link == "search":

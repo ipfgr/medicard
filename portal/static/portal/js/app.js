@@ -865,7 +865,7 @@ function previewWorker (){
 function removeActiveClass(className){ document.querySelectorAll(`.${className}`).forEach(el => el.classList.remove("active")) }
 
 //    Write all data to FireStore
-function writeDocToFireStore() {
+function writeDocToFireStore(currentUserMedId,contextData) {
     db.collection(`users/${currentUserMedId}/reports/`).add(contextData())
         .then((docRef) => {
             console.log("Document written with ID: ", docRef.id);
