@@ -30,10 +30,11 @@ db_from_env = dj_database_url.config(conn_max_age=500)
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'gs&$9i*cgd@_6&-@+_@80o)hm6@)l=6lhdzq5$*2$9)l!pooz*'
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'cg#p$g*cgd@_6&-@+_@80o)hm6@)l=6lhdzq5$*2$9)l!pooz*')
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = bool( os.environ.get('DJANGO_DEBUG', True) )
 
 ALLOWED_HOSTS = []
 
