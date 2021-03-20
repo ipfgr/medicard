@@ -27,6 +27,26 @@ const db = firebase.firestore(app);
 //         }
 // })
 
+//Options thats can selected in input unit field
+const selectOptions = [
+    "<option value='10^9L'>10^9L</option>",
+    "<option value='10^12L'>10^12L</option>",
+    "<option value='%'>%</option>",
+    "<option value='g/dL'>g/dL</option>",
+    "<option value='fL'>fL</option>",
+    "<option value='pg'>pg</option>",
+    "<option value='fl'>fl</option>",
+    "<option value='mg/L'>mg/L</option>",
+    "<option value='g/L'>g/L</option>",
+    "<option value='mmol/L'>mmol/L</option>",
+    "<option value='umol/L'>umol/L</option>",
+    "<option value='Ery/uL'>Ery/uL</option>",
+    "<option value='none'>none</option>",
+]
+
+ //Generate document uniqueid number
+const documentIdGenerator = () => "MD-" + Math.random().toString(36).substring(2)
+
 document.addEventListener('DOMContentLoaded', function () {
 
         //Get current user ID from django template
@@ -56,31 +76,12 @@ document.addEventListener('DOMContentLoaded', function () {
             const previewContainerRecord = document.querySelector("#preview-container-record")
             const modalButtonsContainer = document.querySelector(".modal-buttons-container")
 
-            //Generate document uniqueid number
-            const documentIdGenerator = () => "MD-" + Math.random().toString(36).substring(2)
 
             //Global files array for add images
             let recordFiles = []
 
             //Limit maximum fields to add in form
             let counter = 20
-
-            //Options thats can selected in input unit field
-            const selectOptions = [
-                        "<option value='10^9L'>10^9L</option>",
-                        "<option value='10^12L'>10^12L</option>",
-                        "<option value='%'>%</option>",
-                        "<option value='g/dL'>g/dL</option>",
-                        "<option value='fL'>fL</option>",
-                        "<option value='pg'>pg</option>",
-                        "<option value='fl'>fl</option>",
-                        "<option value='mg/L'>mg/L</option>",
-                        "<option value='g/L'>g/L</option>",
-                        "<option value='mmol/L'>mmol/L</option>",
-                        "<option value='umol/L'>umol/L</option>",
-                        "<option value='Ery/uL'>Ery/uL</option>",
-                        "<option value='none'>none</option>",
-            ]
 
             datePicker.insertAdjacentElement("afterend", searchResultButton)
             modalButtonsContainer.insertAdjacentElement("beforeend", addLineButton)

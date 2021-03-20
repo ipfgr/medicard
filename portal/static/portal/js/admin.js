@@ -1,40 +1,6 @@
-const firebaseConfig = {
-    apiKey: "AIzaSyCKGs3Hy8wmIT7M4OJ2SYWlwSVV2-d3TNg",
-    authDomain: "medicard-db.firebaseapp.com",
-    projectId: "medicard-db",
-    storageBucket: "medicard-db.appspot.com",
-    messagingSenderId: "872483625762",
-    appId: "1:872483625762:web:060663b337fb53641fe37b",
-    measurementId: "G-YQ7GVST827"
-}
-
-//Initialization Firebase Datastore
-const app = firebase.initializeApp(firebaseConfig);
-const storageRef = firebase.storage().ref();
-const db = firebase.firestore(app);
 
 //Initialization tesseract worker
 const worker = Tesseract.createWorker()
-
-
-//Options thats can selected in input unit field
-const selectOptions = [
-    "<option value='10^9L'>10^9L</option>",
-    "<option value='10^12L'>10^12L</option>",
-    "<option value='%'>%</option>",
-    "<option value='g/dL'>g/dL</option>",
-    "<option value='fL'>fL</option>",
-    "<option value='pg'>pg</option>",
-    "<option value='fl'>fl</option>",
-    "<option value='mg/L'>mg/L</option>",
-    "<option value='g/L'>g/L</option>",
-    "<option value='mmol/L'>mmol/L</option>",
-    "<option value='umol/L'>umol/L</option>",
-    "<option value='Ery/uL'>Ery/uL</option>",
-    "<option value='none'>none</option>",
-]
-//Generate document uniqueid number
-const documentIdGenerator = () => "MD-" + Math.random().toString(36).substring(2)
 
 document.addEventListener('DOMContentLoaded', () => {
     const ocrButton = document.querySelector("#ocr-button")
@@ -146,86 +112,66 @@ document.addEventListener('DOMContentLoaded', () => {
                     `)
     })
 
-    //    Write all data to FireStore
-    function writeDocToFireStore(currentUserMedId, contextData) {
-        db.collection(`users/${currentUserMedId}/reports/`).add(contextData())
-            .then((docRef) => {
-                console.log("Document written with ID: ", docRef.id);
-            })
-            .catch((error) => {
-                console.error("Error adding document: ", error);
-            })
-            .finally(() => location.reload())
-    }
+
 
     //Handler for save input results when press save button
-            saveReport.addEventListener("click", () => {
-                const topInputs = document.querySelectorAll(".top-input")
-                const summary = document.querySelector(".summary")
-                //array for images links
-                let userMedId = async () =>
-                    await fetch(`portal/api/v1/getuser/${userIdFOrCurrentDocument}`)
-                    .then(data => data.json())
+    saveReport.addEventListener("click", () => {
+        const topInputs = document.querySelectorAll(".top-input")
+        const summary = document.querySelector(".summary")
+        //array for images links
+        let userMedId = async () =>
+            await fetch(`portal/api/v1/getuser/${userIdFOrCurrentDocument}`)
+                .then(data => data.json())
 
-                    userMedId().then(result => {
-                        if (validateResult(topInputs)) {
-                        //Make object with data to upload to firestore
-                        const contextData = () => {
-                            let context = Array
-                                .from(document.querySelectorAll('.input-container'))
-                                .reduce((acc, el, i) => (
-                                        acc[`input${i + 1}`] = [
-                                            'parameter',
-                                            'result',
-                                            'select',
-                                            'range',
-                                        ].map(name => el.querySelector(`[name="${name}"]`).value),
-                                            acc
-                                    ), {
-                                        med_id: result,
-                                        document_id: documentId.innerHTML,
-                                        summary: summary.value,
-                                    }
-                                );
-                            topInputs.forEach(input => {
-                                context[input.name] = input.value
-                            })
-                            return context
-                        }
-                        //Write to fireStore
-                            recognizeFlagSet()
-                            writeDocToFireStore(result, contextData)
-                }
-                //Check if important data [ Name, date, hospital and address inputed ]
-                 else console.log("not valid")
+        userMedId().then(result => {
+            if (validateResult(topInputs)) {
+                //Make object with data to upload to firestore
+                const contextData = () => {
+                    let context = Array
+                        .from(document.querySelectorAll('.input-container'))
+                        .reduce((acc, el, i) => (
+                                acc[`input${i + 1}`] = [
+                                    'parameter',
+                                    'result',
+                                    'select',
+                                    'range',
+                                ].map(name => el.querySelector(`[name="${name}"]`).value),
+                                    acc
+                            ), {
+                                med_id: result,
+                                document_id: documentId.innerHTML,
+                                summary: summary.value,
+                            }
+                        );
+                    topInputs.forEach(input => {
+                        context[input.name] = input.value
                     })
-            })
+                    return context
+                }
+                //Write to fireStore
+                recognizeFlagSet()
+                writeDocToFireStore(result, contextData)
+            }
+            //Check if important data [ Name, date, hospital and address inputed ]
+            else console.log("not valid")
+        })
+    })
 
 })
 
-//    Write all data to FireStore
-function writeDocToFireStore(user_med_id,contextData) {
-    db.collection(`users/${user_med_id}/reports/`).add(contextData())
-        .then((docRef) => {
-            console.log("Document written with ID: ", docRef.id);
-        })
-        .catch((error) => {
-            console.error("Error adding document: ", error);
-        })
-        .finally(() => location.reload())
-}
 
-function recognizeFlagSet(){
+//Set flag to recognize for file
+function recognizeFlagSet() {
     const fileLink = document.querySelector("#image-to-work").src
     console.log(fileLink)
-    fetch(`portal/api/v1/update_status`,{
+    fetch(`portal/api/v1/update_status`, {
         method: "PATCH",
         headers: {
             "X-CSRFToken": getCookie("csrftoken")
         },
 
         body: JSON.stringify({
-            url:fileLink
+            url: fileLink
         })
     })
         .then(response => response.json())
@@ -233,19 +179,3 @@ function recognizeFlagSet(){
         .catch(error => console.log(error))
 }
 
-//Get CSRF token for send fetch to server securely
-function getCookie(name) {
-    var cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        var cookies = document.cookie.split(';');
-        for (var i = 0; i < cookies.length; i++) {
-            var cookie = jQuery.trim(cookies[i]);
-            // Does this cookie string begin with the name we want?
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-        }
-    }
-    return cookieValue;
-}
