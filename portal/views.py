@@ -15,11 +15,6 @@ from .models import RecognizedFiles
 from .models import User
 
 
-def fblogin_view(request):
-    return render(request, 'portal/login.html', {
-        "login": True
-    })
-
 
 def index_view(request):
     context = {
@@ -395,13 +390,15 @@ def logout_view(request):
     return HttpResponseRedirect(reverse("index"))
 
 
+@login_required()
 def admin_panel_view(request):
     # Get all unrecogized filenames
     files_list = RecognizedFiles.objects.raw(
         'SELECT * FROM portal_recognizedfiles WHERE recognized = "0" AND uploaded="1"')
     users_list = User.objects.all()
-    return render(request, "portal/admin/admin.html", {
-        "files": files_list,
-        "users": users_list
-    })
+    if request.user.is_superuser:
+        return render(request, "portal/admin/admin.html", {
+            "files": files_list,
+            "users": users_list
+        })
 

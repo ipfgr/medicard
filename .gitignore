@@ -1,2 +1,6 @@
 node_modules/
 .env
+requirements.txt
+runtime.txt
+Procfile
+Procfile.windows
