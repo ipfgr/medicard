@@ -89,7 +89,7 @@ document.addEventListener('DOMContentLoaded', function () {
             modalTriggerDiv.insertAdjacentElement("beforeend", hideModalButton)
             modalTriggerDiv.insertAdjacentElement("beforeend", showModalButton)
 
-            //Generate and input new ID for document
+            // Insert new generated document ID
             documentId.innerHTML = documentIdGenerator()
             modalContainer.style.display = "none"
             hideModalButton.style.display = "none"

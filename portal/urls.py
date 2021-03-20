@@ -31,9 +31,7 @@ urlpatterns = [
     path('portal/<str:med_id>', views.portal_view, name="portal_access"),
     path('portal/api/v1/<str:link>', views.api_view, name="api"),
     path('portal/api/v1/<str:link>/<str:med_id>', views.api_view, name="api_with_ident"),
-
     path('portal/<str:page>/<str:med_id>', views.portal_view, name="page"),
-    path('portal/api/v1/family/member', views.family_profile_view, name="family-member-profile"),
 
     # for Admin
     path('admin', views.admin_panel_view, name="admin_panel"),

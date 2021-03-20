@@ -47,9 +47,12 @@
 
 #ocr-button{
     display:none;
- 
+
 }
 
+#image-add-record{
+    display:none;
+}
 
 
 textarea {

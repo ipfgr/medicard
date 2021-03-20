@@ -731,6 +731,7 @@ section .section-title {
 
 .dash-footer {
     border-radius: 5px;
+
     grid-area: dash-footer;
     background-color: white;
     -webkit-box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.6);
@@ -738,6 +739,9 @@ section .section-title {
     box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.6);
 }
 
+.dash-footer-info{
+    padding: 15px;
+}
 
 .dash-header-main {
     border-top-left-radius: 5px;

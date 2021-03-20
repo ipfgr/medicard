@@ -233,11 +233,6 @@ def api_view(request, link, med_id=""):
             return JsonResponse("Message: Saved", safe=False, status=201)
 
     if request.method == "GET":
-
-        if link == "getuser":
-            pass
-
-
         # If we search for user
         if link == "search":
             checker = User.objects.filter(med_id=med_id)
@@ -253,29 +248,47 @@ def api_view(request, link, med_id=""):
                 report.append(item.allergen_name)
             return JsonResponse(report, safe=False)
 
+        # Get all files in recognizer database
         if link == "recognizer":
             answers = RecognizedFiles.objects.filter(user_id=user_id)
             answers = answers.order_by("id").all()
             return JsonResponse([answer.serialize() for answer in answers], safe=False)
 
-        if link == "get_unrecognized":
-            # Only admin can get this files list
-            if request.user.is_superuser:
-                answers = RecognizedFiles.objects.filter(recognized=0)
-                answers = answers.order_by("id").all()
-                return JsonResponse([answer.serialize() for answer in answers], safe=False)
-            else:
-                return JsonResponse("Error: you dont have access to this files", status=500, safe= False)
-
         if link == "access":
             answers = AccessList.objects.filter(user_id=user_id)
             return JsonResponse([answer.serialize() for answer in answers], safe=False)
 
+        # GET only for superusers
+        if request.user.is_superuser:
+            if link == "getuser":
+                if request.user.is_superuser:
+                    data = User.objects.get(id=med_id)
+                    return JsonResponse(data.med_id, status=201, safe=False)
+
+            # Get unrecognized files list
+            if link == "get_unrecognized":
+                answers = RecognizedFiles.objects.filter(recognized=0)
+                answers = answers.order_by("id").all()
+                return JsonResponse([answer.serialize() for answer in answers], safe=False)
+        else:
+            return JsonResponse("Error: you dont have access to this files", status=500, safe=False)
+
+    # For update avatar at profile page
     if request.method == "PUT":
         data = json.loads(request.body)
         url = data.get("url", "")
         User.objects.filter(id=user_id).update(avatar_url=url)
         return JsonResponse({"message": "Avatar url updated"}, status=204)
+
+    if request.method == "PATCH":
+        if link == "update_status":
+            # GET only for superusers
+            if request.user.is_superuser:
+                data = json.loads(request.body)
+                recognize_url = data.get("url", "")
+                print (recognize_url)
+                RecognizedFiles.objects.filter(full_file_url=recognize_url).update(recognized=1, rejected=0, uploaded=0)
+                return JsonResponse({"Message: Information updated....... Success"})
 
     if request.method == "DELETE":
         if link == "allergens":
@@ -295,10 +308,6 @@ def api_view(request, link, med_id=""):
             data = json.loads(request.body)
             remove_id = data.get("id", "")
             FamilyMembers.objects.filter(user_id=request.user.id, family_members_list=remove_id).delete()
-
-
-def family_profile_view(request, id):
-    pass
 
 
 def login_view(request):
@@ -388,9 +397,11 @@ def logout_view(request):
 
 def admin_panel_view(request):
     # Get all unrecogized filenames
-    files_list = RecognizedFiles.objects.raw('SELECT * FROM portal_recognizedfiles WHERE recognized = "0" AND uploaded="1"')
+    files_list = RecognizedFiles.objects.raw(
+        'SELECT * FROM portal_recognizedfiles WHERE recognized = "0" AND uploaded="1"')
     users_list = User.objects.all()
     return render(request, "portal/admin/admin.html", {
         "files": files_list,
         "users": users_list
     })
+
