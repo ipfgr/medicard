@@ -1,1 +1,1 @@
-web: gunicorn medicard.wsgi
+web: gunicorn application.wsgi
