@@ -103,6 +103,7 @@ function uploadExistingPassport(file, currentUserMedId) {
                         console.error(error)
                     },
                         () => {
+                        saveUserLog(currentUserMedId,"Upload new Covid-19 Vaccination proof")
                         alert("Success uploaded")
                             uploadProgress.innerHTML = '';
                         uploadProgress.innerHTML = `<h6>You can upload new vaccination conformation or scan of existing covid-19 passport or vaccination certificate,
