@@ -708,6 +708,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
             //Fetch all picture names to save at DB
             function saveNames(arr) {
+                saveUserLog(currentUserMedId,"Add  new files to Recognizer")
+                    .then(() => {
                 fetch(`/portal/api/v1/recognizer`, {
                     method: "POST",
                     headers: {
@@ -717,8 +719,8 @@ document.addEventListener('DOMContentLoaded', function () {
                         files: arr
                     })
                 }).finally(() => location.reload())
+            })
             }
-
             //When open pictures for upload you come here
             function previewBeforeUpload(event){
                 preview.innerHTML = ""
@@ -902,6 +904,7 @@ function removeActiveClass(className){ document.querySelectorAll(`.${className}`
 
 //    Write all data to FireStore
 function writeDocToFireStore(currentUserMedId,contextData) {
+    saveUserLog(currentUserMedId,"Write new document to Database").then(() => {
     db.collection(`users/${currentUserMedId}/reports/`).add(contextData())
         .then((docRef) => {
             console.log("Document written with ID: ", docRef.id);
@@ -910,13 +913,14 @@ function writeDocToFireStore(currentUserMedId,contextData) {
             console.error("Error adding document: ", error);
         })
         .finally(() => location.reload())
+    })
 }
 
 //Handler to update profile information at DB
 function updateProfileHandler(profileBody, userId) {
 
-    saveUserLog(userId,"Update user profile")
-    fetch(`/portal/api/v1/profile`, {
+    saveUserLog(userId,"Update user profile").then(() => {
+        fetch(`/portal/api/v1/profile`, {
         method: "POST",
         headers: {
             "X-CSRFToken": getCookie("csrftoken")
@@ -927,6 +931,8 @@ function updateProfileHandler(profileBody, userId) {
         .then(result => console.log(result))
         .catch(error => console.error(error))
         .finally(() => location.reload())
+    })
+
 }
 
 //Search documents in firestore
