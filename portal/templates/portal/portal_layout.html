@@ -44,7 +44,7 @@
 
                 {% if user.is_authenticated %}
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'portal' %}">MediCard User Portal</a>
+                    <a class="nav-link" href="{% url 'portal' %}/dashboard/{{ request.user.med_id }}">MediCard User Portal</a>
                 </li>
                 {% endif %}
 
