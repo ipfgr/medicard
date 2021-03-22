@@ -357,10 +357,10 @@ def register_view(request):
         try:
             user = User.objects.create_user(username, email, password)
             user.save()
-            if user_role == "doctor":
-                User.objects.filter(username=username).update(user_role=user_role, is_active=False)
-            else:
-                User.objects.filter(username=username).update(user_role=user_role)
+            # Set user role to default
+            User.objects.filter(username=username).update(user_role="user")
+
+
 
 
         except IntegrityError:

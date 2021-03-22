@@ -6,6 +6,9 @@
     font-family: 'Poppins', sans-serif;
 }
 
+a {
+    text-decoration: none !important;
+}
 
 /*Animations*/
 /*Fade in*/
@@ -44,6 +47,7 @@
         opacity: 1;
     }
 }
+
 /*Animations*/
 
 
@@ -69,10 +73,11 @@
     align-items: center;
 }
 
-.modal-preview-image img{
+.modal-preview-image img {
     height: 100vh;
     width: auto;
 }
+
 /*Modal image preview*/
 
 
@@ -237,7 +242,7 @@ input:disabled {
 }
 
 /*Body styles*/
-.custom-collapse-colors{
+.custom-collapse-colors {
     background-color: #24ad9c;
     padding: 5px;
     border-radius: 5px;
@@ -245,7 +250,7 @@ input:disabled {
 
 }
 
-.navbar-toggler{
+.navbar-toggler {
     border: 1px solid black !important;
 }
 
@@ -264,8 +269,8 @@ body {
 /*Index page styles*/
 .info-cards {
     margin-top: 50px;
-    margin-left:10px;
-    margin-right:10px;
+    margin-left: 10px;
+    margin-right: 10px;
     display: flex;
     flex-wrap: wrap;
     justify-content: space-around;
@@ -751,7 +756,7 @@ section .section-title {
     box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.6);
 }
 
-.dash-footer-info{
+.dash-footer-info {
     padding: 15px;
 }
 
@@ -796,7 +801,7 @@ section .section-title {
     max-width: 300px;
 }
 
-.passport-status{
+.passport-status {
     display: flex;
     flex-direction: column;
 }
@@ -822,7 +827,7 @@ section .section-title {
 }
 
 
-.log-event{
+.log-event {
     margin-left: 15px;
 }
 
@@ -918,8 +923,6 @@ section .section-title {
 }
 
 /*Medical cards*/
-
-
 
 
 .cards-container {
