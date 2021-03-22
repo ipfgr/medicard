@@ -5,9 +5,9 @@
 {% if error %}
 <div class="error-template">
     <h1>Oops!</h1>
-    <h2>404 Not Found</h2>
+    <h2>You dont have access to this page</h2>
     <div class="error-details">
-        Sorry, an error has occurred, Requested page not found!
+        Sorry, you dont have access to this page. Ask this user add your id to access list!
     </div>
     <div class="error-actions">
         <a class="btn btn-warning btn-lg" href="{% url 'portal' %}">Take Me Home </a>
@@ -68,45 +68,12 @@
     </div>
 
     <div class="dash-footer">
-        <div class="dash-header-main"><h6>Chronology list</h6></div>
+        <div class="dash-header-main"><h6>Chronology list. Last 4 Events</h6></div>
         <div class="dash-footer-info">
-            <span>Here is we make chronology list all what happen with you</span>
+            <div class="user-log"></div>
         </div>
     </div>
-</div>
-
-
-
-{% elif recognizer and owner %}
-<div class="cards-container text-center">
-    <h5>Recognize paper medical cards and add to your medical cards</h5>
-    <div class="documents-container">
-        <div class="recognized">
-            <div class="recognized-header">
-                <h4>Files to recognized</h4>
-            </div>
-            <div class="recognized-images">
-            </div>
-        </div>
-        <div class="uploaded">
-            <div class="header-upload">
-                <h4>Upload files</h4>
-                <div class="progress-bar"></div>
-            </div>
-            <div class="already-uploaded"></div>
-            <div class="upload">
-                <input id="file-input" name="upload" type="file">
-            </div>
-        </div>
-    </div>
-</div>
-
-
-{% elif findhelp %}
-<div class="container">
-    <h4>This page under construction</h4>
 </div>
 {% endif %}
-
 {% endblock %}
 

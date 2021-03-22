@@ -27,9 +27,10 @@ def index_view(request):
 
 @login_required()
 def portal_view(request, med_id="", page=""):
-    # if user link to portal index page he automaticly get to pages with his med_id
+    # if user link to portal index page he automatialy get to pages with his med_id
     if med_id == "":
         med_id = request.user.med_id
+
     # Check if logged user looking his pages
     if med_id == request.user.med_id:
         current_user = User.objects.get(med_id=request.user.med_id)
@@ -59,7 +60,7 @@ def portal_view(request, med_id="", page=""):
                     "my_family": my_family
                 })
         elif page == "recognizer":
-            return render(request, 'portal/portal.html', {
+            return render(request, 'portal/recognizer.html', {
                 "user": info,
                 "recognizer": True,
                 "owner": True,
@@ -76,12 +77,6 @@ def portal_view(request, med_id="", page=""):
                 "user": info,
                 "owner": True,
 
-            })
-        elif page == "findhelp":
-            return render(request, 'portal/portal.html', {
-                "user": info,
-                "findhelp": True,
-                "owner": True
             })
         elif page == "covidpass":
             return render(request, 'portal/passport.html', {
@@ -251,7 +246,7 @@ def api_view(request, link, med_id=""):
 
         if link == "access":
             answers = AccessList.objects.filter(user_id=user_id)
-            return JsonResponse([answer.serialize() for answer in answers], safe=False)
+            return JsonResponse([answer.serialize() for answer in answers], safe=False, status=200)
 
         # GET only for superusers
         if request.user.is_superuser:

@@ -237,7 +237,17 @@ input:disabled {
 }
 
 /*Body styles*/
+.custom-collapse-colors{
+    background-color: #24ad9c;
+    padding: 5px;
+    border-radius: 5px;
+    opacity: 0.96;
 
+}
+
+.navbar-toggler{
+    border: 1px solid black !important;
+}
 
 body {
     background-color: gainsboro;
@@ -254,6 +264,8 @@ body {
 /*Index page styles*/
 .info-cards {
     margin-top: 50px;
+    margin-left:10px;
+    margin-right:10px;
     display: flex;
     flex-wrap: wrap;
     justify-content: space-around;
@@ -797,6 +809,23 @@ section .section-title {
     align-items: flex-end;
 
 }
+
+.log-string {
+    display: flex;
+    flex-wrap: wrap;
+    background-color: whitesmoke;
+    font-size: 12px;
+    margin: 10px 10px 10px 10px;
+    border: 1px solid #0dcaf0;
+    padding: 5px;
+    border-radius: 5px;
+}
+
+
+.log-event{
+    margin-left: 15px;
+}
+
 
 /*Family page*/
 .family-container {

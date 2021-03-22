@@ -27,7 +27,7 @@ const db = firebase.firestore(app);
 //         }
 // })
 
-//Options thats can selected in input unit field
+//Options that's can selected in input unit field
 const selectOptions = [
     "<option value='10^9L'>10^9L</option>",
     "<option value='10^12L'>10^12L</option>",
@@ -48,9 +48,9 @@ const selectOptions = [
 const documentIdGenerator = () => "MD-" + Math.random().toString(36).substring(2)
 
 document.addEventListener('DOMContentLoaded', function () {
-
-        //Get current user ID from django template
+            //Get current user ID from django template
         const currentUserMedId = JSON.parse(document.querySelector('#user-med-id').textContent)
+
 
         // When you on card page
         if (window.location.href.indexOf("portal/card") > 1) {
@@ -499,10 +499,13 @@ document.addEventListener('DOMContentLoaded', function () {
                                     body: JSON.stringify({
                                         url: downloadURL
                                     })
-                                }).then(response => response.json)
+                                })
+                                    .then(response => response.json)
+                                    .then(result => console.log(result))
 
                                     .catch(error => console.error(error))
                             });
+                            saveUserLog(currentUserMedId,"Upload new Avatar")
                         })
                 } else {
 
@@ -534,8 +537,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     inputs.forEach(input => {
                         profileBody[input.id] = input.value
                     })
-                    console.log(profileBody)
-                    updateProfileHandler(profileBody)
+                    updateProfileHandler(profileBody, currentUserMedId)
                 }
 
             })
@@ -706,6 +708,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
             //Fetch all picture names to save at DB
             function saveNames(arr) {
+                saveUserLog(currentUserMedId,"Add  new files to Recognizer")
+                    .then(() => {
                 fetch(`/portal/api/v1/recognizer`, {
                     method: "POST",
                     headers: {
@@ -715,8 +719,8 @@ document.addEventListener('DOMContentLoaded', function () {
                         files: arr
                     })
                 }).finally(() => location.reload())
+            })
             }
-
             //When open pictures for upload you come here
             function previewBeforeUpload(event){
                 preview.innerHTML = ""
@@ -768,6 +772,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         //When you on index portal page
         if (window.location.href.indexOf("portal/dashboard") > 1) {
+            printUserLog(currentUserMedId)
             const vacctinationStatus = document.querySelector(".vaccination-status")
             let info = getStatus()
             async function getStatus(){
@@ -821,7 +826,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
                         })
                     }).catch(err => console.error(err))
-                console.log(result)
                 return result
             }
             covidPassportData()
@@ -841,6 +845,39 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 )
+
+//Show user log for user at dashboard page
+function printUserLog(userId){
+    console.log(userId)
+    const userLogInput = document.querySelector(".user-log")
+     db.collection(`users/${userId}/log/`).orderBy("time").limit(4)
+        .get()
+        .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+                userLogInput.insertAdjacentHTML("afterbegin", `
+                <div class="log-string">
+                    <div class="log-date"><strong>Date:</strong> ${doc.data().time}</div>
+                    <div class="log-event"><strong>Event:</strong> ${doc.data().event}</div>
+                </div>
+                `)
+            })
+        })
+}
+
+//Save event to user lo
+async function saveUserLog(userID, event){
+    console.log("Start save log......")
+    await db.collection(`users/${userID}/log/`).add({
+        event: event,
+        time: Date(),
+    })
+        .then((docRef) => {
+            console.log("Document written with ID: ", docRef.id);
+        })
+        .catch((error) => {
+            console.error("Error adding document: ", error);
+        })
+}
 
 //Function for open preview image modal, and insert image
 function previewWorker (){
@@ -867,6 +904,7 @@ function removeActiveClass(className){ document.querySelectorAll(`.${className}`
 
 //    Write all data to FireStore
 function writeDocToFireStore(currentUserMedId,contextData) {
+    saveUserLog(currentUserMedId,"Write new document to Database").then(() => {
     db.collection(`users/${currentUserMedId}/reports/`).add(contextData())
         .then((docRef) => {
             console.log("Document written with ID: ", docRef.id);
@@ -875,11 +913,14 @@ function writeDocToFireStore(currentUserMedId,contextData) {
             console.error("Error adding document: ", error);
         })
         .finally(() => location.reload())
+    })
 }
 
 //Handler to update profile information at DB
-function updateProfileHandler(profileBody) {
-    fetch(`/portal/api/v1/profile`, {
+function updateProfileHandler(profileBody, userId) {
+
+    saveUserLog(userId,"Update user profile").then(() => {
+        fetch(`/portal/api/v1/profile`, {
         method: "POST",
         headers: {
             "X-CSRFToken": getCookie("csrftoken")
@@ -890,6 +931,8 @@ function updateProfileHandler(profileBody) {
         .then(result => console.log(result))
         .catch(error => console.error(error))
         .finally(() => location.reload())
+    })
+
 }
 
 //Search documents in firestore
@@ -1026,7 +1069,10 @@ function setUserAllergenHandler(allergen, requested_med_id) {
 
 //remove family member at family page
 function removeMember(id) {
-    fetch('/portal/api/v1/family/remove', {
+    //Get current user ID from django template
+    const currentUserMedId = JSON.parse(document.querySelector('#user-med-id').textContent)
+    saveUserLog(currentUserMedId ,`Remove family member with id ${id}`).then(() => {
+       fetch('/portal/api/v1/family/remove', {
         method: "DELETE",
         headers: {
             "X-CSRFToken": getCookie("csrftoken")
@@ -1034,12 +1080,20 @@ function removeMember(id) {
         body: JSON.stringify({
             id: id
         })
-    }).catch(error => console.error(error))
-    location.reload()
+    })
+           .catch(error => console.error(error))
+           .finally(() => {
+                  location.reload()
+           })
+    })
+
 }
 
 //Search family member at family page
 function searchMember(id, options) {
+    //Get current user ID from django template
+    const currentUserMedId = JSON.parse(document.querySelector('#user-med-id').textContent)
+
     const addMemberButton = document.querySelector(".add-member-btn")
     const resultDiv = document.querySelector(".search-result")
     fetch(`/portal/api/v1/search/${id}`)
@@ -1055,10 +1109,16 @@ function searchMember(id, options) {
         }).catch(error => console.error(error))
         .finally(() => {
             if (options == "member") {
-                addMemberButton.addEventListener("click", () => addMember(id))
+                addMemberButton.addEventListener("click", () => {
+                    saveUserLog(currentUserMedId ,`Add family member with id ${id}`)
+                        .then (() => addMember(id))
+                })
             }
             if (options == "access")
-                addMemberButton.addEventListener("click", () => addAccess(id))
+                addMemberButton.addEventListener("click", () => {
+                    saveUserLog(currentUserMedId ,`Add  member with id ${id} to your access list`)
+                    .then (()=> addAccess(id))
+                })
         })
 }
 
