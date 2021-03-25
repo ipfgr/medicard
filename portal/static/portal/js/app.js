@@ -99,7 +99,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             //When press hide Modal button
             hideModalButton.addEventListener("click", () => {
-                
+
 
                 modalContainer.classList.add("hide-modal")
                 showModalButton.style.display = "block"
